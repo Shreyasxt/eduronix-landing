@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Mentor | Eduronix</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body class="flex flex-col items-center min-h-screen bg-slate-50 text-slate-900"><!-- Header -->
+<header class="w-full flex items-center justify-between mb-6 px-6 py-3 backdrop-blur-md glass border-b border-white/10">
+  <!-- Logo -->
+  <div class="flex items-center">
+    <span class="logo-text text-2xl md:text-4xl uppercase">Eduronix</span>
+  </div>
+
+  <!-- Button -->
+<a href="index.html" class="home-btn">
+  <span>Home</span>
+</a>
+
+</header>
+
+<!-- Hero -->
+<div class="text-center mb-6">
+  <h1 class="text-4xl font-bold">Find Your Perfect Mentor 🎓</h1>
+  <p class="text-gray-400">Get 1-on-1 guidance tailored to your college</p>
+</div>
+
+<!-- Card -->
+<div class="w-full max-w-lg bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden">
+
+  <div class="p-6 text-white text-center brand-gradient 
+            rounded-t-3xl
+            shadow-[0_10px_30px_rgba(139,195,74,0.25)]">
+    <h2 class="text-2xl font-bold">Book Your Mentor</h2>
+    <p class="text-sm">Eduronix | 1-on-1 Guidance</p>
+  </div>
+
+  <div class="p-8 space-y-4">
+
+    <input id="name" required class="w-full p-3 border rounded-lg" placeholder="Full Name" />
+    <input id="phone" required class="w-full p-3 border rounded-lg" placeholder="WhatsApp Number" />
+    <input id="email" required class="w-full p-3 border rounded-lg" placeholder="Email" />
+    <input id="city" class="w-full p-3 border rounded-lg" placeholder="City" />
+
+    <select id="college" class="w-full p-3 border rounded-lg">
+      <option value="">Select College</option>
+
+<!-- Pune -->
+<option>COEP Technological University, Pune</option>
+<option>VIT Pune</option>
+<option>MIT World Peace University, Pune</option>
+<option>PCCOE, Pune</option>
+<option>PICT Pune</option>
+<option>AISSMS COE Pune</option>
+<option>DY Patil College of Engineering, Akurdi</option>
+<option>DY Patil Institute of Technology, Pimpri</option>
+<option>Modern College of Engineering, Pune</option>
+<option>Sinhgad College of Engineering, Pune</option>
+<option>SIT Lonavala</option>
+<option>Indira College of Engineering, Pune</option>
+<option>JSPM RSCOE Pune</option>
+<option>JSPM Tathawade Pune</option>
+<option>MMCOE Pune</option>
+
+<!-- Mumbai -->
+<option>IIT Bombay</option>
+<option>VJTI Mumbai</option>
+<option>SPIT Mumbai</option>
+<option>KJ Somaiya College of Engineering</option>
+<option>DJ Sanghvi College of Engineering</option>
+<option>NMIMS Mumbai</option>
+<option>Thadomal Shahani Engineering College</option>
+<option>Fr. Conceicao Rodrigues College of Engineering</option>
+<option>VESIT Mumbai</option>
+<option>Rajiv Gandhi Institute of Technology, Mumbai</option>
+
+<!-- Maharashtra -->
+<option>Walchand College of Engineering, Sangli</option>
+<option>Government College of Engineering, Aurangabad</option>
+<option>Government College of Engineering, Nagpur</option>
+<option>Shivaji University Kolhapur</option>
+<option>SGGS Nanded</option>
+
+<!-- Top IITs -->
+<option>IIT Delhi</option>
+<option>IIT Madras</option>
+<option>IIT Kanpur</option>
+<option>IIT Kharagpur</option>
+<option>IIT Roorkee</option>
+<option>IIT Guwahati</option>
+<option>IIT Hyderabad</option>
+<option>IIT Indore</option>
+<option>IIT BHU Varanasi</option>
+
+<!-- Top NITs -->
+<option>NIT Trichy</option>
+<option>NIT Surathkal</option>
+<option>NIT Warangal</option>
+<option>NIT Calicut</option>
+<option>NIT Rourkela</option>
+<option>NIT Nagpur (VNIT)</option>
+<option>NIT Jaipur</option>
+<option>NIT Kurukshetra</option>
+
+<!-- IIITs -->
+<option>IIIT Hyderabad</option>
+<option>IIIT Bangalore</option>
+<option>IIIT Delhi</option>
+<option>IIIT Allahabad</option>
+<option>IIIT Pune</option>
+
+<!-- Private Top Colleges -->
+<option>BITS Pilani</option>
+<option>BITS Goa</option>
+<option>BITS Hyderabad</option>
+<option>VIT Vellore</option>
+<option>VIT Chennai</option>
+<option>SRM University Chennai</option>
+<option>Manipal Institute of Technology</option>
+<option>Amity University Noida</option>
+<option>Shiv Nadar University</option>
+<option>UPES Dehradun</option>
+
+<!-- Karnataka -->
+<option>RV College of Engineering</option>
+<option>BMS College of Engineering</option>
+<option>MS Ramaiah Institute of Technology</option>
+<option>PES University Bangalore</option>
+
+<!-- Tamil Nadu -->
+<option>Anna University</option>
+<option>SSN College of Engineering</option>
+<option>PSG College of Technology</option>
+
+<!-- Delhi / North -->
+<option>DTU Delhi</option>
+<option>NSUT Delhi</option>
+<option>IGDTUW Delhi</option>
+
+<!-- Gujarat -->
+<option>DAIICT Gandhinagar</option>
+<option>Nirma University</option>
+
+<!-- Telangana -->
+<option>JNTU Hyderabad</option>
+<option>Osmania University</option>
+
+<!-- Others -->
+<option>Lovely Professional University</option>
+<option>Chandigarh University</option>
+<option>KIIT Bhubaneswar</option>
+<option>SOA University Bhubaneswar</option>
+<option>Jadavpur University</option>
+<option>Heritage Institute of Technology Kolkata</option>
+<option>Calcutta University</option>
+
+<!-- Add filler popular colleges -->
+<option>MIT ADT University Pune</option>
+<option>Symbiosis Institute of Technology</option>
+<option>FLAME University Pune</option>
+<option>Ajeenkya DY Patil University</option>
+<option>Sandip University Nashik</option>
+<option>MIT Aurangabad</option>
+<option>Parul University</option>
+<option>Galgotias University</option>
+<option>Sharda University</option>
+<option>REVA University</option>
+<option>Jain University Bangalore</option>
+<option>Christ University Bangalore</option>
+<option>Alliance University Bangalore</option>
+<option>ICFAI Hyderabad</option>
+<option>SR University Warangal</option>
+<option>Graphic Era University Dehradun</option>
+<option>DIT University Dehradun</option>
+<option>Manav Rachna University</option>
+<option>GD Goenka University</option>
+<option>Amrita University</option>
+      <option>Other</option>
+    </select>
+
+    <input id="otherCollege" class="w-full p-3 border rounded-lg hidden"
+    placeholder="Enter your interested college" />
+
+    <input id="course" class="w-full p-3 border rounded-lg" placeholder="Course" />
+
+    <select id="gender" class="w-full p-3 border rounded-lg">
+      <option value="any">Any Mentor</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+
+    <textarea id="requirements" class="w-full p-3 border rounded-lg"
+      placeholder="Any specific requirement? (optional)"></textarea>
+
+   <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+  
+  <div class="space-y-5">
+
+  <!-- Trust Box -->
+  <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3">
+    
+    <p class="text-[15px] font-medium text-slate-700 flex items-center gap-2">
+      ✅ <span>1-on-1 personalized mentor guidance</span>
+    </p>
+
+    <p class="text-[15px] font-medium text-slate-700 flex items-center gap-2">
+      🔁 <span>Full refund if no mentor match is found</span>
+    </p>
+
+    <p class="text-[12px] text-slate-500 pt-1">
+      Mentor matching is typically completed within 7 days.
+    </p>
+
+  </div>
+
+  <!-- CTA Button -->
+   <button onclick="handlePayment()" id="payBtn"
+  class="w-full brand-gradient text-white font-bold py-5 rounded-2xl text-lg 
+  shadow-[0_10px_30px_rgba(139,195,74,0.3)] 
+  hover:shadow-[0_15px_40px_rgba(3,169,244,0.4)]
+  transition-all active:scale-95 
+  flex justify-center items-center gap-2">
+  
+  Find My Mentor → Secure My Slot ₹299
+
+</button>
+
+</div>
+
+  </div>
+</div>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #0F172A; overflow-x: hidden; }
+        .brand-text-gradient { background: linear-gradient(135deg, #8BC34A 0%, #03A9F4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand-gradient { background: linear-gradient(135deg, #8BC34A 0%, #03A9F4 100%); }
+        .glass { background: rgba(224, 236, 226, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .bento-card { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bento-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.1); }
+        .floating { animation: floating 6s ease-in-out infinite; }
+        @keyframes floating { 0%, 100% { transform: translateY(0) rotate(3deg); } 50% { transform: translateY(-20px) rotate(1deg); } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #8BC34A; border-radius: 10px; }
+        @keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+.logo-text {
+  font-family: 'MuseoModerno', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.3px;
+}
+@media (min-width: 768px) {
+  .logo-text {
+    font-size: 36px;
+  }
+}
+.home-btn {
+  position: relative;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(24, 6, 6);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: all 0.3s ease;
+}
+
+.home-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, #8BC34A, #03A9F4);
+  opacity: 0;
+  transition: 0.3s;
+  z-index: 0;
+}
+
+.home-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.home-btn:hover::before {
+  opacity: 1;
+}
+
+.home-btn:hover {
+  color: black;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(3,169,244,0.3);
+}
+</style>
+<script>
+const supabaseClient = supabase.createClient(
+  "https://mnbyvbhfkrkkmmgkedch.supabase.co",
+  "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB"
+);
+
+// College toggle
+document.getElementById("college").addEventListener("change", function () {
+  const otherInput = document.getElementById("otherCollege");
+
+  if (this.value === "Other") {
+    otherInput.classList.remove("hidden");
+  } else {
+    otherInput.classList.add("hidden");
+  }
+});
+
+// ✅ FINAL PAYMENT FUNCTION
+async function handlePayment() {
+  const btn = document.getElementById("payBtn");
+
+  const data = {
+    name: document.getElementById("name").value,
+    phone: document.getElementById("phone").value,
+    email: document.getElementById("email").value,
+    city: document.getElementById("city").value,
+    college: document.getElementById("college").value === "Other"
+      ? document.getElementById("otherCollege").value
+      : document.getElementById("college").value,
+    course: document.getElementById("course").value,
+    gender: document.getElementById("gender").value,
+    requirements: document.getElementById("requirements").value,
+  };
+
+  if (!data.name || !data.phone || !data.email) {
+    alert("Please fill required fields");
+    return;
+  }
+
+  if (!/^\d{10}$/.test(data.phone)) {
+    alert("Enter valid 10-digit phone number");
+    return;
+  }
+
+  btn.innerText = "Redirecting...";
+  btn.disabled = true;
+
+  try {
+    // Save data
+    const { error } = await supabaseClient
+  .from("booking_requests")
+  .insert([{
+    name: data.name,
+    phone: data.phone,
+    email: data.email,
+    city: data.city,
+    college: data.college,
+    course: data.course,
+    mentor_gender: data.gender, // important mapping
+    requirements: data.requirements,
+    payment_id: "form_redirect",
+    status: "pending"
+  }]);
+
+if (error) {
+  console.error("Supabase Error:", error);
+  alert("Error saving data");
+  btn.innerText = "Try Again";
+  btn.disabled = false;
+  return; // STOP redirect
+}
+
+    // Redirect to Cashfree
+    window.location.href = "https://payments.cashfree.com/forms/eduronix-booking";
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong");
+
+    btn.innerText = "Try Again";
+    btn.disabled = false;
+  }
+}
+</script>

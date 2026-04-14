@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Booking Confirmed | Eduronix</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --primary: #10b981;
+      --secondary: #064e3b;
+    }
+
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+    }
+
+    header {
+      background: transparent;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Glow */
+    body::before {
+      content: "";
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      top: -100px;
+      left: -100px;
+      background: radial-gradient(circle, rgba(99,102,241,0.5), transparent 60%);
+      filter: blur(80px);
+      z-index: -1;
+      animation: float1 8s ease-in-out infinite alternate;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      bottom: -100px;
+      right: -100px;
+      background: radial-gradient(circle, rgba(16,185,129,0.5), transparent 60%);
+      filter: blur(80px);
+      z-index: -1;
+      animation: float2 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes float1 {
+      from { transform: translate(0,0); }
+      to { transform: translate(50px, 50px); }
+    }
+
+    @keyframes float2 {
+      from { transform: translate(0,0); }
+      to { transform: translate(-50px, -50px); }
+    }
+    .logo-text {
+  font-family: 'MuseoModerno', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.3px;
+}
+
+@media (min-width: 768px) {
+  .logo-text {
+    font-size: 36px;
+  }
+}
+  </style>
+</head>
+
+<body class="flex flex-col items-center min-h-screen p-4">
+
+  <!-- Header -->
+<header class="w-full max-w-5xl mx-auto flex items-center justify-between mb-6 px-4 py-2 backdrop-blur-md bg-white/5 rounded-xl border border-white/10">
+
+  <!-- Logo -->
+<div class="flex items-center">
+    <span class="logo-text text-xl md:text-2xl uppercase">Eduronix</span>
+  </div>
+
+  <!-- Button -->
+  <a href="index.html" 
+     class="text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg shadow transition">
+    Home
+  </a>
+
+</header>
+
+  <!-- Card -->
+  <div class="w-full max-w-xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-8 text-center">
+
+    <!-- Icon -->
+    <div class="text-5xl mb-4">🎉</div>
+
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-2">
+      Request Confirmed!
+    </h1>
+
+    <p class="text-gray-300 mb-6">
+      Your mentor request has been successfully received.
+    </p>
+
+    <!-- Timeline -->
+    <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-left mb-6">
+      <h3 class="font-semibold text-indigo-300 mb-3">What happens next?</h3>
+
+      <ul class="text-sm text-gray-300 space-y-2">
+        <li>✅ We match you with the best mentor</li>
+        <li>📅 Session will be scheduled within <b>7 days</b></li>
+        <li>📩 Quick updates so you’re never left  <b>waiting</b></li>
+      </ul>
+    </div>
+
+    <!-- Refund Box -->
+    <div class="bg-emerald-500/10 border border-emerald-400/20 rounded-xl p-4 mb-6">
+      <p class="text-sm text-emerald-300">
+         If a suitable mentor is not found, your full refund will be automatically initiated on the 7th day.
+      </p>
+    </div>
+
+    <!-- Note -->
+    <p class="text-sm text-gray-400 mb-6">
+       Please keep checking your WhatsApp and email for updates.
+    </p>
+
+    <!-- Buttons -->
+    <div class="flex flex-col gap-3">
+
+      <a href="booking.html"
+         class="bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold">
+         Book Another Session
+      </a>
+
+      <a href="https://wa.link/hnt938"
+         class="border border-white/10 py-3 rounded-xl text-gray-300 hover:bg-white/5">
+         Contact Support
+      </a>
+
+    </div>
+
+    <!-- Footer -->
+    <p class="text-xs text-gray-500 mt-6">
+      — Team Eduronix 🚀
+    </p>
+
+  </div>
+
+</body>
+</html>

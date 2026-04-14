@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon Modal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .brand-gradient {
+            background: linear-gradient(135deg, #8BC34A 0%, #689F38 100%);
+        }
+        
+        .shimmer {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-200 flex items-center justify-center min-h-screen" x-data="{ comingSoon: true, emailSubmitted: false }">
+
+    <button @click="comingSoon = true" class="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold">
+        Open Modal
+    </button>
+
+    <div x-show="comingSoon" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95"
+         class="fixed inset-0 z-[2000] flex items-center justify-center p-6"
+         style="display: none;">
+        
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="comingSoon = false"></div>
+        
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] relative overflow-hidden p-8 text-center border border-white/20">
+            
+            <div class="absolute inset-0 shimmer opacity-20 pointer-events-none"></div>
+            
+            <div class="relative z-10">
+                <div class="w-16 h-16 brand-gradient rounded-2xl flex items-center justify-center mx-auto text-white shadow-lg mb-6 rotate-3">
+                    <i class="fas fa-tools text-2xl"></i>
+                </div>
+                
+                <h3 class="text-2xl font-black tracking-tighter text-slate-900 mb-2 uppercase italic leading-none">
+                    Under<br>Construction
+                </h3>
+                <p class="text-slate-500 text-sm font-medium mb-8">
+                    We're fine-tuning the mentorship engine. Be the first to know when we go live.
+                </p>
+                
+                <div x-show="!emailSubmitted" class="space-y-3">
+                    <input type="email" placeholder="Enter your email" 
+                           class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#8BC34A] transition-all">
+                    
+                    <button @click="emailSubmitted = true" 
+                            class="w-full py-4 brand-gradient text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
+                        Notify Me
+                    </button>
+                </div>
+
+                <div x-show="emailSubmitted" x-cloak class="bg-green-50 p-4 rounded-2xl">
+                    <p class="text-[#8BC34A] font-bold text-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-check-circle"></i> You're on the list!
+                    </p>
+                </div>
+
+               <button @click="comingSoon = false; window.location.href='eduronix-landing.html'" 
+        class="mt-8 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] hover:text-slate-900 transition-colors">
+    Close
+</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

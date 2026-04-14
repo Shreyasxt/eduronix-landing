@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduronix | Connect. Earn. Succeed.</title>
+
+    <link rel="icon" type="image/png" href="glogo.png">
+    <link rel="apple-touch-icon" href="glogo.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <meta name="description" content="Tired of fake reviews? Talk 1-on-1 with verified students at top colleges.">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #0F172A; overflow-x: hidden; }
+        .brand-text-gradient { background: linear-gradient(135deg, #8BC34A 0%, #03A9F4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand-gradient { background: linear-gradient(135deg, #8BC34A 0%, #03A9F4 100%); }
+        .glass { background: rgba(224, 236, 226, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .bento-card { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bento-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.1); }
+        .floating { animation: floating 6s ease-in-out infinite; }
+        @keyframes floating { 0%, 100% { transform: translateY(0) rotate(3deg); } 50% { transform: translateY(-20px) rotate(1deg); } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #8BC34A; border-radius: 10px; }
+        @keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+/* Mentor Section */
+
+.mentor-section{
+  padding:100px 20px;
+  background:#0f0f0f;
+  color:#ffffff;
+}
+
+.mentor-container{
+  max-width:1100px;
+  margin:auto;
+  text-align:center;
+}
+
+/* Header */
+
+.mentor-header h2{
+  font-size:42px;
+  font-weight:700;
+  margin-bottom:15px;
+}
+
+.mentor-header span{
+  color:#00d084;
+}
+
+.mentor-header p{
+  font-size:18px;
+  opacity:0.8;
+  max-width:650px;
+  margin:auto;
+}
+
+/* Grid */
+
+.mentor-grid{
+  margin-top:60px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:25px;
+}
+
+/* Cards */
+
+.mentor-card{
+  background:#171717;
+  padding:28px;
+  border-radius:12px;
+  text-align:left;
+  border:1px solid rgba(255,255,255,0.06);
+  transition:all .35s ease;
+}
+
+.mentor-card h4{
+  font-size:18px;
+  margin-bottom:10px;
+}
+
+.mentor-card p{
+  font-size:14px;
+  opacity:0.85;
+  line-height:1.6;
+}
+
+.mentor-card:hover{
+  transform:translateY(-8px);
+  border-color:#00d084;
+  box-shadow:0 15px 40px rgba(0,0,0,0.4);
+}
+
+/* CTA */
+
+.mentor-cta{
+  margin-top:60px;
+}
+
+.mentor-highlight{
+  font-size:16px;
+  opacity:0.9;
+  margin-bottom:25px;
+}
+
+.mentor-btn{
+  display:inline-block;
+  padding:14px 34px;
+  background:#00d084;
+  color:#000;
+  font-weight:600;
+  border-radius:8px;
+  text-decoration:none;
+  transition:all .3s ease;
+}
+
+.mentor-btn:hover{
+  background:#00b574;
+  transform:translateY(-2px);
+}
+
+.mentor-note{
+  display:block;
+  margin-top:12px;
+  font-size:13px;
+  opacity:0.6;
+}
+
+/* Animation */
+
+.fade-up{
+  opacity:0;
+  transform:translateY(40px);
+  transition:all .8s ease;
+}
+
+.fade-up.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.mentor-header h2{
+  font-size:32px;
+}
+
+.mentor-header p{
+  font-size:16px;
+}
+
+}
+.logo-text {
+  font-family: 'MuseoModerno', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+    </style>
+</head>
+<body x-data="{ bookingOpen: false, step: 1, navOpen: false }">
+
+    <nav class="fixed w-full z-[100] py-4 md:py-6 transition-all duration-300 glass" id="mainNav">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center">
+            <div class="flex items-center group cursor-pointer">
+<span class="logo-text text-2xl md:text-4xl uppercase">Eduronix</span>            </div>
+
+            <div class="hidden md:flex items-center gap-6">
+                <a href="mentorform.html" class="text-xs font-bold text-slate-600 hover:text-[#8BC34A] transition-colors tracking-widest uppercase">Become a Mentor</a>
+<a href="booking.html" 
+class="px-5 py-3 bg-slate-900 text-white rounded-[2rem] font-black text-lg hover:scale-[1.02] transition-all shadow-2xl flex items-center justify-center gap-4 group">
+  Get Started
+</a>            </div>
+
+            <button @click="navOpen = !navOpen" class="md:hidden text-slate-900 text-xl"><i class="fas fa-bars"></i></button>
+        </div>
+        <div x-show="navOpen" class="md:hidden bg-white p-6 space-y-4 border-t" x-transition>
+            <a href="mentorform.html" class="block text-xs font-bold uppercase">Become a Mentor</a>
+<a href="booking.html" class="w-full inline-block text-center py-3 bg-slate-900 text-white rounded-full font-bold text-xs uppercase">
+  Get Started
+</a>   </div>
+    </nav>
+    <section class="relative min-h-screen flex items-center pt-24 md:pt-20 overflow-hidden bg-slate-50">
+        <div class="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#8BC34A]/10 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#03A9F4]/10 rounded-full blur-[120px]"></div>
+        <div class="max-w-7xl mx-auto px-4 md:px-8 w-full grid lg:grid-cols-12 gap-8 md:gap-12">
+            <div class="lg:col-span-7 space-y-6 md:space-y-10" data-aos="fade-right">
+                <div class="inline-flex items-center gap-3 px-5 py-2.5 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                    <div class="flex -space-x-2">
+                        <img class="w-6 h-6 rounded-full border-2 border-white" src="https://i.pravatar.cc/100?u=1">
+                        <img class="w-6 h-6 rounded-full border-2 border-white" src="https://i.pravatar.cc/100?u=2">
+                    </div>
+                    <span class="text-[10px] font-black text-slate-700 uppercase tracking-tighter"><span class="text-[#8BC34A]">421 Mentors</span> Joined this week</span>
+                </div>
+                <h1 class="text-4xl sm:text-6xl lg:text-8xl font-black text-slate-900 leading-tight lg:leading-[0.9] tracking-tighter">CONNECT.<br><span class="brand-text-gradient">CLARIFY. SUCCEED.</span></h1>
+                <p class="text-lg md:text-xl text-slate-500 max-w-xl leading-relaxed font-medium">Get real college insights from real students — before you take admission.</p>
+                <div class="flex flex-col sm:flex-row gap-5">
+                    <button @click="window.location.href='booking.html'" 
+class="px-8 py-5 bg-slate-900 text-white rounded-[2rem] font-black text-lg hover:scale-[1.02] transition-all shadow-2xl flex items-center justify-center gap-4 group">
+  Book a Session 
+  <div class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-[#8BC34A] transition-colors">
+    <i class="fas fa-arrow-right"></i>
+  </div>
+</button>
+                    <div class="flex items-center justify-center gap-6 px-4">
+                        <div class="h-12 w-[1px] bg-slate-200"></div>
+                        <div><p class="text-2xl font-black text-slate-900 italic">₹299</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Per Session</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:col-span-5 relative" data-aos="fade-left">
+                <div class="relative z-10 bg-white p-4 md:p-6 rounded-[2.5rem] md:rounded-[3rem] shadow-2xl rotate-3 hover:rotate-0 transition-all duration-700 group">
+                    <div class="aspect-[4/5] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000">
+                        <div class="absolute bottom-6 left-6 right-6 p-4 md:p-6 glass rounded-2xl floating">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 brand-gradient rounded-lg flex items-center justify-center text-white font-bold">SK</div>
+                                <div><h4 class="text-slate-900 font-bold text-sm">Sahil Kumar</h4><p class="text-slate-500 text-[10px] font-bold uppercase">IIT Kharagpur '25</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 md:py-24 bg-slate-900 text-white overflow-hidden">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="flex flex-col lg:flex-row items-center gap-12 md:gap-16">
+                <div class="lg:w-1/2 space-y-8" data-aos="fade-right">
+                    <div>
+                        <h4 class="text-blue-400 font-black text-xs uppercase tracking-[0.3em] mb-3">Parent's Priority</h4>
+                        <h2 class="text-3xl md:text-5xl font-black leading-tight">Don't let them spend 4 years <br class="hidden md:block"><span class="text-red-500 underline decoration-white/20">Regretting one decision.</span></h2>
+                    </div>
+                    <p class="text-slate-400 text-lg leading-relaxed">College brochures are designed to sell seats, not tell truths. One 20-minute session with a real senior can save 4 years of frustration.</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10"><i class="fas fa-exclamation-triangle text-red-500"></i><p class="text-sm">Stop them from taking admission in the <strong>wrong college</strong>.</p></div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10"><i class="fas fa-heart-broken text-red-500"></i><p class="text-sm">Prevent <strong>years of regret</strong> and academic burnout.</p></div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10"><i class="fas fa-mask text-blue-400"></i><p class="text-sm">Expose the <strong>different reality</strong> hidden behind glossy ads.</p></div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 w-full relative" data-aos="fade-left">
+                    <div class="relative z-10 bg-white rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-8 text-slate-900 shadow-2xl">
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="px-4 py-1 bg-slate-100 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500">The Reality Check</span>
+                            <div class="flex gap-1"><div class="w-3 h-3 rounded-full bg-red-400"></div><div class="w-3 h-3 rounded-full bg-green-400"></div></div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="border-b border-slate-100 pb-4"><p class="text-[10px] font-black uppercase text-blue-600 mb-1">What the Ad says:</p><p class="font-bold text-slate-800 italic">"100% Placement Record with Global Tech Giants."</p></div>
+                            <div class="pb-4"><p class="text-[10px] font-black uppercase text-red-600 mb-1">What the Senior says:</p><p class="font-bold text-slate-800">"Only 20% get those jobs. The rest go to mass recruiters with low pay."</p></div>
+                            <a href="booking.html">
+    <button class="w-full py-4 brand-gradient text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-xl">
+      Protect Your Child's Future
+    </button>
+  </a>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 text-center">
+
+    <p class="text-xs uppercase tracking-widest text-green-500 font-bold mb-2">
+      Real Process. No Guesswork.
+    </p>
+
+    <h2 class="text-2xl md:text-4xl font-black text-slate-900 mb-4">
+      How Eduronix Works
+    </h2>
+
+    <p class="text-slate-500 text-sm mb-10 max-w-xl mx-auto">
+      From confusion to clarity — talk to real students before taking admission.
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+
+      <!-- Step 1 -->
+      <div class="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+        <div class="text-green-600 text-xl mb-2">🏫</div>
+        <p class="text-xs text-green-500 font-bold">STEP 01</p>
+        <h3 class="font-semibold text-sm mb-1">Choose Your Dream College</h3>
+        <p class="text-xs text-slate-500">
+          You select the college you're planning to take admission in (or confused about).
+        </p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+        <div class="text-green-600 text-xl mb-2">👨‍🎓</div>
+        <p class="text-xs text-green-500 font-bold">STEP 02</p>
+        <h3 class="font-semibold text-sm mb-1">We Connect You to an Insider</h3>
+        <p class="text-xs text-slate-500">
+          Eduronix connects you with a real student currently studying in that college.
+        </p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+        <div class="text-green-600 text-xl mb-2">🎥</div>
+        <p class="text-xs text-green-500 font-bold">STEP 03</p>
+        <h3 class="font-semibold text-sm mb-1">1-on-1 Video Call</h3>
+        <p class="text-xs text-slate-500 mb-2">
+          Ask anything in a live session:
+        </p>
+        <ul class="text-[11px] text-slate-500 space-y-1">
+          <li>• Reality of placements</li>
+          <li>• Faculty & attendance</li>
+          <li>• Hostel & campus life</li>
+          <li>• Hidden issues no one tells</li>
+        </ul>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+        <div class="text-green-600 text-xl mb-2">💡</div>
+        <p class="text-xs text-green-500 font-bold">STEP 04</p>
+        <h3 class="font-semibold text-sm mb-1">Raw, Honest Insights</h3>
+        <p class="text-xs text-slate-500 mb-2">
+          No fake brochures. No marketing. Just real experiences.
+        </p>
+        <ul class="text-[11px] text-slate-500 space-y-1">
+          <li>• Real experiences</li>
+          <li>• Honest feedback</li>
+          <li>• No fake brochures</li>
+          <li>• 100% authenticity</li>
+        </ul>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+        <div class="text-green-600 text-xl mb-2">✅</div>
+        <p class="text-xs text-green-500 font-bold">STEP 05</p>
+        <h3 class="font-semibold text-sm mb-1">Make the Right Decision</h3>
+        <p class="text-xs text-slate-500">
+          Take admission with confidence or avoid a wrong choice.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<section class="py-24 bg-gradient-to-b from-green-50 to-white">
+  <div class="max-w-7xl mx-auto px-4 md:px-8">
+    
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight">
+        Loved by Students & <span class="text-green-600">Parents ❤️</span>
+      </h2>
+      <p class="text-slate-600 text-xl max-w-2xl mx-auto">
+        Real experiences. Real guidance. Real results. Join thousands who made the right choice.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 mb-20">
+      
+      <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+        <div class="flex text-yellow-400 mb-4 text-sm">★★★★★</div>
+        <p class="text-slate-700 italic mb-6 leading-relaxed">
+          "Before Eduronix, we were completely confused about college selection. Talking to a real student gave us clarity and confidence."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">P</div>
+          <h4 class="font-bold text-slate-900 text-sm">— Parent of Engineering Student</h4>
+        </div>
+      </div>
+
+      <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+        <div class="flex text-yellow-400 mb-4 text-sm">★★★★</div>
+        <p class="text-slate-700 italic mb-6 leading-relaxed">
+          "Bro honestly, best decision! I got to know the REAL placement scene before taking admission."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-700">A</div>
+          <h4 class="font-bold text-slate-900 text-sm">— Aditya, Pune</h4>
+        </div>
+      </div>
+
+      <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+        <div class="flex text-yellow-400 mb-4 text-sm">★★★★</div>
+        <p class="text-slate-700 italic mb-6 leading-relaxed">
+          "No fake promises, no confusion. Just real insights from real students. Highly recommended for every parent."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center font-bold text-purple-700">S</div>
+          <h4 class="font-bold text-slate-900 text-sm">— Mrs. Sharma</h4>
+        </div>
+      </div>
+
+      <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+        <div class="flex text-yellow-400 mb-4 text-sm">★★★★</div>
+        <p class="text-slate-700 italic mb-6 leading-relaxed">
+          "I avoided taking wrong branch because of this. Saved my 4 years seriously 💀"
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center font-bold text-orange-700">R</div>
+          <h4 class="font-bold text-slate-900 text-sm">— Rohan, Mumbai</h4>
+        </div>
+      </div>
+
+      <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+        <div class="flex text-yellow-400 mb-4 text-sm">★★★</div>
+        <p class="text-slate-700 italic mb-6 leading-relaxed">
+          "As a parent, this platform gave transparency which we never got anywhere."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center font-bold text-pink-700">M</div>
+          <h4 class="font-bold text-slate-900 text-sm">— Mr. Patil</h4>
+        </div>
+      </div>
+
+      <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+        <div class="flex text-yellow-400 mb-4 text-sm">★★★★★</div>
+        <p class="text-slate-700 italic mb-6 leading-relaxed">
+          "Eduronix is like having a senior guide you before even entering college."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center font-bold text-teal-700">S</div>
+          <h4 class="font-bold text-slate-900 text-sm">— Sneha, Bangalore</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto">
+      <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-green-100">
+        <div class="text-center mb-8">
+          <h3 class="text-2xl font-bold text-slate-900">Share your experience</h3>
+          <p class="text-slate-500">How did Eduronix help you?</p>
+        </div>
+        
+        <form class="space-y-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <input type="text" placeholder="Your Name" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-green-500 focus:outline-none transition">
+            <input type="text" placeholder="Location/Role (e.g. Mumbai, Student)" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-green-500 focus:outline-none transition">
+          </div>
+          <textarea rows="4" placeholder="Write your review here..." class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"></textarea>
+          
+          <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-green-200 transition-all transform active:scale-[0.98]">
+            Submit Review
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section class="mentor-section">
+
+  <div class="mentor-container">
+
+    <div class="mentor-header fade-up">
+      <h2>Earn From Your <span>College Experience</span></h2>
+      <p>
+        Become a campus mentor for your college and get paid for every mentoring
+        session you conduct with students exploring your campus.
+      </p>
+    </div>
+
+    <div class="mentor-grid">
+
+      <div class="mentor-card fade-up">
+        <h4>Paid Per Session</h4>
+        <p>
+          Receive payment for every mentoring session you take with prospective
+          students interested in your college.
+        </p>
+      </div>
+
+      <div class="mentor-card fade-up">
+        <h4>Flexible Schedule</h4>
+        <p>
+          Take mentoring sessions whenever you're available alongside your
+          college schedule.
+        </p>
+      </div>
+
+      <div class="mentor-card fade-up">
+        <h4>Represent Your College</h4>
+        <p>
+          Share real experiences about campus life with students planning to
+          join your institution.
+        </p>
+      </div>
+
+      <div class="mentor-card fade-up">
+        <h4>Build Leadership</h4>
+        <p>
+          Develop communication, networking, and leadership skills while still
+          studying.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="mentor-cta fade-up">
+
+      <p class="mentor-highlight">
+        No sales targets. Just share your college experience and earn.
+      </p>
+
+      <a href="mentorform.html" class="mentor-btn">
+        Apply to Become a Campus Mentor
+      </a>
+
+      <span class="mentor-note">
+        Application takes less than 30 seconds
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("show");
+    }
+  });
+});
+
+document.querySelectorAll(".fade-up").forEach((el)=>{
+  observer.observe(el);
+});
+</script>
+    
+    <section id="features" class="py-20 md:py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="mb-12" data-aos="fade-up">
+                <p class="text-[#8BC34A] font-black uppercase tracking-[0.3em] text-xs">Unfair Advantage</p>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter">A NEW WAY TO PREPARE.</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                <div class="md:col-span-8 bg-slate-900 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-12 text-white relative overflow-hidden bento-card">
+                    <div class="relative z-10"><i class="fas fa-shield-halved text-4xl text-[#8BC34A]"></i><div class="mt-12 md:mt-20"><h3 class="text-2xl md:text-3xl font-bold mb-4">100% Student Verification</h3><p class="text-slate-400 text-lg">We manually check College ID cards and Semester marksheets.</p></div></div>
+                </div>
+                <div class="md:col-span-4 bg-[#03A9F4] rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-10 text-white bento-card">
+                    <i class="fas fa-video text-3xl"></i><h3 class="text-2xl font-bold mt-12">HD Video Calling</h3><p class="text-white/80 mt-4">Proprietary in-browser video calling with integrated whiteboards.</p>
+                </div>
+                <div class="md:col-span-4 bg-[#8BC34A] rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-10 text-white bento-card">
+                    <i class="fas fa-bolt text-3xl"></i><h3 class="text-2xl font-bold mt-12">Instant Match</h3><p class="text-white/80 mt-4">Find mentors available within 24 hrs for urgent admission help.</p>
+                </div>
+                <div class="md:col-span-8 bg-slate-50 border border-slate-100 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-12 bento-card group">
+                    <div class="flex flex-col md:flex-row gap-8 items-center">
+                        <div class="flex-1"><i class="fas fa-award text-4xl text-[#03A9F4]"></i><h3 class="text-2xl md:text-3xl font-black mt-6">Earn while you learn.</h3><p class="text-slate-500 mt-4">Join the Eduronix mentor network and earn up to ₹20,000/month.</p><a href="mentorform.html" class="text-[#03A9F4] font-black uppercase tracking-widest text-xs mt-6 inline-block">Apply Now <i class="fas fa-arrow-right"></i></a></div>
+                        <div class="flex-1 w-full h-40 bg-slate-200 rounded-2xl overflow-hidden"><img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&q=80" class="w-full h-full object-cover"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="mentors" class="py-20 md:py-32 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="text-center mb-16 space-y-4" data-aos="fade-up">
+                <p class="text-[#03A9F4] font-black uppercase tracking-[0.4em] text-xs">The Elite Network</p>
+                <h2 class="text-3xl md:text-5xl font-black tracking-tighter italic">MEET YOUR GUIDES.</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <div class="bg-white p-3 rounded-[2.5rem] shadow-sm bento-card" data-aos="fade-up">
+                    <div class="aspect-[1/1.2] rounded-[2rem] overflow-hidden relative mb-4"><img src="ranya lal.png" class="w-full h-full object-cover"><div class="absolute top-4 left-4 glass px-3 py-1 rounded-full text-[10px] font-black uppercase">DY PATIL PUNE</div></div>
+                    <div class="px-4 pb-2"><div class="flex justify-between items-center"><h3 class="font-black text-lg">Ranya Lal</h3><div class="text-[#8BC34A] text-xs"><i class="fas fa-star"></i> 4.9</div></div><p class="text-slate-400 font-bold text-[10px] uppercase">CS Engineering</p></div>
+                </div>
+                <div class="bg-white p-3 rounded-[2.5rem] shadow-sm bento-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aspect-[1/1.2] rounded-[2rem] overflow-hidden relative mb-4"><img src="shreyash.jpeg" class="w-full h-full object-cover"><div class="absolute top-4 left-4 glass px-3 py-1 rounded-full text-[10px] font-black uppercase">SIT PUNE</div></div>
+                    <div class="px-4 pb-2"><div class="flex justify-between items-center"><h3 class="font-black text-lg">Shreyash Honwadajkar</h3><div class="text-[#8BC34A] text-xs"><i class="fas fa-star"></i> 5.0</div></div><p class="text-slate-400 font-bold text-[10px] uppercase">CS Engineering</p></div>
+                </div>
+                <div class="bg-white p-3 rounded-[2.5rem] shadow-sm bento-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aspect-[1/1.2] rounded-[2rem] overflow-hidden relative mb-4"><img src="shravan.jpeg" class="w-full h-full object-cover"><div class="absolute top-4 left-4 glass px-3 py-1 rounded-full text-[10px] font-black uppercase">DYPSOE PUNE</div></div>
+                    <div class="px-4 pb-2"><div class="flex justify-between items-center"><h3 class="font-black text-lg">Shravan Kondekar</h3><div class="text-[#8BC34A] text-xs"><i class="fas fa-star"></i> 4.6</div></div><p class="text-slate-400 font-bold text-[10px] uppercase">AIDS</p></div>
+                </div>
+                <div class="relative bg-slate-900 p-8 rounded-[2.5rem] h-full flex flex-col justify-center items-center text-center bento-card group" data-aos="fade-up">
+    <div class="absolute top-6 right-6 text-slate-500/50">
+        <i class="fas fa-lock text-xs"></i>
+    </div>
+
+    <h3 class="text-white font-black text-2xl uppercase italic">View All<br>Mentors</h3>
+    
+    <button class="mt-6 w-12 h-12 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center text-slate-400 cursor-not-allowed group-hover:animate-shake group-hover:border-red-500/50 transition-all duration-300">
+        <i class="fas fa-lock"></i>
+    </button>
+    
+    <span class="mt-2 text-[10px] text-slate-500 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"></span>
+</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="relative bg-[#020817] text-slate-300 pt-14 pb-8 overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent"></div>
+  <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+  <div class="relative max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
+        <div class="space-y-4">
+          <h4 class="text-white font-semibold tracking-wide text-sm">Company</h4>
+          <ul class="space-y-3 text-sm text-slate-400">
+            <li><a href="contactus.html" class="hover:text-blue-400 transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-4">
+          <h4 class="text-white font-semibold tracking-wide text-sm">Legal</h4>
+          <ul class="space-y-3 text-sm text-slate-400">
+            <li><a href="privacy.html" class="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+            <li><a href="terms.html" class="hover:text-blue-400 transition-colors">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lg:col-span-4 flex flex-col items-center lg:items-end gap-8">
+
+  <!-- Logo -->
+  <div class="group">
+    <img src="glogo.png" alt="Eduronix Logo"
+      class="w-16 h-16 rounded-2xl ring-1 ring-white/10 
+      group-hover:scale-110 group-hover:rotate-3 
+      transition-all duration-500 shadow-2xl shadow-blue-500/20">
+  </div>
+<!-- Tagline -->
+<p class="text-sm text-slate-400 text-center lg:text-right max-w-xs leading-relaxed">
+  The ultimate bridge between confusion and clarity for your college journey.
+</p>
+  <!-- Social Icons -->
+  <div class="flex items-center gap-4">
+    
+    <!-- LinkedIn -->
+    <a href="https://www.linkedin.com/company/neoxoragroup/?viewAsMember=true"
+      aria-label="LinkedIn"
+      class="group relative w-11 h-11 flex items-center justify-center rounded-full bg-slate-800/40 border border-white/10 transition-all duration-300 hover:border-blue-500/50 hover:-translate-y-1">
+      
+      <div class="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 group-hover:bg-blue-500/10 transition-opacity duration-300"></div>
+
+      <svg class="relative w-5 h-5 fill-slate-400 group-hover:fill-blue-400 transition-colors duration-300" viewBox="0 0 24 24">
+        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+      </svg>
+    </a>
+
+    <!-- Instagram -->
+    <a href="https://www.instagram.com/eduronix/"
+      aria-label="Instagram"
+      class="group relative w-11 h-11 flex items-center justify-center rounded-full bg-slate-800/40 border border-white/10 transition-all duration-300 hover:border-pink-500/50 hover:-translate-y-1">
+
+      <div class="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 group-hover:bg-pink-500/10 transition-opacity duration-300"></div>
+
+      <svg class="relative z-10 w-5 h-5 fill-slate-400 group-hover:fill-pink-400 transition-colors duration-300" viewBox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 7c-2.761 0-5 2.239-5 5s2.239 5 5 5 5-2.239 5-5-2.239-5-5-5zm0 8.203c-1.769 0-3.203-1.434-3.203-3.203s1.434-3.203 3.203-3.203 3.203 1.434 3.203 3.203-1.434 3.203-3.203 3.203zm5.252-8.3c-.638 0-1.156.518-1.156 1.156s.518 1.156 1.156 1.156 1.156-.518 1.156-1.156-.518-1.156-1.156-1.156z"/>
+      </svg>
+    </a>
+
+  </div>
+
+  <!-- Bottom Section -->
+  <div class="w-full mt-8 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-center lg:text-right">
+    
+    <p class="text-xs text-slate-500">
+      © 2026 <span class="text-slate-300 font-medium">Eduronix</span>. All rights reserved.
+    </p>
+
+    <span class="flex items-center gap-2 text-[10px] text-slate-500 uppercase tracking-widest font-medium">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+      </span>
+      Systems Operational
+    </span>
+
+  </div>
+
+</div>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 20) { nav.classList.add('py-2', 'shadow-xl'); } 
+            else { nav.classList.remove('py-2', 'shadow-xl'); }
+        });
+    </script>
+</body>
+</html>

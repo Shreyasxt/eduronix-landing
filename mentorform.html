@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply as Mentor | Eduronix</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+    :root {
+        --primary: #8BC34A;
+        --secondary: #03A9F4;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #ffffff;
+        color: #0F172A;
+        overflow-x: hidden;
+    }
+
+    /* Brand Gradients */
+    .brand-text-gradient {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .brand-gradient {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    /* Glass Card */
+    .glass {
+        background: rgba(224, 236, 226, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Inputs */
+    .input {
+        width: 100%;
+        padding: 16px;
+        border-radius: 12px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        outline: none;
+        transition: all 0.3s ease;
+        color: #0F172A;
+    }
+
+    .input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(139, 195, 74, 0.25);
+        background: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    /* Upload Box */
+    .upload-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 110px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.3s;
+        background: #f8fafc;
+    }
+
+    .upload-box:hover {
+        border-color: var(--primary);
+        background: #ecfdf5;
+    }
+
+    /* Card Hover Effect (like landing page) */
+    .bento-card {
+        transition: all 0.4s ease;
+    }
+
+    .bento-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Floating Animation */
+    .floating {
+        animation: floating 6s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    /* Entrance Animation */
+    .fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 10px;
+    }
+
+    .success-hidden {
+        display: none !important;
+    }
+</style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-6 bg-animate">
+<a href="index.html" 
+   class="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-xl 
+          brand-gradient text-white font-medium shadow-md
+          hover:opacity-90 transition-all">
+
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" 
+         viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M15 19l-7-7 7-7" />
+    </svg>
+
+    Back
+</a>
+<div class="fixed inset-0 overflow-hidden -z-10">
+    <div class="blob" style="top: 10%; left: 10%;"></div>
+    <div class="blob" style="bottom: 10%; right: 10%; animation-delay: -5s;"></div>
+</div>
+
+<div class="w-full max-w-2xl bg-white/10 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl p-8 md:p-12 border border-white/20 fade-in-up">
+
+    <div id="formHeader" class="text-center mb-10">
+        <h2 class="text-3xl md:text-5xl font-extrabold mb-3 brand-text-gradient">
+    Become a Mentor 🚀
+</h2>
+        <p class="text-slate-300 text-lg">
+            Earn • Learn • Lead your campus
+        </p>
+    </div>
+
+    <form id="mentorForm" class="space-y-6">
+
+        <div class="space-y-4">
+            <input name="fullName" type="text" required placeholder="Full Name" class="input"/>
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <input name="college" type="text" required placeholder="College Name" class="input"/>
+                <input name="course" type="text" required placeholder="Course" class="input"/>
+                <input name="year" type="text" required placeholder="Year" class="input"/>
+                <input name="city" type="text" required placeholder="City & State" class="input"/>
+            </div>
+
+            <input name="linkedin" type="url" required placeholder="LinkedIn Profile (URL)" class="input"/>
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <input name="phone" type="tel" required placeholder="Phone Number" class="input"/>
+                <input name="email" type="email" required placeholder="Gmail" class="input"/>
+            </div>
+
+            <input name="upi" type="text" required placeholder="UPI ID (for payments)" class="input"/>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5 pt-2">
+            <label class="upload-box group">
+                <input name="selfie" type="file" accept="image/*" required hidden />
+                <span class="text-2xl group-hover:scale-110 transition-transform">📸</span>
+                <span class="text-sm mt-1 text-slate-300">Upload Selfie</span>
+            </label>
+
+            <label class="upload-box group">
+                <input name="idcard" type="file" accept="image/*" required hidden />
+                <span class="text-2xl group-hover:scale-110 transition-transform">🪪</span>
+                <span class="text-sm mt-1 text-slate-300">Upload ID Card</span>
+            </label>
+        </div>
+
+        <button id="submitBtn" type="submit"
+    class="w-full brand-gradient text-white font-bold py-5 rounded-2xl text-lg 
+           shadow-[0_10px_30px_rgba(139,195,74,0.3)] 
+           hover:shadow-[0_15px_40px_rgba(3,169,244,0.4)]
+           transition-all active:scale-95 
+           flex justify-center items-center gap-2">
+    Submit Application
+</button>
+    </form>
+
+    <div id="successMsg" class="success-hidden flex flex-col items-center text-center space-y-6 py-10">
+        <div class="w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center border border-emerald-500/50 animate-bounce">
+            <svg class="w-12 h-12 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-3xl font-bold text-white mb-2">Application Received!</h3>
+            <p class="text-slate-400">Welcome to the team, Dude. We'll be in touch shortly.</p>
+        </div>
+        <a href="/" class="px-8 py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-200 transition-colors">
+            Return Home
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Initializations
+    emailjs.init("30Oh6XO6359Sk3ZRB");
+    const supabase = window.supabase.createClient(
+        "https://mnbyvbhfkrkkmmgkedch.supabase.co",
+        "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB"
+    );
+
+    const form = document.getElementById("mentorForm");
+    const btn = document.getElementById("submitBtn");
+
+    // File selection UI feedback
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener("change", function () {
+            if (this.files.length > 0) {
+                const span = this.parentElement.querySelectorAll("span")[1];
+                span.innerText = "File Selected ✅";
+                span.classList.add("text-emerald-400");
+                this.parentElement.style.borderColor = "#10b981";
+            }
+        });
+    });
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...`;
+        btn.disabled = true;
+
+        const formData = new FormData(form);
+        const selfieFile = formData.get("selfie");
+        const idFile = formData.get("idcard");
+
+        try {
+            // Upload Selfie
+            const { data: selfieData, error: selfieError } = await supabase.storage
+                .from("selfies")
+                .upload(`selfie-${Date.now()}-${selfieFile.name}`, selfieFile);
+            if (selfieError) throw selfieError;
+
+            const selfieUrl = supabase.storage.from("selfies").getPublicUrl(selfieData.path).data.publicUrl;
+
+            // Upload ID
+            const { data: idData, error: idError } = await supabase.storage
+                .from("idcards")
+                .upload(`id-${Date.now()}-${idFile.name}`, idFile);
+            if (idError) throw idError;
+
+            const idUrl = supabase.storage.from("idcards").getPublicUrl(idData.path).data.publicUrl;
+
+            // Database Insert
+            const { error: dbError } = await supabase.from("mentors").insert([{
+                full_name: formData.get("fullName"),
+                college: formData.get("college"),
+                course: formData.get("course"),
+                year: formData.get("year"),
+                city: formData.get("city"),
+                linkedin: formData.get("linkedin"),
+                phone: formData.get("phone"),
+                email: formData.get("email"),
+                upi: formData.get("upi"),
+                selfie_url: selfieUrl,
+                idcard_url: idUrl
+            }]);
+            if (dbError) throw dbError;
+
+            // Email Notifications
+            await emailjs.send("service_yiirvok", "template_3xwk9uc", {
+                name: formData.get("fullName"),
+                email: formData.get("email")
+            });
+
+            // Transition UI
+            form.classList.add("hidden");
+            document.getElementById("formHeader").classList.add("hidden");
+            document.getElementById("successMsg").classList.remove("success-hidden");
+
+        } catch (err) {
+            console.error(err);
+            alert("Oops! Something went wrong. Check the console for details.");
+            btn.innerHTML = "Apply Now";
+            btn.disabled = false;
+        }
+    });
+});
+</script>
+
+</body>
+</html>
