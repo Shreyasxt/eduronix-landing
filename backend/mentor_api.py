@@ -7,13 +7,13 @@ from typing import List
 router = APIRouter(prefix="/mentor", tags=["Mentor Dashboard"])
 
 class AvailabilitySlot(BaseModel):
-    day: str = Field(..., description="Day of week for this slot (e.g. monday)")
+    day_of_week: str = Field(..., description="Day of week for this slot (e.g. monday)")
     start_time: str = Field(..., description="Start time (e.g. 09:00 or 09:00:00)")
     end_time: str = Field(..., description="End time (e.g. 17:00 or 17:00:00)")
 
 
 class SetAvailabilityRequest(BaseModel):
-    user_id: str
+    user_id: str 
     slots: List[AvailabilitySlot]
 
 
@@ -33,13 +33,16 @@ async def setup_profile(profile: MentorProfile):
             "role": "mentor"
         }).eq("id", profile.user_id).execute()
 
-        # Update Mentor Details
-        res = supabase.table("mentors").upsert({
+        # Update Mentor Details (keys must match `mentors` columns; `linkedin_url`
+        # on the API maps to column `linkedin` like mentorform.html)
+        mentor_data = {
             "id": profile.user_id,
+            "full_name": profile.full_name,
             "bio": profile.bio,
             "expertise": profile.expertise,
-            "linkedin_url": profile.linkedin_url
-        }).execute()
+            "linkedin": profile.linkedin_url,
+        }
+        res = supabase.table("mentors").upsert(mentor_data).execute()
 
         return {"status": "success", "message": "Mentor profile updated!"}
     except Exception as e:
@@ -54,7 +57,7 @@ async def set_availability(payload: SetAvailabilityRequest):
     """
     try:
         supabase.table("mentor_availability").delete().eq(
-            "user_id", payload.user_id
+            "mentor_id", payload.user_id 
         ).execute()
 
         if not payload.slots:
@@ -66,11 +69,11 @@ async def set_availability(payload: SetAvailabilityRequest):
 
         rows = [
             {
-                "user_id": payload.user_id,
-                "day": slot.day,
+                "mentor_id": payload.user_id,
+                "day_of_week": slot.day_of_week, 
                 "start_time": slot.start_time,
                 "end_time": slot.end_time,
-            }
+            } 
             for slot in payload.slots
         ]
 
