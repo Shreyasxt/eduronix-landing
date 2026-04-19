@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,25 +9,28 @@
     <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        
+
     </style>
 </head>
+
 <body class="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-950 font-['MuseoModerno']">
-    
+
     <video autoplay muted loop playsinline class="absolute z-0 w-auto min-w-full min-h-full max-w-none opacity-40">
         <source src="assets/Tech-bg.mp4" type="video/mp4">
     </video>
 
     <div class="absolute inset-0 z-10 bg-gradient-to-br from-slate-950/80 via-transparent to-slate-950/80"></div>
 
-    <div class="relative z-20 w-full max-w-md p-10 bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 shadow-2xl">
-        
+    <div
+        class="relative z-20 w-full max-w-md p-10 bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 shadow-2xl">
+
         <div class="text-center mb-10">
             <h1 class="text-white text-4xl font-bold tracking-tighter">EDURONIX</h1>
             <p class="text-slate-400 mt-2">Connecting confusion to clarity.</p>
         </div>
 
-        <button class="w-full flex items-center justify-center gap-3 bg-white text-slate-900 font-bold py-4 rounded-2xl hover:bg-slate-200 transition-all active:scale-[0.98] mb-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+        <button
+            class="w-full flex items-center justify-center gap-3 bg-white text-slate-900 font-bold py-4 rounded-2xl hover:bg-slate-200 transition-all active:scale-[0.98] mb-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
             <img src="assets/Google logo.jpg" class="w-5 h-5">
             Continue with Google
         </button>
@@ -38,70 +42,74 @@
         </div>
 
         <form class="space-y-4">
-            <input type="email" placeholder="Email Address" 
+            <input type="email" placeholder="Email Address"
                 class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
-            
-            <input type="password" placeholder="Password" 
+
+            <input type="password" placeholder="Password"
                 class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
-            
-            <button class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all">
+
+            <button
+                class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-500 hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all">
                 Login
             </button>
         </form>
 
         <p class="mt-8 text-center text-sm text-slate-400">
-            New here? <a href="#" class="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4">Apply as a mentor</a>
+            New here? <a href="#"
+                class="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4">Apply as a
+                mentor</a>
         </p>
     </div>
-<script>
-    // 1. Initialize Supabase (Get these from your founder)
-    const supabaseUrl = 'https://mnbyvbhfkrkkmmgkedch.supabase.co';
-    const supabaseKey = 'sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB';
-    const supabase = supabasejs.createClient(supabaseUrl, supabaseKey);
+    <script>
+        // 1. Initialize Supabase (Get these from your founder)
+        const supabaseUrl = 'https://mnbyvbhfkrkkmmgkedch.supabase.co';
+        const supabaseKey = 'sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB';
+        const { createClient } = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-    // 2. Select the form
-    const loginForm = document.querySelector('form');
+        // 2. Select the form
+        const loginForm = document.querySelector('form');
 
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // Get the values from your inputs
-        const email = e.target.querySelector('input[type="email"]').value;
-        const password = e.target.querySelector('input[type="password"]').value;
-        const submitBtn = e.target.querySelector('button');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        // Loading state
-        submitBtn.innerText = "Checking...";
-        submitBtn.disabled = true;
+            // Get the values from your inputs
+            const email = e.target.querySelector('input[type="email"]').value;
+            const password = e.target.querySelector('input[type="password"]').value;
+            const submitBtn = e.target.querySelector('button');
 
-        // 3. Authenticate with Supabase
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
+            // Loading state
+            submitBtn.innerText = "Checking...";
+            submitBtn.disabled = true;
 
-        if (error) {
-            alert("Error: " + error.message);
-            submitBtn.innerText = "Continue";
-            submitBtn.disabled = false;
-        } else {
-            console.log("Logged in successfully:", data.user);
-            
-            // 4. Check user role and redirect
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('role')
-                .eq('id', data.user.id)
-                .single();
+            // 3. Authenticate with Supabase
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
 
-            if (profile?.role === 'mentor') {
-                window.location.href = 'mentors.html';
+            if (error) {
+                alert("Error: " + error.message);
+                submitBtn.innerText = "Continue";
+                submitBtn.disabled = false;
             } else {
-                window.location.href = 'index.html';
-            }
-        }
-    });
-</script> 
-</body> 
-</html> 
+                console.log("Logged in successfully:", data.user);
 
+                // 4. Check user role and redirect
+                const { data: profile } = await supabaseClient
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', data.user.id)
+                    .single();
+
+                if (profile?.role === 'mentor') {
+                    window.location.href = 'mentors.html';
+                } else {
+                    window.location.href = 'student-dashboard.html';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
