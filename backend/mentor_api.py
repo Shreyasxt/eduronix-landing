@@ -86,3 +86,22 @@ async def set_availability(payload: SetAvailabilityRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/get-availability/{mentor_id}")
+async def get_availability(mentor_id: str):
+    """
+    Fetch all availability slots for a mentor from `mentor_availability`.
+    """
+    try:
+        res = (
+            supabase.table("mentor_availability")
+            .select("day_of_week,start_time,end_time")
+            .eq("mentor_id", mentor_id)
+            .execute()
+        )
+
+        # supabase-py returns a response object with `.data` as a list (or None).
+        return res.data or []
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
