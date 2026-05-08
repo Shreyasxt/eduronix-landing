@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Mentor | Eduronix</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #0F172A; overflow-x: hidden; }
+    .brand-text-gradient { background: linear-gradient(135deg, #8BC34A 0%, #03A9F4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .brand-gradient { background: linear-gradient(135deg, #8BC34A 0%, #03A9F4 100%); }
+    .glass { background: rgba(224, 236, 226, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); }
+    .logo-text { font-family: 'MuseoModerno', sans-serif; font-weight: 700; font-size: 28px; letter-spacing: 0.3px; }
+    @media (min-width: 768px) { .logo-text { font-size: 36px; } }
+    
+    .home-btn {
+      position: relative;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgb(24, 6, 6);
+      border-radius: 12px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: all 0.3s ease;
+    }
+    .home-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, #8BC34A, #03A9F4);
+      opacity: 0;
+      transition: 0.3s;
+      z-index: 0;
+    }
+    .home-btn span { position: relative; z-index: 1; }
+    .home-btn:hover::before { opacity: 1; }
+    .home-btn:hover { color: white; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(3,169,244,0.3); }
+    
+    .input-label { font-size: 12px; font-weight: 600; color: #64748b; margin-left: 4px; margin-bottom: 2px; display: block; }
+  </style>
+</head>
+
+<body class="flex flex-col items-center min-h-screen bg-slate-50 text-slate-900">
+
+<!-- Header -->
+<header class="w-full flex items-center justify-between mb-6 px-6 py-3 backdrop-blur-md glass border-b border-white/10">
+  <div class="flex items-center">
+    <span class="logo-text text-2xl md:text-4xl uppercase">Eduronix</span>
+  </div>
+  <a href="index.html" class="home-btn">
+    <span>Home</span>
+  </a>
+</header>
+
+<!-- Hero -->
+<div class="text-center mb-6 px-4">
+  <h1 class="text-4xl font-bold">Find Your Perfect Mentor 🎓</h1>
+  <p class="text-gray-500 mt-2">Select up to 3 colleges you are interested in</p>
+</div>
+
+<!-- Card -->
+<div class="w-full max-w-lg bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden mb-10">
+
+  <div class="p-6 text-white text-center brand-gradient rounded-t-3xl shadow-[0_10px_30px_rgba(139,195,74,0.25)]">
+    <h2 class="text-2xl font-bold">Book Your Mentor</h2>
+    <p class="text-sm">Eduronix | Choice of 3 Colleges</p>
+  </div>
+
+  <div class="p-8 space-y-5">
+    
+    <!-- Basic Info -->
+    <div class="grid grid-cols-1 gap-4">
+        <input id="name" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none" placeholder="Full Name" />
+        <input id="phone" type="tel" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none" placeholder="WhatsApp Number" />
+        <input id="email" type="email" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none" placeholder="Email Address" />
+    </div>
+
+    <hr class="border-slate-100">
+
+    <!-- College Selections -->
+    <div class="space-y-4">
+      <div>
+        <label class="input-label">College Preference 1 </label>
+        <select id="college1" class="college-select w-full p-3 border rounded-lg bg-white">
+          <option value="">Select Primary College</option>
+          <!-- Colleges Grouped (Shortened list for example, but keep your full list here) -->
+          
+            <option>IIT Madras</option>
+<option>IIT Delhi</option>
+<option>IIT Bombay</option>
+<option>IIT Kanpur</option>
+<option>IIT Kharagpur</option>
+<option>IIT Roorkee</option>
+<option>IIT Guwahati</option>
+<option>IIT Hyderabad</option>
+<option>NIT Trichy</option>
+<option>NIT Surathkal</option>
+<option>NIT Warangal</option>
+<option>NIT Rourkela</option>
+<option>BITS Pilani</option>
+<option>IIIT Hyderabad</option>
+<option>IIIT Bangalore</option>
+<option>DTU Delhi</option>
+<option>NSUT Delhi</option>
+<option>VIT Vellore</option>
+<option>SRM University</option>
+<option>Manipal Institute of Technology</option>
+<option>Thapar Institute</option>
+<option>PES University</option>
+<option>COEP Tech Pune</option>
+<option>VNIT Nagpur</option>
+<option>PICT Pune</option>
+<option>MIT-WPU Pune</option>
+<option>RV College of Engineering</option>
+<option>BMS College of Engineering</option>
+<option>Ramaiah Institute of Technology</option>
+<option>VJTI Mumbai</option>
+<option>PCCOE Pune</option>
+<option>VIIT Pune</option>
+<option>DY Patil Pune</option>
+<option>Chandigarh University</option>
+<option>LPU Punjab</option>
+<option>UPES Dehradun</option>
+<option>KIIT University</option>
+<option>Jain University</option>
+<option>REVA University</option>
+<option>Galgotias University</option>
+<option>Parul University</option>
+<option>JECRC University</option>
+<option>GLA University</option>
+<option>Poornima University</option>
+<option>AIIMS Delhi</option>
+<option>AIIMS Jodhpur</option>
+<option>CMC Vellore</option>
+<option>JIPMER Puducherry</option>
+<option>AFMC Pune</option>
+<option>KMC Manipal</option>
+<option>Jamia Hamdard</option>
+<option>DY Patil Medical College</option>
+<option>IIM Ahmedabad</option>
+<option>IIM Bangalore</option>
+<option>IIM Calcutta</option>
+<option>IIM Indore</option>
+<option>SSCBS Delhi</option>
+<option>NMIMS Mumbai</option>
+<option>Christ University</option>
+<option>Symbiosis Pune</option>
+<option>SCMS Pune</option>
+<option>Mount Carmel College</option>
+<option>Loyola College Chennai</option>
+<option>Hindu College Delhi</option>
+<option>Hansraj College</option>
+<option>St Xavier's College Mumbai</option>
+<option>NM College Mumbai</option>
+<option>KJ Somaiya University</option>
+<option>Amity University</option>
+<option>Shiv Nadar University</option>
+<option>Ashoka University</option>
+<option>Bennett University</option>
+<option>FLAME University</option>
+<option>MIT ADT University</option>
+<option>Symbiosis Skills University</option>
+<option>Woxsen University</option>
+<option>Fergusson College Pune</option>
+<option>BMCC Pune</option>
+<option>Modern College Pune</option>
+<option>SIES College Mumbai</option>
+<option>Wilson College Mumbai</option>
+<option>TCET Mumbai</option>
+<option>Sinhgad College Pune</option>
+<option>Ajeenkya DY Patil University</option>
+<option>Sandip University</option>
+<option>YCCE Nagpur</option>
+<option>Anurag University</option>
+<option>Presidency University Bangalore</option>
+<option>CMR University</option>
+<option>Alliance University</option>
+<option>Noida International University</option>
+<option>ICFAI University</option>
+<option>Techno India University</option>
+<option>Brainware University</option>
+<option>IMS Noida</option>
+<option>Christ University Lavasa</option>
+<option>Symbiosis Nagpur</option>
+<option>Nirma University</option>
+<option>Pandit Deendayal Energy University</option>
+<option>SRCC Delhi</option>
+<option>Lady Shri Ram College</option>
+<option>Jamia Millia Islamia</option>
+<option>Aligarh Muslim University</option>
+<option>Banaras Hindu University</option>
+<option>Osmania University</option>
+<option>Anna University</option>
+<option>Jadavpur University</option>
+<option>University of Hyderabad</option>
+<option>Delhi University</option>
+          <option value="Other">Other</option>
+        </select>
+        <input id="otherCollege1" class="w-full mt-2 p-3 border rounded-lg hidden" placeholder="Enter college name" />
+      </div>
+
+      <div>
+        <label class="input-label">College Preference 2</label>
+        <select id="college2" class="college-select w-full p-3 border rounded-lg bg-white">
+          <option value="">Select Second College </option>
+          <option>IIT Madras</option>
+<option>IIT Delhi</option>
+<option>IIT Bombay</option>
+<option>IIT Kanpur</option>
+<option>IIT Kharagpur</option>
+<option>IIT Roorkee</option>
+<option>IIT Guwahati</option>
+<option>IIT Hyderabad</option>
+<option>NIT Trichy</option>
+<option>NIT Surathkal</option>
+<option>NIT Warangal</option>
+<option>NIT Rourkela</option>
+<option>BITS Pilani</option>
+<option>IIIT Hyderabad</option>
+<option>IIIT Bangalore</option>
+<option>DTU Delhi</option>
+<option>NSUT Delhi</option>
+<option>VIT Vellore</option>
+<option>SRM University</option>
+<option>Manipal Institute of Technology</option>
+<option>Thapar Institute</option>
+<option>PES University</option>
+<option>COEP Tech Pune</option>
+<option>VNIT Nagpur</option>
+<option>PICT Pune</option>
+<option>MIT-WPU Pune</option>
+<option>RV College of Engineering</option>
+<option>BMS College of Engineering</option>
+<option>Ramaiah Institute of Technology</option>
+<option>VJTI Mumbai</option>
+<option>PCCOE Pune</option>
+<option>VIIT Pune</option>
+<option>DY Patil Pune</option>
+<option>Chandigarh University</option>
+<option>LPU Punjab</option>
+<option>UPES Dehradun</option>
+<option>KIIT University</option>
+<option>Jain University</option>
+<option>REVA University</option>
+<option>Galgotias University</option>
+<option>Parul University</option>
+<option>JECRC University</option>
+<option>GLA University</option>
+<option>Poornima University</option>
+<option>AIIMS Delhi</option>
+<option>AIIMS Jodhpur</option>
+<option>CMC Vellore</option>
+<option>JIPMER Puducherry</option>
+<option>AFMC Pune</option>
+<option>KMC Manipal</option>
+<option>Jamia Hamdard</option>
+<option>DY Patil Medical College</option>
+<option>IIM Ahmedabad</option>
+<option>IIM Bangalore</option>
+<option>IIM Calcutta</option>
+<option>IIM Indore</option>
+<option>SSCBS Delhi</option>
+<option>NMIMS Mumbai</option>
+<option>Christ University</option>
+<option>Symbiosis Pune</option>
+<option>SCMS Pune</option>
+<option>Mount Carmel College</option>
+<option>Loyola College Chennai</option>
+<option>Hindu College Delhi</option>
+<option>Hansraj College</option>
+<option>St Xavier's College Mumbai</option>
+<option>NM College Mumbai</option>
+<option>KJ Somaiya University</option>
+<option>Amity University</option>
+<option>Shiv Nadar University</option>
+<option>Ashoka University</option>
+<option>Bennett University</option>
+<option>FLAME University</option>
+<option>MIT ADT University</option>
+<option>Symbiosis Skills University</option>
+<option>Woxsen University</option>
+<option>Fergusson College Pune</option>
+<option>BMCC Pune</option>
+<option>Modern College Pune</option>
+<option>SIES College Mumbai</option>
+<option>Wilson College Mumbai</option>
+<option>TCET Mumbai</option>
+<option>Sinhgad College Pune</option>
+<option>Ajeenkya DY Patil University</option>
+<option>Sandip University</option>
+<option>YCCE Nagpur</option>
+<option>Anurag University</option>
+<option>Presidency University Bangalore</option>
+<option>CMR University</option>
+<option>Alliance University</option>
+<option>Noida International University</option>
+<option>ICFAI University</option>
+<option>Techno India University</option>
+<option>Brainware University</option>
+<option>IMS Noida</option>
+<option>Christ University Lavasa</option>
+<option>Symbiosis Nagpur</option>
+<option>Nirma University</option>
+<option>Pandit Deendayal Energy University</option>
+<option>SRCC Delhi</option>
+<option>Lady Shri Ram College</option>
+<option>Jamia Millia Islamia</option>
+<option>Aligarh Muslim University</option>
+<option>Banaras Hindu University</option>
+<option>Osmania University</option>
+<option>Anna University</option>
+<option>Jadavpur University</option>
+<option>University of Hyderabad</option>
+<option>Delhi University</option>
+          <option value="Other">Other</option>
+        </select>
+        <input id="otherCollege2" class="w-full mt-2 p-3 border rounded-lg hidden" placeholder="Enter college name" />
+      </div>
+
+      <div>
+        <label class="input-label">College Preference 3</label>
+        <select id="college3" class="college-select w-full p-3 border rounded-lg bg-white">
+          <option value="">Select Third College </option>
+          <option>IIT Madras</option>
+<option>IIT Delhi</option>
+<option>IIT Bombay</option>
+<option>IIT Kanpur</option>
+<option>IIT Kharagpur</option>
+<option>IIT Roorkee</option>
+<option>IIT Guwahati</option>
+<option>IIT Hyderabad</option>
+<option>NIT Trichy</option>
+<option>NIT Surathkal</option>
+<option>NIT Warangal</option>
+<option>NIT Rourkela</option>
+<option>BITS Pilani</option>
+<option>IIIT Hyderabad</option>
+<option>IIIT Bangalore</option>
+<option>DTU Delhi</option>
+<option>NSUT Delhi</option>
+<option>VIT Vellore</option>
+<option>SRM University</option>
+<option>Manipal Institute of Technology</option>
+<option>Thapar Institute</option>
+<option>PES University</option>
+<option>COEP Tech Pune</option>
+<option>VNIT Nagpur</option>
+<option>PICT Pune</option>
+<option>MIT-WPU Pune</option>
+<option>RV College of Engineering</option>
+<option>BMS College of Engineering</option>
+<option>Ramaiah Institute of Technology</option>
+<option>VJTI Mumbai</option>
+<option>PCCOE Pune</option>
+<option>VIIT Pune</option>
+<option>DY Patil Pune</option>
+<option>Chandigarh University</option>
+<option>LPU Punjab</option>
+<option>UPES Dehradun</option>
+<option>KIIT University</option>
+<option>Jain University</option>
+<option>REVA University</option>
+<option>Galgotias University</option>
+<option>Parul University</option>
+<option>JECRC University</option>
+<option>GLA University</option>
+<option>Poornima University</option>
+<option>AIIMS Delhi</option>
+<option>AIIMS Jodhpur</option>
+<option>CMC Vellore</option>
+<option>JIPMER Puducherry</option>
+<option>AFMC Pune</option>
+<option>KMC Manipal</option>
+<option>Jamia Hamdard</option>
+<option>DY Patil Medical College</option>
+<option>IIM Ahmedabad</option>
+<option>IIM Bangalore</option>
+<option>IIM Calcutta</option>
+<option>IIM Indore</option>
+<option>SSCBS Delhi</option>
+<option>NMIMS Mumbai</option>
+<option>Christ University</option>
+<option>Symbiosis Pune</option>
+<option>SCMS Pune</option>
+<option>Mount Carmel College</option>
+<option>Loyola College Chennai</option>
+<option>Hindu College Delhi</option>
+<option>Hansraj College</option>
+<option>St Xavier's College Mumbai</option>
+<option>NM College Mumbai</option>
+<option>KJ Somaiya University</option>
+<option>Amity University</option>
+<option>Shiv Nadar University</option>
+<option>Ashoka University</option>
+<option>Bennett University</option>
+<option>FLAME University</option>
+<option>MIT ADT University</option>
+<option>Symbiosis Skills University</option>
+<option>Woxsen University</option>
+<option>Fergusson College Pune</option>
+<option>BMCC Pune</option>
+<option>Modern College Pune</option>
+<option>SIES College Mumbai</option>
+<option>Wilson College Mumbai</option>
+<option>TCET Mumbai</option>
+<option>Sinhgad College Pune</option>
+<option>Ajeenkya DY Patil University</option>
+<option>Sandip University</option>
+<option>YCCE Nagpur</option>
+<option>Anurag University</option>
+<option>Presidency University Bangalore</option>
+<option>CMR University</option>
+<option>Alliance University</option>
+<option>Noida International University</option>
+<option>ICFAI University</option>
+<option>Techno India University</option>
+<option>Brainware University</option>
+<option>IMS Noida</option>
+<option>Christ University Lavasa</option>
+<option>Symbiosis Nagpur</option>
+<option>Nirma University</option>
+<option>Pandit Deendayal Energy University</option>
+<option>SRCC Delhi</option>
+<option>Lady Shri Ram College</option>
+<option>Jamia Millia Islamia</option>
+<option>Aligarh Muslim University</option>
+<option>Banaras Hindu University</option>
+<option>Osmania University</option>
+<option>Anna University</option>
+<option>Jadavpur University</option>
+<option>University of Hyderabad</option>
+<option>Delhi University</option>
+          <option value="Other">Other</option>
+        </select>
+        <input id="otherCollege3" class="w-full mt-2 p-3 border rounded-lg hidden" placeholder="Enter college name" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+        <input id="course" class="w-full p-3 border rounded-lg" placeholder="Course" />
+        <select id="gender" class="w-full p-3 border rounded-lg">
+            <option value="any">Any Mentor</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+    </div>
+
+    <textarea id="requirements" class="w-full p-3 border rounded-lg" placeholder="Any specific requirement? (optional)"></textarea>
+
+    <!-- Trust Box -->
+    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3">
+      <p class="text-[14px] font-medium text-slate-700 flex items-center gap-2">
+        ✅ <span>Choice of 3 colleges for better matching</span>
+      </p>
+      <p class="text-[14px] font-medium text-slate-700 flex items-center gap-2">
+        🔁 <span>Full refund if no mentor match is found</span>
+      </p>
+    </div>
+
+    <!-- CTA Button -->
+    <button onclick="handlePayment()" id="payBtn"
+      class="w-full brand-gradient text-white font-bold py-5 rounded-2xl text-lg 
+      shadow-[0_10px_30px_rgba(139,195,74,0.3)] 
+      hover:shadow-[0_15px_40px_rgba(3,169,244,0.4)]
+      transition-all active:scale-95 
+      flex justify-center items-center gap-2">
+      Secure My Slot ₹899
+    </button>
+
+  </div>
+</div>
+
+<script>
+const supabaseClient = supabase.createClient(
+  "https://mnbyvbhfkrkkmmgkedch.supabase.co",
+  "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB"
+);
+
+// Toggle "Other" inputs for all three selects
+[1, 2, 3].forEach(i => {
+    document.getElementById(`college${i}`).addEventListener("change", function () {
+        const otherInput = document.getElementById(`otherCollege${i}`);
+        if (this.value === "Other") {
+            otherInput.classList.remove("hidden");
+        } else {
+            otherInput.classList.add("hidden");
+        }
+    });
+});
+
+async function handlePayment() {
+  const btn = document.getElementById("payBtn");
+
+  const getCollegeValue = (num) => {
+      const base = document.getElementById(`college${num}`).value;
+      return base === "Other" ? document.getElementById(`otherCollege${num}`).value : base;
+  };
+
+  const data = {
+    name: document.getElementById("name").value,
+    phone: document.getElementById("phone").value,
+    email: document.getElementById("email").value,
+    college1: getCollegeValue(1),
+    college2: getCollegeValue(2),
+    college3: getCollegeValue(3),
+    course: document.getElementById("course").value,
+    gender: document.getElementById("gender").value,
+    requirements: document.getElementById("requirements").value,
+  };
+
+  if (!data.name || !data.phone || !data.email || !data.college1) {
+    alert("Please fill in your name, contact, and at least one college choice.");
+    return;
+  }
+
+  if (!/^\d{10}$/.test(data.phone)) {
+    alert("Enter valid 10-digit phone number");
+    return;
+  }
+
+  btn.innerText = "Redirecting...";
+  btn.disabled = true;
+
+  try {
+    const { error } = await supabaseClient
+      .from("booking_requests")
+      .insert([{
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        // Storing multiple colleges - ensure your Supabase table has these columns
+        college: data.college1, 
+        college_alt1: data.college2,
+        college_alt2: data.college3,
+        course: data.course,
+        mentor_gender: data.gender,
+        requirements: data.requirements,
+        payment_id: "form_redirect_multi",
+        status: "pending"
+      }]);
+
+    if (error) throw error;
+
+    window.location.href = "https://payments.cashfree.com/forms/eduronixbooking";
+
+  } catch (err) {
+    console.error("Supabase Error:", err);
+    alert("Error saving data. Please try again.");
+    btn.innerText = "Try Again";
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
