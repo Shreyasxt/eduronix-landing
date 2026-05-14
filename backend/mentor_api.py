@@ -22,7 +22,11 @@ class MentorProfile(BaseModel):
     full_name: str
     bio: str
     expertise: List[str]
-    linkedin_url: str
+    linkedin: str
+    upi: str
+    year: str
+    city: str
+    state: str
 
 @router.post("/setup-profile")
 async def setup_profile(profile: MentorProfile):
@@ -33,16 +37,19 @@ async def setup_profile(profile: MentorProfile):
             "role": "mentor"
         }).eq("id", profile.user_id).execute()
 
-        # Update Mentor Details (keys must match `mentors` columns; `linkedin_url`
-        # on the API maps to column `linkedin` like mentorform.html)
+        # Keys must match `mentors` columns exactly
         mentor_data = {
             "id": profile.user_id,
             "full_name": profile.full_name,
             "bio": profile.bio,
             "expertise": profile.expertise,
-            "linkedin": profile.linkedin_url,
+            "linkedin": profile.linkedin,
+            "upi": profile.upi,
+            "year": profile.year,
+            "city": profile.city,
+            "state": profile.state,
         }
-        res = supabase.table("mentors").upsert(mentor_data).execute()
+        supabase.table("mentors").upsert(mentor_data).execute()
 
         return {"status": "success", "message": "Mentor profile updated!"}
     except Exception as e:

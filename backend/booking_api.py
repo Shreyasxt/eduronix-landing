@@ -15,6 +15,9 @@ class BookingRequest(BaseModel):
     email: EmailStr
     mentor_id: UUID
     slot_id: int
+    whatsapp_number: str
+    target_college: str
+    special_requirements: str
 
 
 class UpdateBookingStatusRequest(BaseModel):
@@ -31,11 +34,18 @@ async def request_booking(payload: BookingRequest):
             "email": str(payload.email),
             "mentor_id": str(payload.mentor_id),
             "slot_id": payload.slot_id,
+            "whatsapp_number": payload.whatsapp_number,
+            "target_college": payload.target_college,
+            "special_requirements": payload.special_requirements,
             "status": "pending",
         }
 
-        res = supabase.table("booking_requests").insert(insert_data).execute()
-        return {"status": "success", "booking_request": (res.data[0] if res.data else None)}
+        supabase.table("booking_requests").insert(insert_data).execute()
+
+        return {
+            "status": "success",
+            "message": "Booking request submitted.",
+        }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
