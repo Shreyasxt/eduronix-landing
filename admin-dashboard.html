@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Eduronix</title>
+    <link rel="icon" type="image/png" href="assets/glogo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        :root { --green: #8BC34A; --blue: #03A9F4; --dark: #0F172A; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; color: #0F172A; }
+        .logo-text { font-family: 'MuseoModerno', sans-serif; font-weight: 700; }
+        .bento-card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); background:#fff; border:1px solid #e2e8f0; border-radius:1.5rem; }
+        .bento-card:hover { transform:translateY(-2px); box-shadow:0 20px 40px -12px rgba(0,0,0,0.07); }
+        .brand-gradient { background:linear-gradient(135deg,#8BC34A 0%,#03A9F4 100%); }
+        .brand-text-gradient { background:linear-gradient(135deg,#8BC34A 0%,#03A9F4 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .glass { background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.5); }
+        .stat-up { color: #22c55e; } .stat-down { color: #ef4444; }
+        .earnings-bar { height:8px; border-radius:99px; background:#e2e8f0; overflow:hidden; }
+        .earnings-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#8BC34A,#03A9F4); }
+        .toggle-switch { position:relative; display:inline-block; width:44px; height:24px; }
+        .toggle-switch input { opacity:0; width:0; height:0; }
+        .slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#cbd5e1; transition:.3s; border-radius:26px; }
+        .slider:before { position:absolute; content:""; height:18px; width:18px; left:3px; bottom:3px; background:white; transition:.3s; border-radius:50%; }
+        input:checked + .slider { background:linear-gradient(135deg,#8BC34A,#03A9F4); }
+        input:checked + .slider:before { transform:translateX(20px); }
+        .sidebar-active { background:rgba(139,195,74,0.12); color:#5a8a21; font-weight:700; }
+        .priority-high { background:#fee2e2; color:#b91c1c; }
+        .priority-medium { background:#fef3c7; color:#92400e; }
+        .priority-low { background:#f0fdf4; color:#15803d; }
+        .badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:999px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; }
+        .ring-green { box-shadow: 0 0 0 3px rgba(139,195,74,0.3); }
+        .mini-chart-bar { display:inline-block; border-radius:4px 4px 0 0; background:linear-gradient(180deg,#8BC34A,#03A9F4); width:100%; }
+        input:focus, select:focus, textarea:focus { outline:none; box-shadow:0 0 0 2px rgba(139,195,74,0.25); }
+        .modal-bg { background:rgba(15,23,42,0.5); backdrop-filter:blur(6px); }
+        .pulse-dot { animation: pulseDot 2s infinite; }
+        @keyframes pulseDot { 0%,100%{box-shadow:0 0 0 0 rgba(139,195,74,0.4)}50%{box-shadow:0 0 0 5px rgba(139,195,74,0)} }
+        .slide-in { animation:slideIn 0.35s cubic-bezier(0.4,0,0.2,1); }
+        @keyframes slideIn { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
+        .admin-badge { background:linear-gradient(135deg,#0F172A,#1E293B); color:white; font-size:8px; font-weight:900; padding:2px 8px; border-radius:999px; letter-spacing:0.1em; text-transform:uppercase; }
+    </style>
+</head>
+<body x-data="adminDash()" x-init="init()">
+
+<div class="flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-[#0F172A] hidden md:flex flex-col relative z-20 shadow-2xl">
+        <div class="p-6 border-b border-white/10 flex items-center gap-3">
+            <span class="logo-text text-3xl uppercase tracking-tight text-white">Eduronix</span>
+            <span class="admin-badge">Admin</span>
+        </div>
+
+        <div class="p-4 flex-1 space-y-1 overflow-y-auto">
+            <p class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] px-4 py-2">Control Panel</p>
+            <button @click="tab='overview'" :class="tab==='overview'?'bg-[#8BC34A]/20 text-[#8BC34A] font-bold':'text-white/50 hover:bg-white/5 hover:text-white'" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm">
+                <i class="fas fa-chart-pie w-5"></i> Overview
+            </button>
+            <button @click="tab='sessions'" :class="tab==='sessions'?'bg-[#03A9F4]/20 text-[#03A9F4] font-bold':'text-white/50 hover:bg-white/5 hover:text-white'" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm relative">
+                <i class="fas fa-calendar-alt w-5"></i> Session Requests
+                <span x-show="unassignedRequests.length > 0" class="ml-auto bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full" x-text="unassignedRequests.length"></span>
+            </button>
+            <button @click="tab='mentors'" :class="tab==='mentors'?'bg-purple-400/20 text-purple-300 font-bold':'text-white/50 hover:bg-white/5 hover:text-white'" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm">
+                <i class="fas fa-chalkboard-teacher w-5"></i> Mentors
+            </button>
+            <button @click="tab='students'" :class="tab==='students'?'bg-orange-400/20 text-orange-300 font-bold':'text-white/50 hover:bg-white/5 hover:text-white'" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm">
+                <i class="fas fa-user-graduate w-5"></i> Students
+            </button>
+            <button @click="tab='payments'" :class="tab==='payments'?'bg-green-400/20 text-green-300 font-bold':'text-white/50 hover:bg-white/5 hover:text-white'" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm">
+                <i class="fas fa-rupee-sign w-5"></i> Revenue
+            </button>
+            <button @click="tab='profile'" :class="tab==='profile'?'bg-yellow-400/20 text-yellow-300 font-bold':'text-white/50 hover:bg-white/5 hover:text-white'" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm">
+                <i class="fas fa-user-shield w-5"></i> Admin Profile
+            </button>
+            <button @click="tab='settings'" :class="tab==='settings'?'bg-slate-400/20 text-slate-300 font-bold':'text-white/50 hover:bg-white/5 hover:text-white'" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm">
+                <i class="fas fa-cog w-5"></i> Settings
+            </button>
+        </div>
+
+        <div class="p-4 border-t border-white/10">
+            <div class="flex items-center gap-3 bg-white/5 rounded-2xl p-3 mb-3">
+                <div class="w-10 h-10 brand-gradient rounded-xl flex items-center justify-center text-white font-black text-sm">A</div>
+                <div>
+                    <p class="font-bold text-white text-sm" x-text="admin.name"></p>
+                    <p class="text-[10px] text-white/40 font-bold uppercase">Super Admin</p>
+                </div>
+                <span class="ml-auto w-2 h-2 bg-green-400 rounded-full pulse-dot"></span>
+            </div>
+            <a href="index.html" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors font-bold text-sm">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto bg-slate-100/70 relative">
+        <div class="absolute top-0 right-0 w-[40%] h-[40%] bg-[#8BC34A]/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <!-- Mobile header -->
+        <div class="md:hidden glass sticky top-0 z-30 p-4 border-b flex justify-between items-center">
+            <span class="logo-text text-xl">Eduronix</span>
+            <span class="admin-badge">Admin</span>
+        </div>
+
+        <div class="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
+
+            <!-- Top header bar -->
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Eduronix Control Center</p>
+                    <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight" x-text="'Good morning, ' + admin.name.split(' ')[0] + ' 👋'"></h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <button class="w-10 h-10 bg-white rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:border-[#8BC34A] transition shadow-sm">
+                            <i class="fas fa-bell text-sm"></i>
+                        </button>
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[8px] font-black rounded-full flex items-center justify-center" x-text="unassignedRequests.length"></span>
+                    </div>
+                    <div class="hidden md:flex items-center gap-2 px-4 py-2 bg-white rounded-xl border border-slate-200 text-xs font-bold text-slate-500 shadow-sm">
+                        <span class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></span> All Systems Live
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== TAB: OVERVIEW ===== -->
+            <div x-show="tab==='overview'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="bento-card p-5 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-[#8BC34A]/10 rounded-full -translate-y-4 translate-x-4"></div>
+                        <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center text-green-600 mb-3"><i class="fas fa-calendar-check text-sm"></i></div>
+                        <p class="text-3xl font-black text-slate-900" x-text="analytics.totalSessions"></p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Total Sessions</p>
+                        <p class="text-xs font-bold stat-up mt-2">↑ +18% this month</p>
+                    </div>
+                    <div class="bento-card p-5 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-[#03A9F4]/10 rounded-full -translate-y-4 translate-x-4"></div>
+                        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-3"><i class="fas fa-rupee-sign text-sm"></i></div>
+                        <p class="text-3xl font-black text-slate-900" x-text="'₹' + analytics.totalRevenue.toLocaleString()"></p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Total Revenue</p>
+                        <p class="text-xs font-bold stat-up mt-2">↑ +31% vs last month</p>
+                    </div>
+                    <div class="bento-card p-5 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-purple-100 rounded-full -translate-y-4 translate-x-4"></div>
+                        <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-3"><i class="fas fa-users text-sm"></i></div>
+                        <p class="text-3xl font-black text-slate-900" x-text="analytics.totalMentors"></p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Active Mentors</p>
+                        <p class="text-xs font-bold stat-up mt-2">↑ 3 new this week</p>
+                    </div>
+                    <div class="bento-card p-5 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-amber-100 rounded-full -translate-y-4 translate-x-4"></div>
+                        <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 mb-3"><i class="fas fa-hourglass-half text-sm"></i></div>
+                        <p class="text-3xl font-black text-slate-900" x-text="unassignedRequests.length"></p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Pending Assign</p>
+                        <p class="text-xs font-bold text-red-500 mt-2">⚠ Needs attention</p>
+                    </div>
+                </div>
+
+                <!-- Pending assignment alert -->
+                <div x-show="unassignedRequests.length > 0" class="bg-red-50 border border-red-200 rounded-2xl p-5 mb-6 flex items-start gap-4">
+                    <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center text-red-600 flex-shrink-0"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="flex-1">
+                        <p class="font-black text-red-900 text-sm"><span x-text="unassignedRequests.length"></span> session request(s) need mentor assignment!</p>
+                        <p class="text-xs text-red-500 mt-1">Students are waiting. Assign mentors to confirm their sessions.</p>
+                    </div>
+                    <button @click="tab='sessions'" class="px-4 py-2 bg-red-500 text-white rounded-xl font-bold text-xs hover:bg-red-600 transition flex-shrink-0 flex-shrink-0">Assign Now</button>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <!-- Revenue Chart -->
+                    <div class="bento-card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <p class="font-black text-slate-900 text-sm uppercase tracking-widest">Revenue Trend</p>
+                            <span class="text-[10px] font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full border">6 months</span>
+                        </div>
+                        <div class="flex items-end gap-2 h-28">
+                            <template x-for="(m, i) in revenueChart" :key="i">
+                                <div class="flex-1 flex flex-col items-center gap-1.5">
+                                    <p class="text-[8px] font-bold text-slate-400" x-text="'₹'+Math.floor(m.value/100)+'k'"></p>
+                                    <div class="w-full mini-chart-bar rounded-t-lg" :style="'height:' + ((m.value/12000)*100) + '%'"></div>
+                                    <p class="text-[8px] font-bold text-slate-400" x-text="m.month"></p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Session Status -->
+                    <div class="bento-card p-6">
+                        <p class="font-black text-slate-900 text-sm uppercase tracking-widest mb-4">Session Status Today</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] font-black text-slate-500 w-20">Completed</span>
+                                <div class="earnings-bar flex-1"><div class="earnings-fill" style="width:65%"></div></div>
+                                <span class="text-sm font-black text-slate-900" x-text="analytics.todayCompleted"></span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] font-black text-slate-500 w-20">Upcoming</span>
+                                <div class="earnings-bar flex-1"><div class="earnings-fill" style="width:40%;background:linear-gradient(90deg,#03A9F4,#8BC34A)"></div></div>
+                                <span class="text-sm font-black text-slate-900" x-text="analytics.todayUpcoming"></span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] font-black text-slate-500 w-20">Cancelled</span>
+                                <div class="earnings-bar flex-1"><div class="earnings-fill" style="width:10%;background:linear-gradient(90deg,#f87171,#fca5a5)"></div></div>
+                                <span class="text-sm font-black text-slate-900" x-text="analytics.todayCancelled"></span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] font-black text-slate-500 w-20">Unassigned</span>
+                                <div class="earnings-bar flex-1"><div class="earnings-fill" style="width:25%;background:linear-gradient(90deg,#fb923c,#fbbf24)"></div></div>
+                                <span class="text-sm font-black text-slate-900" x-text="unassignedRequests.length"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top mentors -->
+                <h2 class="text-xl font-black tracking-tight mb-4"><i class="fas fa-trophy text-[#8BC34A] mr-2"></i>Top Performing Mentors</h2>
+                <div class="bento-card overflow-hidden mb-6">
+                    <table class="w-full text-sm">
+                        <thead><tr class="border-b border-slate-100 bg-slate-50">
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Mentor</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">College</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sessions</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Rating</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Earned</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                        </tr></thead>
+                        <tbody>
+                            <template x-for="m in allMentors.slice(0,5)" :key="m.id">
+                                <tr class="border-b border-slate-50 hover:bg-slate-50 transition">
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 brand-gradient rounded-xl flex items-center justify-center text-white font-black text-sm flex-shrink-0" x-text="m.name.charAt(0)"></div>
+                                            <span class="font-bold text-slate-900 text-sm" x-text="m.name"></span>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 text-slate-500 text-xs hidden md:table-cell" x-text="m.college"></td>
+                                    <td class="p-4 font-black text-slate-900" x-text="m.sessions"></td>
+                                    <td class="p-4 text-yellow-500 font-bold hidden md:table-cell" x-text="'★ ' + m.rating"></td>
+                                    <td class="p-4 font-black text-green-600" x-text="'₹' + m.earned"></td>
+                                    <td class="p-4"><span class="badge" :class="m.available ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'" x-text="m.available ? 'Active' : 'Offline'"></span></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Recent sessions -->
+                <h2 class="text-xl font-black tracking-tight mb-4"><i class="fas fa-stream text-[#03A9F4] mr-2"></i>Recent Sessions Feed</h2>
+                <div class="space-y-3">
+                    <template x-for="s in recentActivity" :key="s.id">
+                        <div class="bento-card p-4 flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center font-black text-white text-sm" :class="s.type === 'completed' ? 'bg-green-500' : s.type === 'booked' ? 'bg-blue-500' : 'bg-amber-500'">
+                                <i :class="s.type === 'completed' ? 'fas fa-check' : s.type === 'booked' ? 'fas fa-calendar-plus' : 'fas fa-clock'"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-bold text-slate-900 text-sm" x-text="s.description"></p>
+                                <p class="text-xs text-slate-400" x-text="s.time"></p>
+                            </div>
+                            <span class="badge" :class="s.type === 'completed' ? 'bg-green-100 text-green-700' : s.type === 'booked' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'" x-text="s.type"></span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- ===== TAB: SESSION REQUESTS (ASSIGN MENTOR) ===== -->
+            <div x-show="tab==='sessions'" style="display:none" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-black tracking-tight"><i class="fas fa-calendar-alt text-[#03A9F4] mr-2"></i>Session Requests</h2>
+                    <div class="flex gap-2">
+                        <button @click="sessionFilter='all'" :class="sessionFilter==='all'?'bg-slate-900 text-white':'bg-white text-slate-500 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition">All</button>
+                        <button @click="sessionFilter='unassigned'" :class="sessionFilter==='unassigned'?'bg-red-500 text-white':'bg-white text-slate-500 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1">
+                            Unassigned <span class="bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full text-[9px] font-black" x-show="sessionFilter!=='unassigned'" x-text="unassignedRequests.length"></span>
+                        </button>
+                        <button @click="sessionFilter='upcoming'" :class="sessionFilter==='upcoming'?'bg-green-500 text-white':'bg-white text-slate-500 border border-slate-200'" class="px-4 py-2 rounded-xl text-xs font-bold transition">Upcoming</button>
+                    </div>
+                </div>
+
+                <!-- UNASSIGNED requests (main feature) -->
+                <div x-show="sessionFilter === 'all' || sessionFilter === 'unassigned'">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="w-3 h-3 bg-red-400 rounded-full"></span>
+                        <h3 class="text-sm font-black uppercase tracking-widest text-red-600">Unassigned Requests — Needs Your Action</h3>
+                    </div>
+
+                    <div class="space-y-4 mb-8">
+                        <template x-for="req in unassignedRequests" :key="req.id">
+                            <div class="bento-card border-l-4 border-l-red-400 p-5">
+                                <div class="flex flex-col md:flex-row md:items-start gap-4">
+                                    <div class="flex items-start gap-4 flex-1">
+                                        <div class="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 font-black text-lg flex-shrink-0" x-text="req.student.charAt(0)"></div>
+                                        <div class="flex-1">
+                                            <div class="flex flex-wrap gap-2 items-center mb-1">
+                                                <p class="font-black text-slate-900" x-text="req.student"></p>
+                                                <span class="badge priority-high" x-show="req.priority === 'high'">High Priority</span>
+                                                <span class="badge priority-medium" x-show="req.priority === 'medium'">Medium</span>
+                                            </div>
+                                            <p class="text-xs text-slate-500 mb-2" x-text="'Interested in: ' + req.targetCollege + ' · ' + req.topic"></p>
+                                            <div class="flex flex-wrap gap-2">
+                                                <span class="text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-black uppercase" x-text="req.preferredDate"></span>
+                                                <span class="text-[9px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-black uppercase" x-text="req.preferredTime"></span>
+                                                <span class="text-[9px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-black uppercase" x-text="'Paid ₹' + req.amount"></span>
+                                            </div>
+                                            <p class="mt-2 text-xs text-slate-500 bg-slate-50 p-2 rounded-xl italic" x-show="req.note"><i class="fas fa-quote-left text-slate-300 mr-1 text-[10px]"></i><span x-text="req.note"></span></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mentor assignment dropdown -->
+                                    <div class="flex flex-col gap-2 flex-shrink-0 min-w-[200px]">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Assign Mentor</label>
+                                        <select x-model="req.selectedMentor" class="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 w-full">
+                                            <option value="">— Select Mentor —</option>
+                                            <template x-for="m in availableMentorsFor(req.targetCollege)" :key="m.id">
+                                                <option :value="m.id" x-text="m.name + ' · ' + m.college"></option>
+                                            </template>
+                                        </select>
+                                        <button @click="assignMentor(req)" :disabled="!req.selectedMentor"
+                                            class="w-full py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                                            :class="req.selectedMentor ? 'bg-slate-900 text-white hover:bg-[#8BC34A] cursor-pointer' : 'bg-slate-100 text-slate-300 cursor-not-allowed'">
+                                            <i class="fas fa-user-check"></i> Confirm & Assign
+                                        </button>
+                                        <button @click="openCustomAssign(req)" class="w-full py-2 bg-purple-50 text-purple-600 rounded-xl font-bold text-xs hover:bg-purple-100 transition">
+                                            <i class="fas fa-search mr-1"></i>Browse All Mentors
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div x-show="unassignedRequests.length === 0" class="bento-card p-10 text-center">
+                            <i class="fas fa-check-circle text-4xl text-green-300 mb-3"></i>
+                            <p class="font-bold text-slate-500">All requests assigned! Great work.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assigned / Upcoming sessions -->
+                <div x-show="sessionFilter === 'all' || sessionFilter === 'upcoming'">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="w-3 h-3 bg-green-400 rounded-full"></span>
+                        <h3 class="text-sm font-black uppercase tracking-widest text-green-600">Assigned & Upcoming Sessions</h3>
+                    </div>
+                    <div class="bento-card overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead><tr class="border-b border-slate-100 bg-slate-50">
+                                <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Student</th>
+                                <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Target College</th>
+                                <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Assigned Mentor</th>
+                                <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Date & Time</th>
+                                <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                                <th class="p-4"></th>
+                            </tr></thead>
+                            <tbody>
+                                <template x-for="s in assignedSessions" :key="s.id">
+                                    <tr class="border-b border-slate-50 hover:bg-slate-50 transition">
+                                        <td class="p-4 font-bold text-slate-900 text-sm" x-text="s.student"></td>
+                                        <td class="p-4 text-slate-500 text-xs hidden md:table-cell" x-text="s.targetCollege"></td>
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 brand-gradient rounded-lg flex items-center justify-center text-white font-black text-xs" x-text="s.mentor.charAt(0)"></div>
+                                                <span class="font-bold text-slate-700 text-xs" x-text="s.mentor"></span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-xs text-slate-500 hidden md:table-cell" x-text="s.date + ' · ' + s.time"></td>
+                                        <td class="p-4"><span class="badge" :class="s.status==='Upcoming'?'bg-green-100 text-green-700':s.status==='Completed'?'bg-blue-100 text-blue-700':'bg-amber-100 text-amber-700'" x-text="s.status"></span></td>
+                                        <td class="p-4">
+                                            <button @click="cancelSession(s.id)" class="text-[9px] font-black text-red-400 hover:text-red-600 uppercase tracking-widest">Cancel</button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== TAB: MENTORS ===== -->
+            <div x-show="tab==='mentors'" style="display:none" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-black tracking-tight"><i class="fas fa-chalkboard-teacher text-purple-600 mr-2"></i>Mentor Management</h2>
+                    <button @click="showAddMentorModal = true" class="px-5 py-2.5 brand-gradient text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg hover:opacity-90 transition flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Add Mentor
+                    </button>
+                </div>
+
+                <!-- Search & filter -->
+                <div class="flex flex-col md:flex-row gap-3 mb-5">
+                    <div class="relative flex-1">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                        <input type="text" x-model="mentorSearch" placeholder="Search mentors by name or college..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-800">
+                    </div>
+                    <select x-model="mentorFilter" class="px-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600">
+                        <option value="">All Streams</option>
+                        <option>Engineering</option>
+                        <option>Medical</option>
+                        <option>Management</option>
+                    </select>
+                    <select class="px-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600">
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Offline</option>
+                        <option>Pending Verification</option>
+                    </select>
+                </div>
+
+                <div class="bento-card overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead><tr class="border-b border-slate-100 bg-slate-50">
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Mentor</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">College / Branch</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sessions</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden lg:table-cell">Rating</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden lg:table-cell">Payout Due</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                            <th class="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
+                        </tr></thead>
+                        <tbody>
+                            <template x-for="m in filteredMentors" :key="m.id">
+                                <tr class="border-b border-slate-50 hover:bg-slate-50 transition">
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 brand-gradient rounded-xl flex items-center justify-center text-white font-black text-sm flex-shrink-0" x-text="m.name.charAt(0)"></div>
+                                            <div>
+                                                <p class="font-bold text-slate-900 text-sm" x-text="m.name"></p>
+                                                <p class="text-[10px] text-slate-400" x-text="m.year"></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 hidden md:table-cell">
+                                        <p class="text-xs font-bold text-slate-700" x-text="m.college"></p>
+                                        <p class="text-[10px] text-slate-400" x-text="m.branch"></p>
+                                    </td>
+                                    <td class="p-4 font-black text-slate-900" x-text="m.sessions"></td>
+                                    <td class="p-4 text-yellow-500 font-bold text-xs hidden lg:table-cell" x-text="'★ ' + m.rating"></td>
+                                    <td class="p-4 font-black text-amber-600 hidden lg:table-cell" x-text="'₹' + m.pendingPayout"></td>
+                                    <td class="p-4">
+                                        <span class="badge" :class="m.status === 'Active' ? 'bg-green-100 text-green-700' : m.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'" x-text="m.status"></span>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex gap-2">
+                                            <button @click="editMentor(m)" class="text-[9px] font-black text-blue-500 hover:text-blue-700 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded-lg">Edit</button>
+                                            <button @click="toggleMentorStatus(m)" class="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg" :class="m.available ? 'text-red-400 bg-red-50 hover:bg-red-100' : 'text-green-500 bg-green-50 hover:bg-green-100'" x-text="m.available ? 'Deactivate' : 'Activate'"></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== TAB: STUDENTS ===== -->
+            <div x-show="tab==='students'" style="display:none" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-black tracking-tight"><i class="fas fa-user-graduate text-orange-500 mr-2"></i>Student Records</h2>
+                    <span class="text-xs font-bold text-slate-400 bg-white px-3 py-1 rounded-full shadow-sm border" x-text="allStudents.length + ' students'"></span>
+                </div>
+                <div class="bento-card overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead><tr class="border-b border-slate-100 bg-slate-50">
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Student</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Phone</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sessions</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Spent</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Joined</th>
+                            <th class="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
+                        </tr></thead>
+                        <tbody>
+                            <template x-for="s in allStudents" :key="s.id">
+                                <tr class="border-b border-slate-50 hover:bg-slate-50 transition">
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 font-black text-sm" x-text="s.name.charAt(0)"></div>
+                                            <div>
+                                                <p class="font-bold text-slate-900 text-sm" x-text="s.name"></p>
+                                                <p class="text-[10px] text-slate-400" x-text="s.city"></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 text-xs text-slate-500 hidden md:table-cell" x-text="s.phone"></td>
+                                    <td class="p-4 font-black text-slate-900" x-text="s.sessions"></td>
+                                    <td class="p-4 font-black text-green-600 hidden md:table-cell" x-text="'₹' + s.spent"></td>
+                                    <td class="p-4 text-xs text-slate-400 hidden md:table-cell" x-text="s.joined"></td>
+                                    <td class="p-4">
+                                        <button class="text-[9px] font-black text-blue-500 bg-blue-50 px-2 py-1 rounded-lg hover:bg-blue-100 uppercase tracking-widest">View</button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== TAB: REVENUE ===== -->
+            <div x-show="tab==='payments'" style="display:none" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <h2 class="text-2xl font-black tracking-tight mb-6"><i class="fas fa-rupee-sign text-green-600 mr-2"></i>Revenue & Payouts</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bento-card p-6 bg-gradient-to-br from-green-50 to-white">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Revenue</p>
+                        <p class="text-4xl font-black text-slate-900" x-text="'₹' + analytics.totalRevenue.toLocaleString()"></p>
+                        <p class="text-xs font-bold stat-up mt-2">↑ +31% from last month</p>
+                    </div>
+                    <div class="bento-card p-6 bg-gradient-to-br from-amber-50 to-white">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Mentor Payouts Due</p>
+                        <p class="text-4xl font-black text-slate-900" x-text="'₹' + analytics.pendingPayouts.toLocaleString()"></p>
+                        <p class="text-xs text-amber-500 font-bold mt-2">Pending disbursement</p>
+                    </div>
+                    <div class="bento-card p-6 bg-gradient-to-br from-blue-50 to-white">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Net Platform Revenue</p>
+                        <p class="text-4xl font-black text-slate-900" x-text="'₹' + (analytics.totalRevenue - analytics.pendingPayouts).toLocaleString()"></p>
+                        <p class="text-xs text-blue-500 font-bold mt-2">After mentor payouts</p>
+                    </div>
+                </div>
+
+                <!-- Revenue breakdown visual -->
+                <div class="bento-card p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="font-black text-slate-900 text-sm uppercase tracking-widest">Monthly Revenue</p>
+                        <button class="text-xs font-bold text-[#03A9F4] hover:underline">Export</button>
+                    </div>
+                    <div class="flex items-end gap-3 h-36">
+                        <template x-for="(m, i) in revenueChart" :key="i">
+                            <div class="flex-1 flex flex-col items-center gap-2">
+                                <p class="text-[9px] font-bold text-slate-400" x-text="'₹'+Math.floor(m.value/1000)+'k'"></p>
+                                <div class="w-full mini-chart-bar rounded-t-lg" :style="'height:' + ((m.value/12000)*100) + '%'"></div>
+                                <p class="text-[9px] font-bold text-slate-400" x-text="m.month"></p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Payout table -->
+                <div class="bento-card overflow-hidden">
+                    <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                        <p class="font-black text-slate-900 text-sm uppercase tracking-widest">Pending Mentor Payouts</p>
+                        <button class="px-4 py-2 bg-[#8BC34A] text-white rounded-xl font-bold text-xs hover:opacity-90 transition">Pay All</button>
+                    </div>
+                    <table class="w-full text-sm">
+                        <thead><tr class="border-b border-slate-100 bg-slate-50">
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Mentor</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Sessions Done</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount Due</th>
+                            <th class="text-left p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">UPI / Bank</th>
+                            <th class="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</th>
+                        </tr></thead>
+                        <tbody>
+                            <template x-for="m in allMentors.filter(m => m.pendingPayout > 0)" :key="m.id">
+                                <tr class="border-b border-slate-50 hover:bg-slate-50 transition">
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 brand-gradient rounded-xl flex items-center justify-center text-white font-black text-xs" x-text="m.name.charAt(0)"></div>
+                                            <span class="font-bold text-slate-900 text-sm" x-text="m.name"></span>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 font-black text-slate-900 hidden md:table-cell" x-text="m.sessions"></td>
+                                    <td class="p-4 font-black text-amber-600" x-text="'₹' + m.pendingPayout"></td>
+                                    <td class="p-4 text-xs text-slate-500 hidden md:table-cell" x-text="m.upi"></td>
+                                    <td class="p-4">
+                                        <button @click="markPaid(m)" class="text-[9px] font-black text-green-600 bg-green-50 px-3 py-1.5 rounded-lg hover:bg-green-100 uppercase tracking-widest transition">Mark Paid</button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== TAB: ADMIN PROFILE ===== -->
+            <div x-show="tab==='profile'" style="display:none" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-black tracking-tight"><i class="fas fa-user-shield text-yellow-500 mr-2"></i>Admin Profile</h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="space-y-4">
+                        <div class="bento-card p-6 text-center">
+                            <div class="w-20 h-20 bg-[#0F172A] rounded-[1.5rem] flex items-center justify-center text-white font-black text-3xl mx-auto mb-4 shadow-xl" x-text="admin.name.charAt(0)"></div>
+                            <h3 class="font-black text-slate-900 text-lg" x-text="admin.name"></h3>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Super Admin</p>
+                            <div class="mt-3 inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-black">
+                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full pulse-dot"></span> Active
+                            </div>
+                        </div>
+                        <div class="bento-card p-5 space-y-3">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quick Stats</p>
+                            <div class="flex justify-between text-sm"><span class="text-slate-500">Total Actions</span><span class="font-black text-slate-900">247</span></div>
+                            <div class="flex justify-between text-sm"><span class="text-slate-500">Sessions Assigned</span><span class="font-black text-slate-900" x-text="assignedSessions.length"></span></div>
+                            <div class="flex justify-between text-sm"><span class="text-slate-500">Mentors Managed</span><span class="font-black text-slate-900" x-text="allMentors.length"></span></div>
+                            <div class="flex justify-between text-sm"><span class="text-slate-500">Last Login</span><span class="font-black text-slate-900">Today</span></div>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2 space-y-4">
+                        <div class="bento-card p-6">
+                            <h4 class="font-black text-slate-900 mb-4 text-sm uppercase tracking-widest">Admin Information</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Full Name</label>
+                                    <input type="text" x-model="admin.name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium"></div>
+                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Email</label>
+                                    <input type="email" x-model="admin.email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium"></div>
+                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Phone</label>
+                                    <input type="tel" x-model="admin.phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium"></div>
+                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Role</label>
+                                    <input type="text" value="Super Admin" disabled class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-sm font-medium text-slate-400"></div>
+                            </div>
+                        </div>
+                        <div class="bento-card p-6">
+                            <h4 class="font-black text-slate-900 mb-4 text-sm uppercase tracking-widest">Change Password</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Current Password</label>
+                                    <input type="password" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium"></div>
+                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">New Password</label>
+                                    <input type="password" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium"></div>
+                            </div>
+                        </div>
+                        <button @click="showToast('Admin profile saved!', 'success')" class="w-full py-4 bg-[#0F172A] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-[#1e293b] transition-all">
+                            <i class="fas fa-save mr-2"></i>Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== TAB: SETTINGS ===== -->
+            <div x-show="tab==='settings'" style="display:none" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <h2 class="text-2xl font-black tracking-tight mb-6"><i class="fas fa-cog text-slate-600 mr-2"></i>Platform Settings</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bento-card p-6 space-y-5">
+                        <h4 class="font-black text-slate-900 text-sm uppercase tracking-widest">Booking Controls</h4>
+                        <div class="flex items-center justify-between">
+                            <div><p class="font-bold text-slate-800 text-sm">Accept New Bookings</p><p class="text-xs text-slate-400">Pause entire platform</p></div>
+                            <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-slate-100 pt-4">
+                            <div><p class="font-bold text-slate-800 text-sm">Auto-assign Mentors</p><p class="text-xs text-slate-400">Match by college automatically</p></div>
+                            <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-slate-100 pt-4">
+                            <div><p class="font-bold text-slate-800 text-sm">Student Notifications</p><p class="text-xs text-slate-400">Email + WhatsApp</p></div>
+                            <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-slate-100 pt-4">
+                            <div><p class="font-bold text-slate-800 text-sm">Mentor Notifications</p><p class="text-xs text-slate-400">Email on new assignment</p></div>
+                            <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
+                        </div>
+                    </div>
+                    <div class="bento-card p-6 space-y-5">
+                        <h4 class="font-black text-slate-900 text-sm uppercase tracking-widest">Pricing & Payout</h4>
+                        <div>
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Session Price (₹)</label>
+                            <input type="number" value="299" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Mentor Cut (%)</label>
+                            <input type="number" value="80" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <p class="text-[10px] text-slate-400 mt-1">Mentor gets 80% = ₹239 per session. Platform keeps ₹60.</p>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5">Payout Cycle</label>
+                            <select class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                                <option>Weekly</option>
+                                <option>Bi-Weekly</option>
+                                <option>Monthly</option>
+                            </select>
+                        </div>
+                        <button @click="showToast('Settings saved!', 'success')" class="w-full py-3 brand-gradient text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg hover:opacity-90 transition">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ASSIGN MENTOR MODAL (Browse All) -->
+<div x-show="showAssignModal" class="fixed inset-0 z-50 flex items-center justify-center modal-bg p-4" style="display:none">
+    <div @click.outside="showAssignModal = false" class="bg-white rounded-[2rem] p-6 max-w-lg w-full shadow-2xl max-h-[80vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-5">
+            <h3 class="font-black text-slate-900 text-lg">Assign Mentor</h3>
+            <button @click="showAssignModal = false" class="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-200"><i class="fas fa-times text-xs"></i></button>
+        </div>
+        <div x-show="assignTarget" class="mb-5 p-4 bg-slate-50 rounded-xl">
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">For Student</p>
+            <p class="font-black text-slate-900" x-text="assignTarget?.student"></p>
+            <p class="text-xs text-slate-500" x-text="'Interested in: ' + assignTarget?.targetCollege"></p>
+        </div>
+        <div class="space-y-3">
+            <template x-for="m in allMentors" :key="m.id">
+                <div @click="confirmAssign(m)" class="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-[#8BC34A] hover:bg-green-50 cursor-pointer transition">
+                    <div class="w-10 h-10 brand-gradient rounded-xl flex items-center justify-center text-white font-black" x-text="m.name.charAt(0)"></div>
+                    <div class="flex-1">
+                        <p class="font-bold text-slate-900 text-sm" x-text="m.name"></p>
+                        <p class="text-xs text-slate-400" x-text="m.college + ' · ' + m.branch"></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-yellow-500 text-xs font-bold" x-text="'★ ' + m.rating"></p>
+                        <span class="badge" :class="m.available ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'" x-text="m.available ? 'Active' : 'Offline'"></span>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div x-show="toast.show" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-end="opacity-0"
+    class="fixed bottom-6 right-6 z-50 px-6 py-4 rounded-2xl text-white font-bold text-sm shadow-2xl flex items-center gap-3"
+    :class="toast.type === 'success' ? 'bg-[#8BC34A]' : toast.type === 'error' ? 'bg-red-500' : 'bg-slate-900'"
+    style="display:none">
+    <i :class="toast.type === 'success' ? 'fas fa-check-circle' : 'fas fa-info-circle'"></i>
+    <span x-text="toast.message"></span>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('adminDash', () => ({
+        tab: 'overview',
+        sessionFilter: 'all',
+        mentorSearch: '',
+        mentorFilter: '',
+        showAssignModal: false,
+        showAddMentorModal: false,
+        assignTarget: null,
+        toast: { show: false, message: '', type: 'success' },
+
+        admin: { name: 'Shreyas Admin', email: 'admin@eduronix.com', phone: '+91 98765 00001' },
+
+        analytics: {
+            totalSessions: 148, totalRevenue: 44252, totalMentors: 18,
+            pendingPayouts: 8960, todayCompleted: 7, todayUpcoming: 4, todayCancelled: 1
+        },
+
+        unassignedRequests: [
+            { id: 'uq1', student: 'Rahul Desai', targetCollege: 'SIT Pune', topic: 'Placements Reality', preferredDate: 'Jun 14', preferredTime: '5:00 PM', amount: 299, priority: 'high', note: 'I have to decide by this weekend. Please assign someone ASAP.', selectedMentor: '' },
+            { id: 'uq2', student: 'Pooja Sharma', targetCollege: 'VIT Pune', topic: 'Campus Life & Hostel', preferredDate: 'Jun 15', preferredTime: '4:00 PM', amount: 299, priority: 'medium', note: 'Want to know about the girls hostel safety.', selectedMentor: '' },
+            { id: 'uq3', student: 'Aryan Kale', targetCollege: 'DY Patil Pune', topic: 'CSE Branch Reality', preferredDate: 'Jun 16', preferredTime: '7:00 PM', amount: 299, priority: 'medium', note: '', selectedMentor: '' },
+        ],
+
+        assignedSessions: [
+            { id: 'as1', student: 'Priya Nair', targetCollege: 'SIT Pune', mentor: 'Shreyash Honwadajkar', date: 'Jun 12', time: '5:00 PM', status: 'Upcoming' },
+            { id: 'as2', student: 'Dev Malhotra', targetCollege: 'VIT Pune', mentor: 'Ranya Lal', date: 'Jun 8', time: '4:00 PM', status: 'Completed' },
+            { id: 'as3', student: 'Sneha Rao', targetCollege: 'SIT Pune', mentor: 'Shravan Kondekar', date: 'Jun 10', time: '6:00 PM', status: 'Completed' },
+            { id: 'as4', student: 'Karan Shah', targetCollege: 'DY Patil', mentor: 'Ranya Lal', date: 'Jun 18', time: '3:00 PM', status: 'Upcoming' },
+        ],
+
+        allMentors: [
+            { id: 'm1', name: 'Shreyash Honwadajkar', college: 'SIT Pune', branch: 'CS Engineering', year: 'Final Year', sessions: 24, rating: 5.0, earned: 5736, pendingPayout: 1434, status: 'Active', available: true, upi: 'shreyash@upi' },
+            { id: 'm2', name: 'Ranya Lal', college: 'DY Patil Pune', branch: 'CS Engineering', year: '3rd Year', sessions: 18, rating: 4.9, earned: 4302, pendingPayout: 717, status: 'Active', available: true, upi: 'ranya@upi' },
+            { id: 'm3', name: 'Shravan Kondekar', college: 'DYPSOE Pune', branch: 'AIDS', year: '2nd Year', sessions: 12, rating: 4.6, earned: 2868, pendingPayout: 478, status: 'Active', available: true, upi: 'shravan@upi' },
+            { id: 'm4', name: 'Aditi Verma', college: 'MIT Pune', branch: 'Mechanical', year: 'Final Year', sessions: 9, rating: 4.7, earned: 2151, pendingPayout: 239, status: 'Active', available: false, upi: 'aditi@upi' },
+            { id: 'm5', name: 'Kabir Sharma', college: 'VIT Pune', branch: 'IT', year: '3rd Year', sessions: 6, rating: 4.5, earned: 1434, pendingPayout: 0, status: 'Pending', available: false, upi: 'kabir@upi' },
+        ],
+
+        allStudents: [
+            { id: 's1', name: 'Rahul Desai', city: 'Mumbai', phone: '+91 98765 11111', sessions: 2, spent: 598, joined: 'Jun 2025' },
+            { id: 's2', name: 'Priya Nair', city: 'Pune', phone: '+91 98765 22222', sessions: 1, spent: 299, joined: 'Jun 2025' },
+            { id: 's3', name: 'Dev Malhotra', city: 'Delhi', phone: '+91 98765 33333', sessions: 3, spent: 897, joined: 'May 2025' },
+            { id: 's4', name: 'Sneha Rao', city: 'Bangalore', phone: '+91 98765 44444', sessions: 1, spent: 299, joined: 'May 2025' },
+            { id: 's5', name: 'Karan Shah', city: 'Surat', phone: '+91 98765 55555', sessions: 2, spent: 598, joined: 'Apr 2025' },
+        ],
+
+        recentActivity: [
+            { id: 'a1', description: 'Priya Nair booked a session with Shreyash Honwadajkar', time: '2 minutes ago', type: 'booked' },
+            { id: 'a2', description: 'Session completed: Dev Malhotra × Ranya Lal', time: '1 hour ago', type: 'completed' },
+            { id: 'a3', description: 'New mentor application: Kabir Sharma (VIT Pune)', time: '3 hours ago', type: 'pending' },
+            { id: 'a4', description: 'Payout processed for Shravan Kondekar: ₹239', time: '5 hours ago', type: 'completed' },
+            { id: 'a5', description: 'Sneha Rao submitted a 5★ review for Shreyash', time: 'Yesterday', type: 'completed' },
+        ],
+
+        revenueChart: [
+            { month: 'Jan', value: 3588 }, { month: 'Feb', value: 5976 }, { month: 'Mar', value: 7165 },
+            { month: 'Apr', value: 8952 }, { month: 'May', value: 9549 }, { month: 'Jun', value: 11022 },
+        ],
+
+        get filteredMentors() {
+            return this.allMentors.filter(m => {
+                const s = this.mentorSearch.toLowerCase();
+                const matchSearch = !s || m.name.toLowerCase().includes(s) || m.college.toLowerCase().includes(s);
+                return matchSearch;
+            });
+        },
+
+        availableMentorsFor(college) {
+            const available = this.allMentors.filter(m => m.available && m.status === 'Active');
+            const matched = available.filter(m => m.college.toLowerCase().includes(college?.split(' ')[0]?.toLowerCase() || ''));
+            return matched.length > 0 ? matched : available;
+        },
+
+        assignMentor(req) {
+            if (!req.selectedMentor) return;
+            const mentor = this.allMentors.find(m => m.id === req.selectedMentor);
+            if (!mentor) return;
+            this.assignedSessions.unshift({
+                id: 'as_' + Date.now(),
+                student: req.student,
+                targetCollege: req.targetCollege,
+                mentor: mentor.name,
+                date: req.preferredDate,
+                time: req.preferredTime,
+                status: 'Upcoming'
+            });
+            this.unassignedRequests = this.unassignedRequests.filter(r => r.id !== req.id);
+            this.showToast(`Assigned ${mentor.name} to ${req.student}! Mentor dashboard updated.`, 'success');
+        },
+
+        openCustomAssign(req) {
+            this.assignTarget = req;
+            this.showAssignModal = true;
+        },
+
+        confirmAssign(mentor) {
+            if (!this.assignTarget) return;
+            const req = this.assignTarget;
+            this.assignedSessions.unshift({
+                id: 'as_' + Date.now(),
+                student: req.student,
+                targetCollege: req.targetCollege,
+                mentor: mentor.name,
+                date: req.preferredDate,
+                time: req.preferredTime,
+                status: 'Upcoming'
+            });
+            this.unassignedRequests = this.unassignedRequests.filter(r => r.id !== req.id);
+            this.showAssignModal = false;
+            this.assignTarget = null;
+            this.showToast(`Assigned ${mentor.name}! Session confirmed and mentor notified.`, 'success');
+        },
+
+        cancelSession(id) {
+            this.assignedSessions = this.assignedSessions.filter(s => s.id !== id);
+            this.showToast('Session cancelled.', 'error');
+        },
+
+        editMentor(m) { this.showToast('Opening mentor edit... (connect to backend)', 'info'); },
+        toggleMentorStatus(m) {
+            m.available = !m.available;
+            m.status = m.available ? 'Active' : 'Offline';
+            this.showToast(`${m.name} is now ${m.status.toLowerCase()}.`, 'success');
+        },
+
+        markPaid(m) {
+            m.pendingPayout = 0;
+            this.showToast(`Payout marked as paid for ${m.name}.`, 'success');
+        },
+
+        init() {},
+
+        showToast(message, type = 'success') {
+            this.toast = { show: true, message, type };
+            setTimeout(() => { this.toast.show = false; }, 3500);
+        },
+    }));
+});
+</script>
+</body>
+</html>
