@@ -11,11 +11,19 @@ try:
 except ImportError:
     import typing
     import typing_extensions
-    # Copy all missing backward-compatible attributes into standard typing
     for attr in dir(typing_extensions):
         if not hasattr(typing, attr):
             setattr(typing, attr, getattr(typing_extensions, attr))
-    sys.modules['typing'] = typing 
+    sys.modules['typing'] = typing
+
+# 3. CRITICAL PIP OPERATOR HOTFIX FOR PYTHON 3.9
+if sys.version_info < (3, 10):
+    from typing import Union
+    # Metaprogramming hack to make `type | type` work like Union[type, type]
+    def union_operator(self, other):
+        return Union[self, other]
+    setattr(type, '__or__', union_operator)
+    setattr(type, '__ror__', union_operator)  
 from fastapi import FastAPI
 from mentor_api import router as mentor_router # This imports your work
 from student_api import router as student_router
