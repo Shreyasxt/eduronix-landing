@@ -1,3 +1,6 @@
+import sys
+import os 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'local_packages'))
 from fastapi import FastAPI
 from mentor_api import router as mentor_router # This imports your work
 from student_api import router as student_router
