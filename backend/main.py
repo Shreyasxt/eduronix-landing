@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from mentor_api import router as mentor_router # This imports your work
 from student_api import router as student_router
 from booking_api import router as booking_router 
+from collegematch_api import router as collegematch_router 
 
 app = FastAPI(title="Eduronix Backend")
 
@@ -9,6 +10,7 @@ app = FastAPI(title="Eduronix Backend")
 app.include_router(mentor_router)
 app.include_router(student_router)
 app.include_router(booking_router)
+app.include_router(collegematch_router) 
 
 @app.get("/")
 async def root():

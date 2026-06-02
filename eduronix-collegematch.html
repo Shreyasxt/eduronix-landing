@@ -1292,8 +1292,9 @@
 
     <div class="q-nav">
       <button class="btn-back" onclick="goTo(5)">← Back</button>
-      <button class="btn-next" style="background:var(--green);font-size:1rem;padding:0.85rem 2.2rem;" onclick="goTo('loading')">
-        🔍 Find My Colleges
+      <button class="btn-next" onclick="submitCollegeMatchForm()" style="background:var(--green);font-size:1.1rem;font-weight:600;">
+    🔍 Find My Colleges
+</button> 
       </button>
     </div>
   </div>
@@ -1617,6 +1618,54 @@
 </div>
 
 <script>
+        async function submitCollegeMatchForm() {
+            // 1. Gather values from the multi-step questionnaire form
+            const formData = {
+                full_name: document.querySelector('input[placeholder*="full name"]')?.value || "Test Student",
+                whatsapp_number: document.querySelector('input[placeholder*="WhatsApp"]')?.value || "9876543210",
+                email: document.querySelector('input[placeholder*="Email"]')?.value || "test@eduronix.com",
+                stream: "Science", 
+                exams: ["JEE Main"], 
+                board_percentage: 78,
+                budget_per_year: 300000,
+                scholarship_reservation: "No special category",
+                career_goal: "Engineer",
+                preferred_locations: ["Maharashtra"],
+                college_priority: ["Best placements"],
+                living_preference: "Hostel",
+                pressure_handling: "I prefer balanced pace",
+                biggest_fear: "Choosing wrong college",
+                target_colleges: document.querySelector('input[placeholder*="e.g. COEP"]')?.value || "",
+                decision_maker: "Parents are involved"
+            };
+
+            try {
+                // 2. Dispatch payload data array to your FastAPI Python server
+                const response = await fetch('http://127.0.0.1:8000/api/college-match', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server API returned error status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log("Successfully retrieved college matches from Python backend:", result);
+                
+                if (result.status === "success") {
+                    alert("Backend Pipeline Success! Check your browser console to view the returned array mapping.");
+                    // The frontend can now loop through result.data to print cards
+                }
+
+            } catch (error) {
+                console.error("Failed to connect with Eduronix API backend:", error);
+            }
+        }
+    
   function goTo(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = typeof id === 'number' ? document.getElementById('page-'+id) : document.getElementById('page-'+id);
@@ -1675,4 +1724,6 @@
   });
 </script>
 </body>
-</html>
+</html> 
+
+
