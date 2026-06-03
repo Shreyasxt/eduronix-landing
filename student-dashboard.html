@@ -5,6 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Eduronix</title>
 
+    <!-- Supabase SDK & Route Guard -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style id="eduGuardStyle">body { display: none !important; }</style>
+    <script>
+        (async function() {
+            const supabaseUrl = "https://mnbyvbhfkrkkmmgkedch.supabase.co";
+            const supabaseKey = "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB";
+            const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+            
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (!session || !session.user) {
+                    window.location.href = 'index.html?login=true';
+                    return;
+                }
+                
+                const { data: profiles, error: profileErr } = await supabaseClient
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', session.user.id);
+                    
+                if (profileErr || !profiles || profiles.length === 0) {
+                    await supabaseClient.auth.signOut();
+                    window.location.href = 'index.html?login=true';
+                    return;
+                }
+                
+                const role = profiles[0].role;
+                const currentPath = window.location.pathname.toLowerCase();
+                
+                let allowed = false;
+                if (currentPath.includes('student-dashboard') && role === 'student') {
+                    allowed = true;
+                } else if (currentPath.includes('mentor-dashboard') && role === 'mentor') {
+                    allowed = true;
+                } else if (currentPath.includes('admin-dashboard') && role === 'admin') {
+                    allowed = true;
+                }
+                
+                if (!allowed) {
+                    let targetDashboard = 'index.html?login=true';
+                    if (role === 'student') targetDashboard = 'student-dashboard.html';
+                    else if (role === 'mentor') targetDashboard = 'mentor-dashboard.html';
+                    else if (role === 'admin') targetDashboard = 'admin-dashboard.html';
+                    
+                    window.location.href = targetDashboard;
+                    return;
+                }
+                
+                const exposeBody = () => {
+                    const guardStyle = document.getElementById('eduGuardStyle');
+                    if (guardStyle) guardStyle.remove();
+                };
+                if (document.readyState === 'loading') {
+                    window.addEventListener('DOMContentLoaded', exposeBody);
+                } else {
+                    exposeBody();
+                }
+                
+                window.supabaseClient = supabaseClient;
+            } catch (err) {
+                console.error("Route guard error:", err);
+                window.location.href = 'index.html?login=true';
+            }
+        })();
+    </script>
+
     <link rel="icon" type="image/png" href="assets/glogo.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,7 +117,7 @@
             </div>
             
             <div class="p-4 border-t border-slate-100">
-                <a href="index.html" class="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors font-bold text-sm">
+                <a href="#" onclick="event.preventDefault(); supabaseClient.auth.signOut().then(() => { window.location.href = 'index.html'; })" class="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors font-bold text-sm">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </div>
