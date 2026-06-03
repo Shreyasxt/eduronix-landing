@@ -7,6 +7,7 @@
 <link rel="icon" type="image/png" href="glogo.png">
 <link rel="apple-touch-icon" href="glogo.png">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -92,6 +93,31 @@ animation: shake 0.4s ease-in-out;
 }
 .edu-go-btn:hover { background:#7aad3a; box-shadow:0 4px 18px rgba(139,195,74,0.4); }
 .edu-go-btn:disabled { background:#333; color:#666; cursor:not-allowed; box-shadow:none; }
+.edu-google-btn {
+  width: 100%;
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #2a2a2a;
+  padding: 12px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  transition: 0.2s;
+  font-family: inherit;
+}
+.edu-google-btn:hover:not(:disabled) {
+  background: #242424;
+  border-color: #444;
+}
+.edu-google-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .edu-hint { text-align:center; color:#555; font-size:12px; margin-top:13px; }
 .edu-hint a { color:#8BC34A; text-decoration:none; }
 /* ===== END LOGIN MODAL STYLES ===== */
@@ -222,30 +248,23 @@ letter-spacing: 0.5px;
     <button class="edu-modal-close" onclick="document.getElementById('eduLoginModal').classList.remove('active')">✕</button>
     <div class="edu-logo">Edu<span>ronix</span></div>
     <p class="edu-sub">Sign in to your dashboard</p>
-    <p class="edu-role-lbl">Select your role</p>
-    <div class="edu-role-grid">
-      <div class="edu-role-card" data-url="admin/dashboard.html" onclick="eduSelectRole(this)">
-        <div class="edu-role-icon">🛡️</div>
-        <div class="edu-role-name">Admin</div>
-        <div class="edu-role-desc">Manage platform</div>
-      </div>
-      <div class="edu-role-card" data-url="mentor/dashboard.html" onclick="eduSelectRole(this)">
-        <div class="edu-role-icon">🎓</div>
-        <div class="edu-role-name">Mentor</div>
-        <div class="edu-role-desc">Conduct sessions</div>
-      </div>
-      <div class="edu-role-card" data-url="student-dashboard.html" onclick="eduSelectRole(this)">
-        <div class="edu-role-icon">📚</div>
-        <div class="edu-role-name">Student</div>
-        <div class="edu-role-desc">Book & explore</div>
-      </div>
-    </div>
-    <hr class="edu-divider">
+    <div id="eduErrorMsg" class="hidden text-red-500 text-xs font-semibold bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-4 text-center"></div>
     <label class="edu-lbl">Email</label>
-    <input class="edu-input" type="email" id="eduEmail" placeholder="you@example.com">
+    <input class="edu-input" type="email" id="eduEmail" placeholder="you@example.com" onkeyup="if(event.key==='Enter')eduHandleLogin()">
     <label class="edu-lbl">Password</label>
-    <input class="edu-input" type="password" id="eduPass" placeholder="••••••••">
+    <input class="edu-input" type="password" id="eduPass" placeholder="••••••••" onkeyup="if(event.key==='Enter')eduHandleLogin()">
     <button class="edu-go-btn" id="eduGoBtn" onclick="eduHandleLogin()">Login</button>
+    
+    <div class="flex items-center my-3">
+      <div class="flex-grow border-t border-zinc-800"></div>
+      <span class="mx-3 text-[10px] text-zinc-500 font-bold uppercase tracking-wider">or</span>
+      <div class="flex-grow border-t border-zinc-800"></div>
+    </div>
+    
+    <button class="edu-google-btn" id="eduGoogleBtn" disabled>
+      <i class="fab fa-google mr-2 text-red-500"></i> Continue with Google
+    </button>
+    
     <p class="edu-hint">New here? <a href="mentorform.html">Become a Mentor</a></p>
   </div>
 </div>
@@ -670,22 +689,135 @@ Systems Operational
 
 <!-- ===== LOGIN MODAL JS ===== -->
 <script>
-var _eduUrl = null;
-function eduSelectRole(card) {
-  document.querySelectorAll('.edu-role-card').forEach(function(c){ c.classList.remove('sel'); });
-  card.classList.add('sel');
-  _eduUrl = card.dataset.url;
+const supabaseUrl = "https://mnbyvbhfkrkkmmgkedch.supabase.co";
+const supabaseKey = "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function eduHandleLogin() {
+  const email = document.getElementById('eduEmail').value.trim();
+  const pass  = document.getElementById('eduPass').value.trim();
+  const btn   = document.getElementById('eduGoBtn');
+  const errorDiv = document.getElementById('eduErrorMsg');
+  
+  errorDiv.classList.add('hidden');
+  errorDiv.textContent = '';
+  
+  if (!email || !pass) {
+    errorDiv.textContent = 'Please enter your email and password.';
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+  
+  btn.textContent = 'Signing in...';
+  btn.disabled = true;
+  
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+      errorDiv.textContent = error.message;
+      errorDiv.classList.remove('hidden');
+      btn.textContent = 'Login';
+      btn.disabled = false;
+      return;
+    }
+    
+    // Fetch profile role from database
+    const { data: profiles, error: profileErr } = await supabaseClient
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id);
+      
+    if (profileErr || !profiles || profiles.length === 0) {
+      errorDiv.textContent = 'Profile role not found. Please contact support.';
+      errorDiv.classList.remove('hidden');
+      btn.textContent = 'Login';
+      btn.disabled = false;
+      return;
+    }
+    
+    const role = profiles[0].role;
+    let redirectUrl = '';
+    if (role === 'admin') redirectUrl = 'admin-dashboard.html';
+    else if (role === 'mentor') redirectUrl = 'mentor-dashboard.html';
+    else if (role === 'student') redirectUrl = 'student-dashboard.html';
+    
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      errorDiv.textContent = 'Unknown user role: ' + role;
+      errorDiv.classList.remove('hidden');
+      btn.textContent = 'Login';
+      btn.disabled = false;
+    }
+  } catch (err) {
+    errorDiv.textContent = 'An unexpected error occurred. Please try again.';
+    errorDiv.classList.remove('hidden');
+    btn.textContent = 'Login';
+    btn.disabled = false;
+  }
 }
-function eduHandleLogin() {
-  var email = document.getElementById('eduEmail').value.trim();
-  var pass  = document.getElementById('eduPass').value.trim();
-  var btn   = document.getElementById('eduGoBtn');
-  if (!_eduUrl)        { alert('Please select your role first.'); return; }
-  if (!email || !pass) { alert('Please enter your email and password.'); return; }
-  btn.textContent = 'Signing in…'; btn.disabled = true;
-  // Replace this with your actual auth logic (Firebase, JWT, etc.)
-  setTimeout(function(){ window.location.href = _eduUrl; }, 900);
+
+function eduHandleGoogleLogin() {
+  window.location.href = 'comingsoon.html';
 }
+
+// On page load, check if URL has ?login=true or if user is already logged in
+window.addEventListener('DOMContentLoaded', async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('login') === 'true') {
+    document.getElementById('eduLoginModal').classList.add('active');
+  }
+  
+  try {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (session && session.user) {
+      const user = session.user;
+      
+      // Fetch user profile
+      const { data: profiles, error: profileErr } = await supabaseClient
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id);
+        
+      let role = null;
+      if (profileErr) {
+        console.error("Error fetching profile:", profileErr);
+      } else if (profiles && profiles.length > 0) {
+        role = profiles[0].role;
+      } else {
+        // Create default profile for Google OAuth / newly registered users
+        const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
+        const { data: insertData, error: insertErr } = await supabaseClient
+          .from('profiles')
+          .insert({
+            id: user.id,
+            full_name: fullName,
+            role: 'student'
+          })
+          .select();
+          
+        if (!insertErr && insertData && insertData.length > 0) {
+          role = 'student';
+        } else {
+          console.error("Error creating default profile:", insertErr);
+        }
+      }
+      
+      if (role) {
+        let redirectUrl = '';
+        if (role === 'admin') redirectUrl = 'admin-dashboard.html';
+        else if (role === 'mentor') redirectUrl = 'mentor-dashboard.html';
+        else if (role === 'student') redirectUrl = 'student-dashboard.html';
+        
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Session check error:", err);
+  }
+});
 </script>
 <!-- ===== END LOGIN MODAL JS ===== -->
 
