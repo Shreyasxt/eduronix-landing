@@ -110,9 +110,13 @@ animation: shake 0.4s ease-in-out;
   transition: 0.2s;
   font-family: inherit;
 }
-.edu-google-btn:hover {
+.edu-google-btn:hover:not(:disabled) {
   background: #242424;
   border-color: #444;
+}
+.edu-google-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .edu-hint { text-align:center; color:#555; font-size:12px; margin-top:13px; }
 .edu-hint a { color:#8BC34A; text-decoration:none; }
@@ -257,7 +261,7 @@ letter-spacing: 0.5px;
       <div class="flex-grow border-t border-zinc-800"></div>
     </div>
     
-    <button class="edu-google-btn" id="eduGoogleBtn" onclick="eduHandleGoogleLogin()">
+    <button class="edu-google-btn" id="eduGoogleBtn" disabled>
       <i class="fab fa-google mr-2 text-red-500"></i> Continue with Google
     </button>
     
