@@ -244,25 +244,6 @@ letter-spacing: 0.5px;
     <button class="edu-modal-close" onclick="document.getElementById('eduLoginModal').classList.remove('active')">✕</button>
     <div class="edu-logo">Edu<span>ronix</span></div>
     <p class="edu-sub">Sign in to your dashboard</p>
-    <p class="edu-role-lbl">Select your role</p>
-    <div class="edu-role-grid">
-      <div class="edu-role-card" data-url="admin/dashboard.html" onclick="eduSelectRole(this)">
-        <div class="edu-role-icon">🛡️</div>
-        <div class="edu-role-name">Admin</div>
-        <div class="edu-role-desc">Manage platform</div>
-      </div>
-      <div class="edu-role-card" data-url="mentor/dashboard.html" onclick="eduSelectRole(this)">
-        <div class="edu-role-icon">🎓</div>
-        <div class="edu-role-name">Mentor</div>
-        <div class="edu-role-desc">Conduct sessions</div>
-      </div>
-      <div class="edu-role-card" data-url="student-dashboard.html" onclick="eduSelectRole(this)">
-        <div class="edu-role-icon">📚</div>
-        <div class="edu-role-name">Student</div>
-        <div class="edu-role-desc">Book & explore</div>
-      </div>
-    </div>
-    <hr class="edu-divider">
     <div id="eduErrorMsg" class="hidden text-red-500 text-xs font-semibold bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-4 text-center"></div>
     <label class="edu-lbl">Email</label>
     <input class="edu-input" type="email" id="eduEmail" placeholder="you@example.com" onkeyup="if(event.key==='Enter')eduHandleLogin()">
@@ -707,12 +688,6 @@ Systems Operational
 const supabaseUrl = "https://mnbyvbhfkrkkmmgkedch.supabase.co";
 const supabaseKey = "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
-// Visual role card selection is preserved for aesthetics
-function eduSelectRole(card) {
-  document.querySelectorAll('.edu-role-card').forEach(function(c){ c.classList.remove('sel'); });
-  card.classList.add('sel');
-}
 
 async function eduHandleLogin() {
   const email = document.getElementById('eduEmail').value.trim();
