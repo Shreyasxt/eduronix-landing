@@ -753,26 +753,8 @@ async function eduHandleLogin() {
   }
 }
 
-async function eduHandleGoogleLogin() {
-  const errorDiv = document.getElementById('eduErrorMsg');
-  errorDiv.classList.add('hidden');
-  errorDiv.textContent = '';
-  
-  try {
-    const { data, error } = await supabaseClient.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin + window.location.pathname
-      }
-    });
-    if (error) {
-      errorDiv.textContent = error.message;
-      errorDiv.classList.remove('hidden');
-    }
-  } catch (err) {
-    errorDiv.textContent = 'Google login failed. Please try again.';
-    errorDiv.classList.remove('hidden');
-  }
+function eduHandleGoogleLogin() {
+  window.location.href = 'comingsoon.html';
 }
 
 // On page load, check if URL has ?login=true or if user is already logged in
