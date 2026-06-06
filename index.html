@@ -308,10 +308,10 @@ class="px-5 py-3 bg-slate-900 text-white rounded-[2rem] font-black text-lg hover
 Get Started
 </a>
 <!-- ===== LOGIN BUTTON ===== -->
-<button onclick="document.getElementById('eduLoginModal').classList.add('active')"
+<a href="auth.html"
   class="px-5 py-3 border-2 border-[#8BC34A] text-[#8BC34A] rounded-[2rem] font-black text-sm hover:bg-[#8BC34A] hover:text-white transition-all flex items-center gap-2">
   <i class="fas fa-lock text-xs"></i> Login
-</button>
+</a>
 <!-- ===== END LOGIN BUTTON ===== -->
 </div>
 <button @click="navOpen = !navOpen" class="md:hidden text-slate-900 text-xl"><i class="fas fa-bars"></i></button>
@@ -322,10 +322,10 @@ Get Started
 Get Started
 </a>
 <!-- Mobile Login Button -->
-<button onclick="navOpen=false; document.getElementById('eduLoginModal').classList.add('active')"
-  class="w-full py-3 border-2 border-[#8BC34A] text-[#8BC34A] rounded-full font-bold text-xs uppercase">
+<a href="auth.html"
+  class="w-full py-3 border-2 border-[#8BC34A] text-[#8BC34A] rounded-full font-bold text-xs uppercase text-center flex items-center justify-center gap-2">
   <i class="fas fa-lock mr-1"></i> Login
-</button>
+</a>
 </div>
 </nav>
 
@@ -957,7 +957,7 @@ async function eduHandleGoogleLogin() {
 window.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('login') === 'true') {
-    document.getElementById('eduLoginModal').classList.add('active');
+    window.location.href = 'auth.html';
   }
   
   try {
