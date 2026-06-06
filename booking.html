@@ -13,7 +13,8 @@
 
 </head>
 
-<body class="flex flex-col items-center min-h-screen bg-slate-50 text-slate-900"><!-- Header -->
+<body class="flex flex-col items-center min-h-screen bg-slate-50 text-slate-900">
+<div id="bookingPageContainer" class="flex flex-col items-center w-full min-h-screen"><!-- Header -->
 <header class="w-full flex items-center justify-between mb-6 px-6 py-3 backdrop-blur-md glass border-b border-white/10">
   <!-- Logo -->
   <div class="flex items-center">
@@ -308,11 +309,264 @@
   box-shadow: 0 10px 30px rgba(3,169,244,0.3);
 }
 </style>
+
+<!-- ===== AUTH OVERLAY MODAL ===== -->
+<div id="eduAuthOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-all duration-300 hidden">
+  <div class="bg-white border border-slate-200 rounded-3xl shadow-2xl p-8 max-w-md w-full relative">
+    <div class="text-3xl font-black tracking-wider text-indigo-600 mb-2 logo-text" style="font-family: 'MuseoModerno', sans-serif;">EDURONIX</div>
+    <h3 class="text-xl font-bold text-slate-900 mb-1" id="authOverlayTitle">Sign In Required</h3>
+    <p class="text-slate-500 text-xs mb-6" id="authOverlaySub">Please log in or create an account to book your session.</p>
+    
+    <div id="authOverlayError" class="hidden text-red-500 text-xs font-semibold bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-4 text-center"></div>
+    
+    <div id="authOverlayNameContainer" class="hidden mb-3">
+      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Full Name</label>
+      <input type="text" id="authOverlayName" placeholder="John Doe" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500">
+    </div>
+
+    <div class="mb-3">
+      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Email</label>
+      <input type="email" id="authOverlayEmail" placeholder="you@example.com" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500">
+    </div>
+
+    <div class="mb-3">
+      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Password</label>
+      <input type="password" id="authOverlayPass" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500">
+    </div>
+
+    <div id="authOverlayConfirmPassContainer" class="hidden mb-4">
+      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Confirm Password</label>
+      <input type="password" id="authOverlayConfirmPass" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500">
+    </div>
+
+    <div id="authOverlayRoleContainer" class="hidden mb-4">
+      <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Role</label>
+      <div class="grid grid-cols-2 gap-3">
+        <div id="roleStudentBtn" onclick="setAuthOverlayRole('student')" class="border-2 border-indigo-600 bg-indigo-50 text-indigo-700 rounded-xl p-3 text-center cursor-pointer font-bold text-xs flex flex-col items-center gap-1">
+          Student
+        </div>
+        <div id="roleMentorBtn" onclick="setAuthOverlayRole('mentor')" class="border-2 border-slate-200 bg-slate-50 text-slate-600 rounded-xl p-3 text-center cursor-pointer font-bold text-xs flex flex-col items-center gap-1">
+          Mentor
+        </div>
+      </div>
+    </div>
+
+    <button id="authOverlaySubmitBtn" onclick="handleAuthOverlaySubmit()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-150 shadow-md">
+      Sign In
+    </button>
+    
+    <div class="flex items-center my-3">
+      <div class="flex-grow border-t border-slate-200"></div>
+      <span class="mx-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">or</span>
+      <div class="flex-grow border-t border-slate-200"></div>
+    </div>
+    
+    <button onclick="handleOverlayGoogleLogin()" class="w-full border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 rounded-xl transition duration-150 flex justify-center items-center gap-2">
+      Continue with Google
+    </button>
+    
+    <p class="text-center text-xs text-slate-500 mt-4" id="toggleAuthOverlayModeText">
+      New here? <a href="#" onclick="event.preventDefault(); toggleAuthOverlayMode()" class="text-indigo-600 font-bold hover:underline">Create an Account</a>
+    </p>
+  </div>
+</div>
+
+</div> <!-- Close bookingPageContainer -->
 <script>
 const supabaseClient = supabase.createClient(
   "https://mnbyvbhfkrkkmmgkedch.supabase.co",
   "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB"
 );
+
+let overlayIsSignUp = false;
+let overlayRole = 'student';
+
+function toggleAuthOverlayMode() {
+  overlayIsSignUp = !overlayIsSignUp;
+  const nameCont = document.getElementById('authOverlayNameContainer');
+  const confirmCont = document.getElementById('authOverlayConfirmPassContainer');
+  const roleCont = document.getElementById('authOverlayRoleContainer');
+  const title = document.getElementById('authOverlayTitle');
+  const sub = document.getElementById('authOverlaySub');
+  const submitBtn = document.getElementById('authOverlaySubmitBtn');
+  const toggleText = document.getElementById('toggleAuthOverlayModeText');
+  const errorDiv = document.getElementById('authOverlayError');
+  
+  errorDiv.classList.add('hidden');
+  errorDiv.textContent = '';
+  
+  if (overlayIsSignUp) {
+    nameCont.classList.remove('hidden');
+    confirmCont.classList.remove('hidden');
+    roleCont.classList.remove('hidden');
+    title.textContent = "Create an Account";
+    sub.textContent = "Sign up to start booking your session.";
+    submitBtn.textContent = "Sign Up";
+    toggleText.innerHTML = 'Already have an account? <a href="#" onclick="event.preventDefault(); toggleAuthOverlayMode()" class="text-indigo-600 font-bold hover:underline">Log In</a>';
+  } else {
+    nameCont.classList.add('hidden');
+    confirmCont.classList.add('hidden');
+    roleCont.classList.add('hidden');
+    title.textContent = "Sign In Required";
+    sub.textContent = "Please log in or create an account to book your session.";
+    submitBtn.textContent = "Sign In";
+    toggleText.innerHTML = 'New here? <a href="#" onclick="event.preventDefault(); toggleAuthOverlayMode()" class="text-indigo-600 font-bold hover:underline">Create an Account</a>';
+  }
+}
+
+function setAuthOverlayRole(role) {
+  overlayRole = role;
+  const studentBtn = document.getElementById('roleStudentBtn');
+  const mentorBtn = document.getElementById('roleMentorBtn');
+  if (role === 'student') {
+    studentBtn.className = "border-2 border-indigo-600 bg-indigo-50 text-indigo-700 rounded-xl p-3 text-center cursor-pointer font-bold text-xs flex flex-col items-center gap-1";
+    mentorBtn.className = "border-2 border-slate-200 bg-slate-50 text-slate-600 rounded-xl p-3 text-center cursor-pointer font-bold text-xs flex flex-col items-center gap-1";
+  } else {
+    mentorBtn.className = "border-2 border-indigo-600 bg-indigo-50 text-indigo-700 rounded-xl p-3 text-center cursor-pointer font-bold text-xs flex flex-col items-center gap-1";
+    studentBtn.className = "border-2 border-slate-200 bg-slate-50 text-slate-600 rounded-xl p-3 text-center cursor-pointer font-bold text-xs flex flex-col items-center gap-1";
+  }
+}
+
+async function handleOverlayGoogleLogin() {
+  localStorage.setItem('eduronix_oauth_role', overlayIsSignUp ? overlayRole : 'student');
+  try {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + window.location.pathname
+      }
+    });
+    if (error) throw error;
+  } catch (err) {
+    console.error("Google sign in failed:", err);
+    alert("Google sign in failed: " + err.message);
+  }
+}
+
+async function handleAuthOverlaySubmit() {
+  if (overlayIsSignUp) {
+    await authOverlaySignUp();
+  } else {
+    await authOverlayLogin();
+  }
+}
+
+async function authOverlayLogin() {
+  const email = document.getElementById('authOverlayEmail').value.trim();
+  const pass = document.getElementById('authOverlayPass').value.trim();
+  const submitBtn = document.getElementById('authOverlaySubmitBtn');
+  const errorDiv = document.getElementById('authOverlayError');
+  
+  errorDiv.classList.add('hidden');
+  errorDiv.textContent = '';
+  
+  if (!email || !pass) {
+    errorDiv.textContent = 'Please enter your email and password.';
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+  
+  submitBtn.textContent = 'Signing in...';
+  submitBtn.disabled = true;
+  
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+      errorDiv.textContent = error.message;
+      errorDiv.classList.remove('hidden');
+      submitBtn.textContent = 'Sign In';
+      submitBtn.disabled = false;
+      return;
+    }
+    
+    window.location.reload();
+  } catch (err) {
+    errorDiv.textContent = 'An error occurred during login. Please try again.';
+    errorDiv.classList.remove('hidden');
+    submitBtn.textContent = 'Sign In';
+    submitBtn.disabled = false;
+  }
+}
+
+async function authOverlaySignUp() {
+  const name = document.getElementById('authOverlayName').value.trim();
+  const email = document.getElementById('authOverlayEmail').value.trim();
+  const pass = document.getElementById('authOverlayPass').value.trim();
+  const confirmPass = document.getElementById('authOverlayConfirmPass').value.trim();
+  const submitBtn = document.getElementById('authOverlaySubmitBtn');
+  const errorDiv = document.getElementById('authOverlayError');
+  
+  errorDiv.classList.add('hidden');
+  errorDiv.textContent = '';
+  
+  if (!name || !email || !pass || !confirmPass) {
+    errorDiv.textContent = 'Please fill in all fields.';
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+  
+  if (pass !== confirmPass) {
+    errorDiv.textContent = 'Passwords do not match.';
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+  
+  if (pass.length < 6) {
+    errorDiv.textContent = 'Password must be at least 6 characters.';
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+  
+  submitBtn.textContent = 'Creating account...';
+  submitBtn.disabled = true;
+  
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password: pass,
+      options: {
+        data: {
+          full_name: name
+        }
+      }
+    });
+    
+    if (error) {
+      errorDiv.textContent = error.message;
+      errorDiv.classList.remove('hidden');
+      submitBtn.textContent = 'Sign Up';
+      submitBtn.disabled = false;
+      return;
+    }
+    
+    const user = data.user;
+    if (!user) {
+      errorDiv.textContent = 'Registration successful! Please check your email for a confirmation link.';
+      errorDiv.classList.remove('hidden');
+      submitBtn.textContent = 'Sign Up';
+      submitBtn.disabled = false;
+      return;
+    }
+    
+    // Create profile
+    const { error: profileErr } = await supabaseClient
+      .from('profiles')
+      .upsert({
+        id: user.id,
+        full_name: name,
+        role: overlayRole
+      });
+      
+    if (profileErr) console.error("Error creating profile:", profileErr);
+    
+    window.location.reload();
+  } catch (err) {
+    errorDiv.textContent = 'An error occurred during signup. Please try again.';
+    errorDiv.classList.remove('hidden');
+    submitBtn.textContent = 'Sign Up';
+    submitBtn.disabled = false;
+  }
+}
 
 // College toggle
 document.getElementById("college").addEventListener("change", function () {
@@ -322,6 +576,53 @@ document.getElementById("college").addEventListener("change", function () {
     otherInput.classList.remove("hidden");
   } else {
     otherInput.classList.add("hidden");
+  }
+});
+
+// Check auth session on load
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (session && session.user) {
+      const user = session.user;
+      
+      // Check/create user profile role
+      const { data: profiles, error: profileErr } = await supabaseClient
+        .from('profiles')
+        .select('role, full_name')
+        .eq('id', user.id);
+        
+      let fullName = user.user_metadata?.full_name || '';
+      
+      if (!profileErr && profiles && profiles.length > 0) {
+        fullName = profiles[0].full_name || fullName;
+      } else {
+        // Create default profile for Google OAuth / newly registered users
+        const defaultName = user.user_metadata?.full_name || user.email.split('@')[0];
+        let oauthRole = localStorage.getItem('eduronix_oauth_role') || 'student';
+        localStorage.removeItem('eduronix_oauth_role');
+        
+        await supabaseClient.from('profiles').insert({
+          id: user.id,
+          full_name: defaultName,
+          role: oauthRole
+        });
+        fullName = defaultName;
+      }
+      
+      // Prefill fields
+      document.getElementById('name').value = fullName;
+      document.getElementById('email').value = user.email;
+      
+      // Un-blur content
+      document.getElementById('bookingPageContainer').classList.remove('blur-sm', 'pointer-events-none');
+    } else {
+      // Blur page and show auth overlay
+      document.getElementById('bookingPageContainer').classList.add('blur-sm', 'pointer-events-none');
+      document.getElementById('eduAuthOverlay').classList.remove('hidden');
+    }
+  } catch (err) {
+    console.error("Session check failed:", err);
   }
 });
 
@@ -358,27 +659,27 @@ async function handlePayment() {
   try {
     // Save data
     const { error } = await supabaseClient
-  .from("booking_requests")
-  .insert([{
-    name: data.name,
-    phone: data.phone,
-    email: data.email,
-    city: data.city,
-    college: data.college,
-    course: data.course,
-    mentor_gender: data.gender, // important mapping
-    requirements: data.requirements,
-    payment_id: "form_redirect",
-    status: "pending"
-  }]);
+      .from("booking_requests")
+      .insert([{
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        city: data.city,
+        college: data.college,
+        course: data.course,
+        mentor_gender: data.gender,
+        requirements: data.requirements,
+        payment_id: "form_redirect",
+        status: "pending"
+      }]);
 
-if (error) {
-  console.error("Supabase Error:", error);
-  alert("Error saving data");
-  btn.innerText = "Try Again";
-  btn.disabled = false;
-  return; // STOP redirect
-}
+    if (error) {
+      console.error("Supabase Error:", error);
+      alert("Error saving data");
+      btn.innerText = "Try Again";
+      btn.disabled = false;
+      return;
+    }
 
     // Redirect to Cashfree
     window.location.href = "https://payments.cashfree.com/forms/eduronix-booking";
