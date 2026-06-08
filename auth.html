@@ -166,7 +166,7 @@
       const lowerRedirect = redirectUrl.toLowerCase();
       if (lowerRedirect.includes('mentorform')) {
         selectedRole = 'mentor';
-        isSignUpMode = true; // Auto-default to registration mode for mentors
+        isSignUpMode = false; // Route through Login first
       } else if (lowerRedirect.includes('booking') || lowerRedirect.includes('3booking')) {
         selectedRole = 'student';
       }
