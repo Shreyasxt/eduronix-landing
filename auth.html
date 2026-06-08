@@ -304,6 +304,9 @@
       btn.textContent = 'Creating account...';
       btn.disabled = true;
 
+      // Cache desired role in local storage in case email confirmation redirects back to landing page
+      localStorage.setItem('eduronix_oauth_role', selectedRole);
+
       try {
         const { data, error } = await supabaseClient.auth.signUp({
           email,

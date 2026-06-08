@@ -870,6 +870,9 @@ async function eduHandleSignUp() {
   btn.textContent = 'Creating account...';
   btn.disabled = true;
   
+  // Cache desired role in local storage in case email confirmation redirects back to landing page
+  localStorage.setItem('eduronix_oauth_role', selectedSignupRole);
+  
   try {
     const { data, error } = await supabaseClient.auth.signUp({
       email: email,
@@ -972,11 +975,13 @@ window.addEventListener('DOMContentLoaded', async () => {
         .eq('id', user.id);
         
       let role = null;
+      let isNewlyCreated = false;
       if (profileErr) {
         console.error("Error fetching profile:", profileErr);
       } else if (profiles && profiles.length > 0) {
         role = profiles[0].role;
       } else {
+        isNewlyCreated = true;
         // Create default profile for Google OAuth / newly registered users
         const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
         
@@ -1009,13 +1014,30 @@ window.addEventListener('DOMContentLoaded', async () => {
       }
       
       if (role) {
-        let redirectUrl = '';
-        if (role === 'admin') redirectUrl = 'admin-dashboard.html';
-        else if (role === 'mentor') redirectUrl = 'mentor-dashboard.html';
-        else if (role === 'student') redirectUrl = 'student-dashboard.html';
-        
-        if (redirectUrl) {
-          window.location.href = redirectUrl;
+        if (isNewlyCreated) {
+          let redirectUrl = '';
+          if (role === 'admin') redirectUrl = 'admin-dashboard.html';
+          else if (role === 'mentor') redirectUrl = 'mentor-dashboard.html';
+          else if (role === 'student') redirectUrl = 'student-dashboard.html';
+          
+          if (redirectUrl) {
+            window.location.href = redirectUrl;
+          }
+        } else {
+          // Update the UI Login buttons to Dashboard instead of force redirecting
+          let dashboardUrl = 'student-dashboard.html';
+          if (role === 'admin') dashboardUrl = 'admin-dashboard.html';
+          else if (role === 'mentor') dashboardUrl = 'mentor-dashboard.html';
+          
+          const loginButtons = document.querySelectorAll('a[href="auth.html"]');
+          loginButtons.forEach(btn => {
+            btn.href = dashboardUrl;
+            if (btn.innerHTML.includes('mr-1') || btn.classList.contains('w-full')) {
+              btn.innerHTML = `<i class="fas fa-user mr-1"></i> Dashboard`;
+            } else {
+              btn.innerHTML = `<i class="fas fa-user text-xs"></i> Dashboard`;
+            }
+          });
         }
       }
     }

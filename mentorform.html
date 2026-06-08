@@ -240,7 +240,7 @@ const supabase = window.supabase.createClient(
     "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB"
 );
 
-document.addEventListener("DOMContentLoaded", async () => {
+async function initMentorForm() {
     // Initializations
     emailjs.init("30Oh6XO6359Sk3ZRB");
 
@@ -365,7 +365,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             btn.disabled = false;
         }
     });
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", initMentorForm);
+} else {
+    initMentorForm();
+}
 </script>
 
 </body>
