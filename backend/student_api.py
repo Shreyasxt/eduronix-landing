@@ -25,25 +25,25 @@ async def get_all_mentors():
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.get("/bookings/{student_id}")
-async def get_student_bookings(student_id: str):
+@router.get("/bookings/{email}")
+async def get_student_bookings(email: str):
     """
-    Retrieves all booking requests associated with the student's user_id.
+    Retrieves all booking requests associated with the student's email.
     """
     try:
-        # Query booking_requests table for matching student_id
-        res = supabase.table("booking_requests").select("*").eq("student_id", student_id).execute()
+        # Query booking_requests table for matching email
+        res = supabase.table("booking_requests").select("*").eq("email", email).execute()
         return {"status": "success", "bookings": res.data}
     except Exception as e:
         return {"status": "error", "message": "Failed to fetch bookings", "detail": str(e)}
 
-@router.get("/payments/{student_id}")
-async def get_student_payments(student_id: str):
+@router.get("/payments/{email}")
+async def get_student_payments(email: str):
     """
     Returns specific payment columns for a student's past bookings.
     """
     try:
-        res = supabase.table("booking_requests").select("id, course, payment_id, status").eq("student_id", student_id).execute()
+        res = supabase.table("booking_requests").select("id, course, payment_id, status").eq("email", email).execute()
         return {"status": "success", "payments": res.data}
     except Exception as e:
         return {"status": "error", "detail": str(e)}

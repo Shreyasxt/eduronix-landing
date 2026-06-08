@@ -720,67 +720,36 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('mentorDash', () => ({
         tab: 'overview',
         newTag: '',
+        mentorId: '',
         toast: { show: false, message: '', type: 'success' },
 
         mentor: {
-            name: 'Shreyash Honwadajkar',
-            college: 'SIT Pune',
-            branch: 'Computer Science',
-            year: 'Final Year',
-            phone: '+91 98765 43210',
-            linkedin: 'https://linkedin.com/in/shreyash',
-            bio: 'I can give you the most honest reality check about SIT Pune. From placements to faculty politics, I\'ll tell you what the brochure won\'t.',
-            expertise: ['Placements', 'CS/IT', 'Campus Life', 'Hostel'],
+            name: '',
+            college: '',
+            branch: '',
+            year: '',
+            phone: '',
+            linkedin: '',
+            bio: '',
+            expertise: [],
             available: true,
             advanceNotice: '6 hours',
             maxPerDay: '3',
-            bankName: 'Shreyash Honwadajkar',
-            upi: 'shreyash@upi',
-            accountNum: '1234567890',
-            ifsc: 'SBIN0001234'
+            bankName: '',
+            upi: '',
+            accountNum: '',
+            ifsc: ''
         },
 
-        stats: { totalSessions: 24, totalEarnings: 4800, monthEarnings: 1499, pendingPayout: 897, rating: 4.8, totalReviews: 21 },
+        stats: { totalSessions: 0, totalEarnings: 0, monthEarnings: 0, pendingPayout: 0, rating: 5.0, totalReviews: 0 },
 
-        pendingSessions: [
-            { id: 'p1', student: 'Rohan Mehta', college: 'SIT Pune', topic: 'Placements Reality', date: 'Jun 14, 2025', time: '4:00 PM', note: 'I got 90% but heard placements are bad. Please be honest.' },
-            { id: 'p2', student: 'Sneha Kulkarni', college: 'VIT Pune', topic: 'Campus Life', date: 'Jun 15, 2025', time: '6:30 PM', note: 'Want to know about girls hostel and safety.' },
-        ],
-
-        upcomingSessions: [
-            { id: 'u1', student: 'Arjun Patel', college: 'SIT Pune', topic: 'Placements & Internships', date: 'Jun 12, 2025', time: '5:00 PM', meetLink: '#' },
-        ],
-
-        completedSessions: [
-            { id: 'c1', student: 'Priya Nair', college: 'SIT Pune', topic: 'Branch Selection', date: 'Jun 8', status: 'Completed', earned: 239, rating: 5 },
-            { id: 'c2', student: 'Vikram Sharma', college: 'VIT Pune', topic: 'Campus Reality', date: 'Jun 5', status: 'Completed', earned: 239, rating: 5 },
-            { id: 'c3', student: 'Aisha Khan', college: 'SIT Pune', topic: 'Hostel Life', date: 'Jun 2', status: 'Completed', earned: 239, rating: 4 },
-            { id: 'c4', student: 'Dev Malhotra', college: 'Pune Univ', topic: 'Placement Stats', date: 'May 28', status: 'Completed', earned: 239, rating: 5 },
-        ],
-
-        transactions: [
-            { id: 't1', date: 'Jun 8, 2025', student: 'Priya Nair', session: 'Branch Selection', amount: 239, status: 'Paid' },
-            { id: 't2', date: 'Jun 5, 2025', student: 'Vikram Sharma', session: 'Campus Reality', amount: 239, status: 'Paid' },
-            { id: 't3', date: 'Jun 2, 2025', student: 'Aisha Khan', session: 'Hostel Life', amount: 239, status: 'Pending' },
-            { id: 't4', date: 'May 28, 2025', student: 'Dev Malhotra', session: 'Placement Stats', amount: 239, status: 'Paid' },
-        ],
-
-        earningsChart: [
-            { month: 'Jan', value: 478 }, { month: 'Feb', value: 717 }, { month: 'Mar', value: 956 },
-            { month: 'Apr', value: 717 }, { month: 'May', value: 1434 }, { month: 'Jun', value: 1499 },
-        ],
-
-        reviews: [
-            { id: 'r1', student: 'Priya Nair', college: 'SIT Pune', date: 'Jun 8', rating: 5, review: 'Shreyash gave me the most honest answer about CS placements at SIT. Saved me from making a wrong decision!' },
-            { id: 'r2', student: 'Vikram Sharma', college: 'VIT Pune', date: 'Jun 5', rating: 5, review: 'No sugar coating, pure facts. Exactly what I needed before taking admission.' },
-            { id: 'r3', student: 'Aisha Khan', college: 'SIT Pune', date: 'Jun 2', rating: 4, review: 'Very helpful about hostel life and campus safety. Would recommend to everyone.' },
-            { id: 'r4', student: 'Dev Malhotra', college: 'Pune Univ', date: 'May 28', rating: 5, review: 'Super transparent about the actual placement numbers. 10/10 experience.' },
-        ],
-
-        ratingBars: [
-            { stars: 5, percent: 80 }, { stars: 4, percent: 14 }, { stars: 3, percent: 5 },
-            { stars: 2, percent: 1 }, { stars: 1, percent: 0 },
-        ],
+        pendingSessions: [],
+        upcomingSessions: [],
+        completedSessions: [],
+        transactions: [],
+        earningsChart: [],
+        reviews: [],
+        ratingBars: [],
 
         availability: [
             { name: 'Monday', active: true, from: '4:00 PM', to: '8:00 PM' },
@@ -794,28 +763,254 @@ document.addEventListener('alpine:init', () => {
 
         timeSlots: ['8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM','8:00 PM','9:00 PM','10:00 PM'],
 
-        init() {},
-
-        addTag() {
-            if (this.newTag.trim()) { this.mentor.expertise.push(this.newTag.trim()); this.newTag = ''; }
-        },
-
-        acceptSession(id) {
-            const session = this.pendingSessions.find(s => s.id === id);
-            if (session) {
-                this.upcomingSessions.unshift({ ...session, meetLink: '#' });
-                this.pendingSessions = this.pendingSessions.filter(s => s.id !== id);
-                this.showToast('Session accepted! Student will be notified.', 'success');
+        async init() {
+            try {
+                const { data: { session } } = await window.supabaseClient.auth.getSession();
+                if (session && session.user) {
+                    this.mentorId = session.user.id;
+                    await this.loadMentorData();
+                }
+            } catch (err) {
+                console.error("Failed to load user session:", err);
             }
         },
 
-        declineSession(id) {
-            this.pendingSessions = this.pendingSessions.filter(s => s.id !== id);
-            this.showToast('Session declined.', 'error');
+        async loadMentorData() {
+            try {
+                const profileRes = await fetch(`http://127.0.0.1:8000/mentor/profile/${this.mentorId}`);
+                if (profileRes.ok) {
+                    const data = await profileRes.json();
+                    this.mentor.name = data.full_name || '';
+                    this.mentor.college = data.college || '';
+                    this.mentor.branch = data.course || '';
+                    this.mentor.year = data.year || '1st Year';
+                    this.mentor.phone = data.phone || '';
+                    this.mentor.linkedin = data.linkedin || '';
+                    this.mentor.bio = data.bio || '';
+                    this.mentor.expertise = data.expertise || [];
+                    this.mentor.upi = data.upi || '';
+                    this.mentor.available = data.is_approved || false;
+                }
+
+                const availRes = await fetch(`http://127.0.0.1:8000/mentor/get-availability/${this.mentorId}`);
+                if (availRes.ok) {
+                    const slots = await availRes.json();
+                    this.availability.forEach(day => {
+                        const matchedSlots = slots.filter(s => s.day_of_week.toLowerCase() === day.name.toLowerCase());
+                        if (matchedSlots.length > 0) {
+                            day.active = true;
+                            day.from = this.formatTime(matchedSlots[0].start_time);
+                            day.to = this.formatTime(matchedSlots[0].end_time);
+                        } else {
+                            day.active = false;
+                        }
+                    });
+                }
+
+                await this.loadBookings();
+            } catch (err) {
+                console.error("Failed to load mentor data:", err);
+            }
         },
 
-        saveProfile() { this.showToast('Profile saved successfully!', 'success'); },
-        saveAvailability() { this.showToast('Availability schedule updated!', 'success'); },
+        async loadBookings() {
+            try {
+                const res = await fetch(`http://127.0.0.1:8000/get-mentor-bookings/${this.mentorId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    const bookings = data.bookings || [];
+
+                    this.pendingSessions = bookings.filter(b => b.status === 'pending').map(b => ({
+                        id: b.id,
+                        student: b.name,
+                        college: b.college || b.target_college || 'General Inquiry',
+                        topic: b.course || 'Mentorship Call',
+                        date: b.created_at ? new Date(b.created_at).toLocaleDateString() : 'Today',
+                        time: 'TBD',
+                        note: b.requirements || b.special_requirements || ''
+                    }));
+
+                    this.upcomingSessions = bookings.filter(b => ['accepted', 'assigned', 'upcoming'].includes(b.status)).map(b => ({
+                        id: b.id,
+                        student: b.name,
+                        college: b.college || b.target_college || 'General Inquiry',
+                        topic: b.course || 'Mentorship Call',
+                        date: 'Scheduled',
+                        time: 'TBD',
+                        meetLink: 'https://meet.google.com'
+                    }));
+
+                    this.completedSessions = bookings.filter(b => ['completed', 'payout_paid'].includes(b.status)).map(b => ({
+                        id: b.id,
+                        student: b.name,
+                        college: b.college || b.target_college || 'General Inquiry',
+                        topic: b.course || 'Mentorship Call',
+                        date: b.created_at ? new Date(b.created_at).toLocaleDateString() : 'Completed',
+                        status: b.status === 'payout_paid' ? 'Paid' : 'Completed',
+                        earned: 239,
+                        rating: 5
+                    }));
+
+                    const completedCount = this.completedSessions.length;
+                    this.stats.totalSessions = bookings.length;
+                    this.stats.totalEarnings = completedCount * 239;
+                    this.stats.monthEarnings = completedCount * 239;
+                    this.stats.pendingPayout = bookings.filter(b => b.status === 'completed').length * 239;
+                }
+            } catch (err) {
+                console.error("Failed to load bookings:", err);
+            }
+        },
+
+        formatTime(timeStr) {
+            if (!timeStr) return '4:00 PM';
+            const parts = timeStr.split(':');
+            let hr = parseInt(parts[0]);
+            const ampm = hr >= 12 ? 'PM' : 'AM';
+            hr = hr % 12;
+            if (hr === 0) hr = 12;
+            return `${hr}:00 ${ampm}`;
+        },
+
+        parseTo24h(time12h) {
+            if (!time12h) return '00:00:00';
+            const [time, modifier] = time12h.split(' ');
+            let [hours, minutes] = time.split(':');
+            if (hours === '12') {
+                hours = '00';
+            }
+            if (modifier === 'PM') {
+                hours = parseInt(hours, 10) + 12;
+            }
+            return `${hours}:${minutes}:00`;
+        },
+
+        addTag() {
+            if (this.newTag.trim()) { 
+                this.mentor.expertise.push(this.newTag.trim()); 
+                this.newTag = ''; 
+            }
+        },
+
+        async acceptSession(id) {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/update-booking-status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking_id: id, new_status: 'accepted' })
+                });
+                if (response.ok) {
+                    this.showToast('Session accepted! Student will be notified.', 'success');
+                    await this.loadBookings();
+                } else {
+                    this.showToast('Failed to accept session', 'error');
+                }
+            } catch (err) {
+                this.showToast('Network error', 'error');
+            }
+        },
+
+        async declineSession(id) {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/update-booking-status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking_id: id, new_status: 'declined' })
+                });
+                if (response.ok) {
+                    this.showToast('Session declined.', 'error');
+                    await this.loadBookings();
+                } else {
+                    this.showToast('Failed to decline session', 'error');
+                }
+            } catch (err) {
+                this.showToast('Network error', 'error');
+            }
+        },
+
+        openCompleteModal(session) {
+            if (confirm(`Are you sure you want to mark session with ${session.student} as completed?`)) {
+                this.markSessionDone(session.id);
+            }
+        },
+
+        async markSessionDone(id) {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/update-booking-status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking_id: id, new_status: 'completed' })
+                });
+                if (response.ok) {
+                    this.showToast('Session marked completed!', 'success');
+                    await this.loadBookings();
+                } else {
+                    this.showToast('Failed to update session', 'error');
+                }
+            } catch (err) {
+                this.showToast('Network error', 'error');
+            }
+        },
+
+        async saveProfile() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/mentor/setup-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: this.mentorId,
+                        full_name: this.mentor.name,
+                        bio: this.mentor.bio,
+                        expertise: this.mentor.expertise,
+                        linkedin: this.mentor.linkedin,
+                        upi: this.mentor.upi,
+                        year: this.mentor.year,
+                        city: this.mentor.city,
+                        state: ''
+                    })
+                });
+                if (response.ok) {
+                    this.showToast('Profile saved successfully!', 'success');
+                    await this.loadMentorData();
+                } else {
+                    this.showToast('Failed to save profile', 'error');
+                }
+            } catch (err) {
+                this.showToast('Network error', 'error');
+            }
+        },
+
+        async saveAvailability() {
+            try {
+                const slots = [];
+                this.availability.forEach(day => {
+                    if (day.active) {
+                        slots.push({
+                            day_of_week: day.name.toLowerCase(),
+                            start_time: this.parseTo24h(day.from),
+                            end_time: this.parseTo24h(day.to)
+                        });
+                    }
+                });
+
+                const response = await fetch('http://127.0.0.1:8000/mentor/set-availability', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: this.mentorId,
+                        slots: slots
+                    })
+                });
+                if (response.ok) {
+                    this.showToast('Availability schedule updated!', 'success');
+                    await this.loadMentorData();
+                } else {
+                    this.showToast('Failed to save schedule', 'error');
+                }
+            } catch (err) {
+                this.showToast('Network error', 'error');
+            }
+        },
 
         showToast(message, type = 'success') {
             this.toast = { show: true, message, type };

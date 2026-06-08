@@ -112,3 +112,31 @@ async def get_availability(mentor_id: str):
         return res.data or []
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/profile/{mentor_id}")
+async def get_mentor_profile(mentor_id: str):
+    try:
+        res = supabase.table("mentors").select("*").eq("id", mentor_id).execute()
+        if not res.data:
+            p_res = supabase.table("profiles").select("*").eq("id", mentor_id).execute()
+            if p_res.data:
+                return {
+                    "id": mentor_id,
+                    "full_name": p_res.data[0].get("full_name") or "New Mentor",
+                    "college": "Not Specified",
+                    "course": "Not Specified",
+                    "year": "1st Year",
+                    "city": "",
+                    "linkedin": "",
+                    "phone": "",
+                    "email": "",
+                    "upi": "",
+                    "bio": "",
+                    "expertise": [],
+                    "is_approved": False,
+                    "state": ""
+                }
+            raise HTTPException(status_code=404, detail="Mentor profile not found")
+        return res.data[0]
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

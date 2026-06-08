@@ -191,7 +191,28 @@
                 <!-- TAB: BOOKINGS -->
                 <div x-show="tab === 'bookings'" style="display: none;" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0">
                     <h2 class="text-2xl font-black tracking-tight mb-6"><i class="fas fa-calendar-check text-[#03A9F4] mr-2"></i> My Bookings</h2>
-                    <div class="bg-white rounded-[2rem] border p-8 shadow-sm text-center">
+                    
+                    <div class="space-y-4 mb-6" x-show="bookings.length > 0">
+                        <template x-for="b in bookings" :key="b.id">
+                            <div class="bg-white rounded-2xl border p-5 shadow-sm hover:shadow-md transition flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 font-bold text-lg" x-text="(mentors.find(m => m.id === b.mentor_id)?.full_name || 'M').charAt(0)"></div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900" x-text="mentors.find(m => m.id === b.mentor_id)?.full_name || 'Campus Mentor'"></h4>
+                                        <p class="text-xs text-slate-500" x-text="(b.course || 'Mentorship Call') + ' · ' + (b.college || b.target_college || 'General College')"></p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-wider block w-max ml-auto" 
+                                          :class="b.status === 'completed' ? 'bg-green-100 text-green-700' : b.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'" 
+                                          x-text="b.status"></span>
+                                    <p class="text-xs text-slate-400 mt-1" x-text="new Date(b.created_at).toLocaleDateString()"></p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div x-show="bookings.length === 0" class="bg-white rounded-[2rem] border p-8 shadow-sm text-center">
                         <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-400 text-3xl">
                             <i class="fas fa-hourglass-empty"></i>
                         </div>
@@ -204,7 +225,26 @@
                 <!-- TAB: PAYMENTS -->
                 <div x-show="tab === 'payments'" style="display: none;" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0">
                     <h2 class="text-2xl font-black tracking-tight mb-6"><i class="fas fa-wallet text-purple-500 mr-2"></i> Payment History</h2>
-                    <div class="bg-white rounded-[2rem] border p-8 shadow-sm text-center">
+                    
+                    <div class="space-y-4 mb-6" x-show="payments.length > 0">
+                        <template x-for="p in payments" :key="p.id">
+                            <div class="bg-white rounded-2xl border p-5 shadow-sm hover:shadow-md transition flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600"><i class="fas fa-receipt"></i></div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900" x-text="p.course || 'Mentorship Booking'"></h4>
+                                        <p class="text-xs text-slate-400" x-text="'Payment ID: ' + (p.payment_id || 'TBD')"></p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-black text-slate-950">₹299</p>
+                                    <span class="text-[10px] font-bold text-green-600" x-text="p.status === 'cancelled' ? 'Refunded' : 'Paid'"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div x-show="payments.length === 0" class="bg-white rounded-[2rem] border p-8 shadow-sm text-center">
                         <div class="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4 text-purple-400 text-3xl">
                             <i class="fas fa-receipt"></i>
                         </div>
@@ -253,13 +293,30 @@
             Alpine.data('dashboardData', () => ({
                 tab: 'mentors',
                 mentors: [],
+                bookings: [],
+                payments: [],
                 loading: true,
+                studentEmail: '',
                 selectedMentor: null,
                 
+                async init() {
+                    try {
+                        const { data: { session } } = await window.supabaseClient.auth.getSession();
+                        if (session && session.user) {
+                            this.studentEmail = session.user.email;
+                        }
+                    } catch (err) {
+                        console.error("Failed to load user session:", err);
+                    }
+                    await this.fetchMentors();
+                    if (this.studentEmail) {
+                        await this.fetchStudentData();
+                    }
+                },
+
                 async fetchMentors() {
                     this.loading = true;
                     try {
-                        // Ensure we call the local fastAPI server
                         const response = await fetch('http://127.0.0.1:8000/student/mentors');
                         if (response.ok) {
                             const data = await response.json();
@@ -269,7 +326,6 @@
                         }
                     } catch (err) {
                         console.error('API Error:', err);
-                        // Fallback dummy data for visualization if backend is disconnected
                         this.mentors = [
                             { id: '1', full_name: 'Sahil Kumar', bio: 'I can guide you perfectly about IIT Kharagpur placements and CS.', linkedin: '#', expertise: ['IIT KGP', 'CS', 'Placements'] },
                             { id: '2', full_name: 'Aditi Sharma', bio: 'Honest reviews about Pune colleges and IT branches.', linkedin: '#', expertise: ['Pune Univ', 'IT'] }
@@ -279,12 +335,29 @@
                     }
                 },
 
+                async fetchStudentData() {
+                    try {
+                        const bookingsRes = await fetch(`http://127.0.0.1:8000/student/bookings/${this.studentEmail}`);
+                        if (bookingsRes.ok) {
+                            const data = await bookingsRes.json();
+                            this.bookings = data.bookings || [];
+                        }
+                        
+                        const paymentsRes = await fetch(`http://127.0.0.1:8000/student/payments/${this.studentEmail}`);
+                        if (paymentsRes.ok) {
+                            const data = await paymentsRes.json();
+                            this.payments = data.payments || [];
+                        }
+                    } catch (err) {
+                        console.error("Failed to fetch student dashboard data:", err);
+                    }
+                },
+
                 openBookingModal(mentor) {
                     this.selectedMentor = mentor;
                 },
 
                 proceedToCashfree() {
-                    // Redirects to Cashfree form as per the original server.js logic
                     window.location.href = "https://payments.cashfree.com/forms/eduronix-booking";
                 }
             }));
