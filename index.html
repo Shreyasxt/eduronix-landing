@@ -249,11 +249,38 @@ letter-spacing: 0.5px;
     <div class="edu-logo">Edu<span>ronix</span></div>
     <p class="edu-sub">Sign in to your dashboard</p>
     <div id="eduErrorMsg" class="hidden text-red-500 text-xs font-semibold bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-4 text-center"></div>
+    
+    <div id="eduNameContainer" class="hidden">
+      <label class="edu-lbl">Full Name</label>
+      <input class="edu-input" type="text" id="eduName" placeholder="John Doe">
+    </div>
+
     <label class="edu-lbl">Email</label>
-    <input class="edu-input" type="email" id="eduEmail" placeholder="you@example.com" onkeyup="if(event.key==='Enter')eduHandleLogin()">
+    <input class="edu-input" type="email" id="eduEmail" placeholder="you@example.com" onkeyup="if(event.key==='Enter')eduHandleAuthSubmit()">
+    
     <label class="edu-lbl">Password</label>
-    <input class="edu-input" type="password" id="eduPass" placeholder="••••••••" onkeyup="if(event.key==='Enter')eduHandleLogin()">
-    <button class="edu-go-btn" id="eduGoBtn" onclick="eduHandleLogin()">Login</button>
+    <input class="edu-input" type="password" id="eduPass" placeholder="••••••••" onkeyup="if(event.key==='Enter')eduHandleAuthSubmit()">
+
+    <div id="eduConfirmPassContainer" class="hidden">
+      <label class="edu-lbl">Confirm Password</label>
+      <input class="edu-input" type="password" id="eduConfirmPass" placeholder="••••••••" onkeyup="if(event.key==='Enter')eduHandleAuthSubmit()">
+    </div>
+
+    <div id="eduRoleContainer" class="hidden mt-2">
+      <label class="edu-role-lbl">Select Your Role</label>
+      <div class="edu-role-grid">
+        <div class="edu-role-card sel" id="roleCardStudent" onclick="eduSelectRole('student')">
+          <div class="edu-role-icon">🎓</div>
+          <div class="edu-role-name">Student</div>
+        </div>
+        <div class="edu-role-card" id="roleCardMentor" onclick="eduSelectRole('mentor')">
+          <div class="edu-role-icon">🚀</div>
+          <div class="edu-role-name">Mentor</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="edu-go-btn" id="eduGoBtn" onclick="eduHandleAuthSubmit()">Login</button>
     
     <div class="flex items-center my-3">
       <div class="flex-grow border-t border-zinc-800"></div>
@@ -261,11 +288,11 @@ letter-spacing: 0.5px;
       <div class="flex-grow border-t border-zinc-800"></div>
     </div>
     
-    <button class="edu-google-btn" id="eduGoogleBtn" disabled>
+    <button class="edu-google-btn" id="eduGoogleBtn" onclick="eduHandleGoogleLogin()">
       <i class="fab fa-google mr-2 text-red-500"></i> Continue with Google
     </button>
     
-    <p class="edu-hint">New here? <a href="mentorform.html">Become a Mentor</a></p>
+    <p class="edu-hint" id="eduToggleLink">New here? <a href="#" onclick="event.preventDefault(); eduToggleAuthMode()">Create an Account</a></p>
   </div>
 </div>
 <!-- ===== END LOGIN MODAL ===== -->
@@ -275,30 +302,30 @@ letter-spacing: 0.5px;
 <div class="flex items-center group cursor-pointer">
 <span class="logo-text text-2xl md:text-4xl uppercase">Eduronix</span> </div>
 <div class="hidden md:flex items-center gap-6">
-<a href="mentorform.html" class="text-xs font-bold text-slate-600 hover:text-[#8BC34A] transition-colors tracking-widest uppercase">Become a Mentor</a>
+<a href="auth.html?redirect=mentorform.html" class="text-xs font-bold text-slate-600 hover:text-[#8BC34A] transition-colors tracking-widest uppercase">Become a Mentor</a>
 <a href="booking.html"
 class="px-5 py-3 bg-slate-900 text-white rounded-[2rem] font-black text-lg hover:scale-[1.02] transition-all shadow-2xl flex items-center justify-center gap-4 group">
 Get Started
 </a>
 <!-- ===== LOGIN BUTTON ===== -->
-<button onclick="document.getElementById('eduLoginModal').classList.add('active')"
+<a href="auth.html"
   class="px-5 py-3 border-2 border-[#8BC34A] text-[#8BC34A] rounded-[2rem] font-black text-sm hover:bg-[#8BC34A] hover:text-white transition-all flex items-center gap-2">
   <i class="fas fa-lock text-xs"></i> Login
-</button>
+</a>
 <!-- ===== END LOGIN BUTTON ===== -->
 </div>
 <button @click="navOpen = !navOpen" class="md:hidden text-slate-900 text-xl"><i class="fas fa-bars"></i></button>
 </div>
 <div x-show="navOpen" class="md:hidden bg-white p-6 space-y-4 border-t" x-transition>
-<a href="mentorform.html" class="block text-xs font-bold uppercase">Become a Mentor</a>
+<a href="auth.html?redirect=mentorform.html" class="block text-xs font-bold uppercase">Become a Mentor</a>
 <a href="booking.html" class="w-full inline-block text-center py-3 bg-slate-900 text-white rounded-full font-bold text-xs uppercase">
 Get Started
 </a>
 <!-- Mobile Login Button -->
-<button onclick="navOpen=false; document.getElementById('eduLoginModal').classList.add('active')"
-  class="w-full py-3 border-2 border-[#8BC34A] text-[#8BC34A] rounded-full font-bold text-xs uppercase">
+<a href="auth.html"
+  class="w-full py-3 border-2 border-[#8BC34A] text-[#8BC34A] rounded-full font-bold text-xs uppercase text-center flex items-center justify-center gap-2">
   <i class="fas fa-lock mr-1"></i> Login
-</button>
+</a>
 </div>
 </nav>
 
@@ -567,7 +594,7 @@ From confusion to clarity — talk to real students before taking admission.
 </div>
 <div class="mentor-cta fade-up">
 <p class="mentor-highlight">No sales targets. Just share your college experience and earn.</p>
-<a href="mentorform.html" class="mentor-btn">Apply to Become a Campus Mentor</a>
+<a href="auth.html?redirect=mentorform.html" class="mentor-btn">Apply to Become a Campus Mentor</a>
 <span class="mentor-note">Application takes less than 30 seconds</span>
 </div>
 </div>
@@ -600,7 +627,7 @@ document.querySelectorAll(".fade-up").forEach((el)=>{ observer.observe(el); });
 </div>
 <div class="md:col-span-8 bg-slate-50 border border-slate-100 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-12 bento-card group">
 <div class="flex flex-col md:flex-row gap-8 items-center">
-<div class="flex-1"><i class="fas fa-award text-4xl text-[#03A9F4]"></i><h3 class="text-2xl md:text-3xl font-black mt-6">Earn while you learn.</h3><p class="text-slate-500 mt-4">Join the Eduronix mentor network and earn up to ₹20,000/month.</p><a href="mentorform.html" class="text-[#03A9F4] font-black uppercase tracking-widest text-xs mt-6 inline-block">Apply Now <i class="fas fa-arrow-right"></i></a></div>
+<div class="flex-1"><i class="fas fa-award text-4xl text-[#03A9F4]"></i><h3 class="text-2xl md:text-3xl font-black mt-6">Earn while you learn.</h3><p class="text-slate-500 mt-4">Join the Eduronix mentor network and earn up to ₹20,000/month.</p><a href="auth.html?redirect=mentorform.html" class="text-[#03A9F4] font-black uppercase tracking-widest text-xs mt-6 inline-block">Apply Now <i class="fas fa-arrow-right"></i></a></div>
 <div class="flex-1 w-full h-40 bg-slate-200 rounded-2xl overflow-hidden"><img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&q=80" class="w-full h-full object-cover"></div>
 </div>
 </div>
@@ -693,6 +720,60 @@ const supabaseUrl = "https://mnbyvbhfkrkkmmgkedch.supabase.co";
 const supabaseKey = "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+let isSignUpMode = false;
+let selectedSignupRole = 'student';
+
+function eduToggleAuthMode() {
+  isSignUpMode = !isSignUpMode;
+  const nameCont = document.getElementById('eduNameContainer');
+  const confirmCont = document.getElementById('eduConfirmPassContainer');
+  const roleCont = document.getElementById('eduRoleContainer');
+  const titleText = document.querySelector('#eduLoginModal .edu-sub');
+  const goBtn = document.getElementById('eduGoBtn');
+  const toggleLink = document.getElementById('eduToggleLink');
+  const errorDiv = document.getElementById('eduErrorMsg');
+  
+  errorDiv.classList.add('hidden');
+  errorDiv.textContent = '';
+  
+  if (isSignUpMode) {
+    nameCont.classList.remove('hidden');
+    confirmCont.classList.remove('hidden');
+    roleCont.classList.remove('hidden');
+    titleText.textContent = "Create your account";
+    goBtn.textContent = "Sign Up";
+    toggleLink.innerHTML = 'Already have an account? <a href="#" onclick="event.preventDefault(); eduToggleAuthMode()">Login</a>';
+  } else {
+    nameCont.classList.add('hidden');
+    confirmCont.classList.add('hidden');
+    roleCont.classList.add('hidden');
+    titleText.textContent = "Sign in to your dashboard";
+    goBtn.textContent = "Login";
+    toggleLink.innerHTML = 'New here? <a href="#" onclick="event.preventDefault(); eduToggleAuthMode()">Create an Account</a>';
+  }
+}
+
+function eduSelectRole(role) {
+  selectedSignupRole = role;
+  const studentCard = document.getElementById('roleCardStudent');
+  const mentorCard = document.getElementById('roleCardMentor');
+  if (role === 'student') {
+    studentCard.classList.add('sel');
+    mentorCard.classList.remove('sel');
+  } else {
+    mentorCard.classList.add('sel');
+    studentCard.classList.remove('sel');
+  }
+}
+
+async function eduHandleAuthSubmit() {
+  if (isSignUpMode) {
+    await eduHandleSignUp();
+  } else {
+    await eduHandleLogin();
+  }
+}
+
 async function eduHandleLogin() {
   const email = document.getElementById('eduEmail').value.trim();
   const pass  = document.getElementById('eduPass').value.trim();
@@ -757,15 +838,129 @@ async function eduHandleLogin() {
   }
 }
 
-function eduHandleGoogleLogin() {
-  window.location.href = 'comingsoon.html';
+async function eduHandleSignUp() {
+  const name = document.getElementById('eduName').value.trim();
+  const email = document.getElementById('eduEmail').value.trim();
+  const pass = document.getElementById('eduPass').value.trim();
+  const confirmPass = document.getElementById('eduConfirmPass').value.trim();
+  const btn = document.getElementById('eduGoBtn');
+  const errorDiv = document.getElementById('eduErrorMsg');
+  
+  errorDiv.classList.add('hidden');
+  errorDiv.textContent = '';
+  
+  if (!name || !email || !pass || !confirmPass) {
+    errorDiv.textContent = 'Please fill in all fields.';
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+  
+  if (pass !== confirmPass) {
+    errorDiv.textContent = 'Passwords do not match.';
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+  
+  if (pass.length < 6) {
+    errorDiv.textContent = 'Password must be at least 6 characters.';
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+  
+  btn.textContent = 'Creating account...';
+  btn.disabled = true;
+  
+  // Cache desired role in local storage in case email confirmation redirects back to landing page
+  localStorage.setItem('eduronix_oauth_role', selectedSignupRole);
+  
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: email,
+      password: pass,
+      options: {
+        data: {
+          full_name: name
+        }
+      }
+    });
+    
+    if (error) {
+      errorDiv.textContent = error.message;
+      errorDiv.classList.remove('hidden');
+      btn.textContent = 'Sign Up';
+      btn.disabled = false;
+      return;
+    }
+    
+    const user = data.user;
+    if (!user) {
+      errorDiv.textContent = 'Registration successful! Please check your email for a confirmation link.';
+      errorDiv.classList.remove('hidden');
+      btn.textContent = 'Sign Up';
+      btn.disabled = false;
+      return;
+    }
+    
+    // Create profile in database
+    const { error: profileErr } = await supabaseClient
+      .from('profiles')
+      .upsert({
+        id: user.id,
+        full_name: name,
+        role: selectedSignupRole
+      });
+      
+    if (profileErr) {
+      console.error("Error creating profile:", profileErr);
+    }
+    
+    let redirectUrl = '';
+    if (selectedSignupRole === 'admin') redirectUrl = 'admin-dashboard.html';
+    else if (selectedSignupRole === 'mentor') redirectUrl = 'mentor-dashboard.html';
+    else if (selectedSignupRole === 'student') redirectUrl = 'student-dashboard.html';
+    
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      window.location.reload();
+    }
+    
+  } catch (err) {
+    console.error("Sign up exception:", err);
+    errorDiv.textContent = 'An unexpected error occurred. Please try again.';
+    errorDiv.classList.remove('hidden');
+    btn.textContent = 'Sign Up';
+    btn.disabled = false;
+  }
+}
+
+async function eduHandleGoogleLogin() {
+  const btn = document.getElementById('eduGoogleBtn');
+  btn.disabled = true;
+  
+  // Store selected role in localStorage so we can retrieve it upon callback redirection
+  localStorage.setItem('eduronix_oauth_role', isSignUpMode ? selectedSignupRole : 'student');
+  
+  try {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + window.location.pathname
+      }
+    });
+    if (error) throw error;
+  } catch (err) {
+    console.error("Google login error:", err);
+    alert("Google sign in failed: " + err.message);
+    btn.disabled = false;
+  }
 }
 
 // On page load, check if URL has ?login=true or if user is already logged in
 window.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('login') === 'true') {
-    document.getElementById('eduLoginModal').classList.add('active');
+    window.location.href = 'auth.html';
   }
   
   try {
@@ -780,37 +975,69 @@ window.addEventListener('DOMContentLoaded', async () => {
         .eq('id', user.id);
         
       let role = null;
+      let isNewlyCreated = false;
       if (profileErr) {
         console.error("Error fetching profile:", profileErr);
       } else if (profiles && profiles.length > 0) {
         role = profiles[0].role;
       } else {
+        isNewlyCreated = true;
         // Create default profile for Google OAuth / newly registered users
         const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
+        
+        // Retrieve oauth role from localStorage, fallback to page context
+        let oauthRole = localStorage.getItem('eduronix_oauth_role') || 'student';
+        localStorage.removeItem('eduronix_oauth_role');
+        
+        // Contextual overrides based on page filename
+        const currentPath = window.location.pathname.toLowerCase();
+        if (currentPath.includes('mentorform')) {
+          oauthRole = 'mentor';
+        } else if (currentPath.includes('booking') || currentPath.includes('3booking')) {
+          oauthRole = 'student';
+        }
+        
         const { data: insertData, error: insertErr } = await supabaseClient
           .from('profiles')
           .insert({
             id: user.id,
             full_name: fullName,
-            role: 'student'
+            role: oauthRole
           })
           .select();
           
         if (!insertErr && insertData && insertData.length > 0) {
-          role = 'student';
+          role = oauthRole;
         } else {
           console.error("Error creating default profile:", insertErr);
         }
       }
       
       if (role) {
-        let redirectUrl = '';
-        if (role === 'admin') redirectUrl = 'admin-dashboard.html';
-        else if (role === 'mentor') redirectUrl = 'mentor-dashboard.html';
-        else if (role === 'student') redirectUrl = 'student-dashboard.html';
-        
-        if (redirectUrl) {
-          window.location.href = redirectUrl;
+        if (isNewlyCreated) {
+          let redirectUrl = '';
+          if (role === 'admin') redirectUrl = 'admin-dashboard.html';
+          else if (role === 'mentor') redirectUrl = 'mentor-dashboard.html';
+          else if (role === 'student') redirectUrl = 'student-dashboard.html';
+          
+          if (redirectUrl) {
+            window.location.href = redirectUrl;
+          }
+        } else {
+          // Update the UI Login buttons to Dashboard instead of force redirecting
+          let dashboardUrl = 'student-dashboard.html';
+          if (role === 'admin') dashboardUrl = 'admin-dashboard.html';
+          else if (role === 'mentor') dashboardUrl = 'mentor-dashboard.html';
+          
+          const loginButtons = document.querySelectorAll('a[href="auth.html"]');
+          loginButtons.forEach(btn => {
+            btn.href = dashboardUrl;
+            if (btn.innerHTML.includes('mr-1') || btn.classList.contains('w-full')) {
+              btn.innerHTML = `<i class="fas fa-user mr-1"></i> Dashboard`;
+            } else {
+              btn.innerHTML = `<i class="fas fa-user text-xs"></i> Dashboard`;
+            }
+          });
         }
       }
     }

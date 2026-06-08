@@ -136,6 +136,7 @@
 </head>
 
 <body class="min-h-screen flex items-center justify-center p-6 bg-animate">
+<div id="bookingPageContainer" class="flex items-center justify-center w-full min-h-screen p-6">
 <a href="index.html" 
    class="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-xl 
           brand-gradient text-white font-medium shadow-md
@@ -227,19 +228,59 @@
     </div>
 </div>
 
+</div> <!-- Close bookingPageContainer -->
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+const supabase = window.supabase.createClient(
+    "https://mnbyvbhfkrkkmmgkedch.supabase.co",
+    "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB"
+);
+
+async function initMentorForm() {
     // Initializations
     emailjs.init("30Oh6XO6359Sk3ZRB");
-    const supabase = window.supabase.createClient(
-        "https://mnbyvbhfkrkkmmgkedch.supabase.co",
-        "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB"
-    );
 
     const form = document.getElementById("mentorForm");
     const btn = document.getElementById("submitBtn");
+
+    // Check auth session
+    let currentUser = null;
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (session && session.user) {
+        currentUser = session.user;
+        
+        // Check/create user profile role
+        const { data: profiles, error: profileErr } = await supabase
+          .from('profiles')
+          .select('role, full_name')
+          .eq('id', currentUser.id);
+          
+        let fullName = currentUser.user_metadata?.full_name || '';
+        
+        if (!profileErr && profiles && profiles.length > 0) {
+          fullName = profiles[0].full_name || fullName;
+        } else {
+          // If profile doesn't exist, route them to auth.html to create one properly
+          window.location.href = 'auth.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+          return;
+        }
+        
+        // Prefill name & email
+        document.querySelector('input[name="fullName"]').value = fullName;
+        document.querySelector('input[name="email"]').value = currentUser.email;
+      } else {
+        // Redirect to auth page
+        window.location.href = 'auth.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+      }
+    } catch (err) {
+      console.error("Session check failed:", err);
+    }
 
     // File selection UI feedback
     document.querySelectorAll('input[type="file"]').forEach(input => {
@@ -255,6 +296,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
+        
+        if (!currentUser) {
+            alert("You must be logged in to apply.");
+            window.location.reload();
+            return;
+        }
 
         btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...`;
         btn.disabled = true;
@@ -280,8 +327,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const idUrl = supabase.storage.from("idcards").getPublicUrl(idData.path).data.publicUrl;
 
-            // Database Insert
+            // Ensure profile role is mentor in case they signed up as a student originally
+            await supabase.from("profiles").update({ role: 'mentor' }).eq('id', currentUser.id);
+
+            // Database Insert linked to authentic user ID
             const { error: dbError } = await supabase.from("mentors").insert([{
+                id: currentUser.id,
                 full_name: formData.get("fullName"),
                 college: formData.get("college"),
                 course: formData.get("course"),
@@ -314,7 +365,13 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.disabled = false;
         }
     });
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", initMentorForm);
+} else {
+    initMentorForm();
+}
 </script>
 
 </body>

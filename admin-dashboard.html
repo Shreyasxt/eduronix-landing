@@ -783,6 +783,8 @@
 </div>
 
 <script>
+const API_BASE = 'http://127.0.0.1:8000';
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('adminDash', () => ({
         tab: 'overview',
@@ -797,51 +799,16 @@ document.addEventListener('alpine:init', () => {
         admin: { name: 'Shreyas Admin', email: 'admin@eduronix.com', phone: '+91 98765 00001' },
 
         analytics: {
-            totalSessions: 148, totalRevenue: 44252, totalMentors: 18,
-            pendingPayouts: 8960, todayCompleted: 7, todayUpcoming: 4, todayCancelled: 1
+            totalSessions: 0, totalRevenue: 0, totalMentors: 0,
+            pendingPayouts: 0, todayCompleted: 0, todayUpcoming: 0, todayCancelled: 0
         },
 
-        unassignedRequests: [
-            { id: 'uq1', student: 'Rahul Desai', targetCollege: 'SIT Pune', topic: 'Placements Reality', preferredDate: 'Jun 14', preferredTime: '5:00 PM', amount: 299, priority: 'high', note: 'I have to decide by this weekend. Please assign someone ASAP.', selectedMentor: '' },
-            { id: 'uq2', student: 'Pooja Sharma', targetCollege: 'VIT Pune', topic: 'Campus Life & Hostel', preferredDate: 'Jun 15', preferredTime: '4:00 PM', amount: 299, priority: 'medium', note: 'Want to know about the girls hostel safety.', selectedMentor: '' },
-            { id: 'uq3', student: 'Aryan Kale', targetCollege: 'DY Patil Pune', topic: 'CSE Branch Reality', preferredDate: 'Jun 16', preferredTime: '7:00 PM', amount: 299, priority: 'medium', note: '', selectedMentor: '' },
-        ],
-
-        assignedSessions: [
-            { id: 'as1', student: 'Priya Nair', targetCollege: 'SIT Pune', mentor: 'Shreyash Honwadajkar', date: 'Jun 12', time: '5:00 PM', status: 'Upcoming' },
-            { id: 'as2', student: 'Dev Malhotra', targetCollege: 'VIT Pune', mentor: 'Ranya Lal', date: 'Jun 8', time: '4:00 PM', status: 'Completed' },
-            { id: 'as3', student: 'Sneha Rao', targetCollege: 'SIT Pune', mentor: 'Shravan Kondekar', date: 'Jun 10', time: '6:00 PM', status: 'Completed' },
-            { id: 'as4', student: 'Karan Shah', targetCollege: 'DY Patil', mentor: 'Ranya Lal', date: 'Jun 18', time: '3:00 PM', status: 'Upcoming' },
-        ],
-
-        allMentors: [
-            { id: 'm1', name: 'Shreyash Honwadajkar', college: 'SIT Pune', branch: 'CS Engineering', year: 'Final Year', sessions: 24, rating: 5.0, earned: 5736, pendingPayout: 1434, status: 'Active', available: true, upi: 'shreyash@upi' },
-            { id: 'm2', name: 'Ranya Lal', college: 'DY Patil Pune', branch: 'CS Engineering', year: '3rd Year', sessions: 18, rating: 4.9, earned: 4302, pendingPayout: 717, status: 'Active', available: true, upi: 'ranya@upi' },
-            { id: 'm3', name: 'Shravan Kondekar', college: 'DYPSOE Pune', branch: 'AIDS', year: '2nd Year', sessions: 12, rating: 4.6, earned: 2868, pendingPayout: 478, status: 'Active', available: true, upi: 'shravan@upi' },
-            { id: 'm4', name: 'Aditi Verma', college: 'MIT Pune', branch: 'Mechanical', year: 'Final Year', sessions: 9, rating: 4.7, earned: 2151, pendingPayout: 239, status: 'Active', available: false, upi: 'aditi@upi' },
-            { id: 'm5', name: 'Kabir Sharma', college: 'VIT Pune', branch: 'IT', year: '3rd Year', sessions: 6, rating: 4.5, earned: 1434, pendingPayout: 0, status: 'Pending', available: false, upi: 'kabir@upi' },
-        ],
-
-        allStudents: [
-            { id: 's1', name: 'Rahul Desai', city: 'Mumbai', phone: '+91 98765 11111', sessions: 2, spent: 598, joined: 'Jun 2025' },
-            { id: 's2', name: 'Priya Nair', city: 'Pune', phone: '+91 98765 22222', sessions: 1, spent: 299, joined: 'Jun 2025' },
-            { id: 's3', name: 'Dev Malhotra', city: 'Delhi', phone: '+91 98765 33333', sessions: 3, spent: 897, joined: 'May 2025' },
-            { id: 's4', name: 'Sneha Rao', city: 'Bangalore', phone: '+91 98765 44444', sessions: 1, spent: 299, joined: 'May 2025' },
-            { id: 's5', name: 'Karan Shah', city: 'Surat', phone: '+91 98765 55555', sessions: 2, spent: 598, joined: 'Apr 2025' },
-        ],
-
-        recentActivity: [
-            { id: 'a1', description: 'Priya Nair booked a session with Shreyash Honwadajkar', time: '2 minutes ago', type: 'booked' },
-            { id: 'a2', description: 'Session completed: Dev Malhotra × Ranya Lal', time: '1 hour ago', type: 'completed' },
-            { id: 'a3', description: 'New mentor application: Kabir Sharma (VIT Pune)', time: '3 hours ago', type: 'pending' },
-            { id: 'a4', description: 'Payout processed for Shravan Kondekar: ₹239', time: '5 hours ago', type: 'completed' },
-            { id: 'a5', description: 'Sneha Rao submitted a 5★ review for Shreyash', time: 'Yesterday', type: 'completed' },
-        ],
-
-        revenueChart: [
-            { month: 'Jan', value: 3588 }, { month: 'Feb', value: 5976 }, { month: 'Mar', value: 7165 },
-            { month: 'Apr', value: 8952 }, { month: 'May', value: 9549 }, { month: 'Jun', value: 11022 },
-        ],
+        unassignedRequests: [],
+        assignedSessions: [],
+        allMentors: [],
+        allStudents: [],
+        recentActivity: [],
+        revenueChart: [],
 
         get filteredMentors() {
             return this.allMentors.filter(m => {
@@ -857,21 +824,64 @@ document.addEventListener('alpine:init', () => {
             return matched.length > 0 ? matched : available;
         },
 
-        assignMentor(req) {
+        async fetchData() {
+            try {
+                // Fetch Overview Statistics
+                const overviewRes = await fetch(`${API_BASE}/admin/overview`);
+                if (overviewRes.ok) {
+                    const data = await overviewRes.json();
+                    this.analytics = {
+                        totalSessions: data.totalSessions,
+                        totalRevenue: data.totalRevenue,
+                        totalMentors: data.totalMentors,
+                        pendingPayouts: data.pendingPayouts,
+                        todayCompleted: data.todayCompleted,
+                        todayUpcoming: data.todayUpcoming,
+                        todayCancelled: data.todayCancelled
+                    };
+                    this.unassignedRequests = data.unassignedRequests || [];
+                    this.assignedSessions = data.assignedSessions || [];
+                    this.recentActivity = data.recentActivity || [];
+                    this.revenueChart = data.revenueChart || [];
+                }
+
+                // Fetch Mentors
+                const mentorsRes = await fetch(`${API_BASE}/admin/mentors`);
+                if (mentorsRes.ok) {
+                    const data = await mentorsRes.json();
+                    this.allMentors = data.mentors || [];
+                }
+
+                // Fetch Students
+                const studentsRes = await fetch(`${API_BASE}/admin/students`);
+                if (studentsRes.ok) {
+                    const data = await studentsRes.json();
+                    this.allStudents = data.students || [];
+                }
+            } catch (err) {
+                console.error("Failed to fetch dashboard data:", err);
+                this.showToast("Error loading live data from backend", "error");
+            }
+        },
+
+        async assignMentor(req) {
             if (!req.selectedMentor) return;
-            const mentor = this.allMentors.find(m => m.id === req.selectedMentor);
-            if (!mentor) return;
-            this.assignedSessions.unshift({
-                id: 'as_' + Date.now(),
-                student: req.student,
-                targetCollege: req.targetCollege,
-                mentor: mentor.name,
-                date: req.preferredDate,
-                time: req.preferredTime,
-                status: 'Upcoming'
-            });
-            this.unassignedRequests = this.unassignedRequests.filter(r => r.id !== req.id);
-            this.showToast(`Assigned ${mentor.name} to ${req.student}! Mentor dashboard updated.`, 'success');
+            try {
+                const response = await fetch(`${API_BASE}/admin/assign-mentor`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking_id: req.id, mentor_id: req.selectedMentor })
+                });
+                if (response.ok) {
+                    this.showToast(`Assigned mentor successfully!`, 'success');
+                    await this.fetchData();
+                } else {
+                    const err = await response.json();
+                    this.showToast(err.detail || "Failed to assign mentor", "error");
+                }
+            } catch (err) {
+                this.showToast("Network error during assignment", "error");
+            }
         },
 
         openCustomAssign(req) {
@@ -879,42 +889,104 @@ document.addEventListener('alpine:init', () => {
             this.showAssignModal = true;
         },
 
-        confirmAssign(mentor) {
+        async confirmAssign(mentor) {
             if (!this.assignTarget) return;
-            const req = this.assignTarget;
-            this.assignedSessions.unshift({
-                id: 'as_' + Date.now(),
-                student: req.student,
-                targetCollege: req.targetCollege,
-                mentor: mentor.name,
-                date: req.preferredDate,
-                time: req.preferredTime,
-                status: 'Upcoming'
-            });
-            this.unassignedRequests = this.unassignedRequests.filter(r => r.id !== req.id);
-            this.showAssignModal = false;
-            this.assignTarget = null;
-            this.showToast(`Assigned ${mentor.name}! Session confirmed and mentor notified.`, 'success');
+            try {
+                const response = await fetch(`${API_BASE}/admin/assign-mentor`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking_id: this.assignTarget.id, mentor_id: mentor.id })
+                });
+                if (response.ok) {
+                    this.showAssignModal = false;
+                    this.assignTarget = null;
+                    this.showToast(`Assigned ${mentor.name} successfully!`, 'success');
+                    await this.fetchData();
+                } else {
+                    const err = await response.json();
+                    this.showToast(err.detail || "Failed to assign mentor", "error");
+                }
+            } catch (err) {
+                this.showToast("Network error during assignment", "error");
+            }
         },
 
-        cancelSession(id) {
-            this.assignedSessions = this.assignedSessions.filter(s => s.id !== id);
-            this.showToast('Session cancelled.', 'error');
+        async cancelSession(id) {
+            try {
+                const response = await fetch(`${API_BASE}/admin/cancel-session`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking_id: id })
+                });
+                if (response.ok) {
+                    this.showToast('Session cancelled.', 'error');
+                    await this.fetchData();
+                } else {
+                    this.showToast("Failed to cancel session", "error");
+                }
+            } catch (err) {
+                this.showToast("Network error during cancellation", "error");
+            }
         },
 
         editMentor(m) { this.showToast('Opening mentor edit... (connect to backend)', 'info'); },
-        toggleMentorStatus(m) {
-            m.available = !m.available;
-            m.status = m.available ? 'Active' : 'Offline';
-            this.showToast(`${m.name} is now ${m.status.toLowerCase()}.`, 'success');
+        
+        async toggleMentorStatus(m) {
+            try {
+                const targetApproval = !m.available;
+                const response = await fetch(`${API_BASE}/admin/toggle-mentor-approval`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mentor_id: m.id, is_approved: targetApproval })
+                });
+                if (response.ok) {
+                    this.showToast(`${m.name} is now ${targetApproval ? 'Active' : 'Offline'}.`, 'success');
+                    await this.fetchData();
+                } else {
+                    this.showToast("Failed to update mentor approval", "error");
+                }
+            } catch (err) {
+                this.showToast("Network error during toggle status", "error");
+            }
         },
 
-        markPaid(m) {
-            m.pendingPayout = 0;
-            this.showToast(`Payout marked as paid for ${m.name}.`, 'success');
+        async markPaid(m) {
+            try {
+                const response = await fetch(`${API_BASE}/admin/mark-payout-paid`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mentor_id: m.id })
+                });
+                if (response.ok) {
+                    this.showToast(`Payout marked as paid for ${m.name}.`, 'success');
+                    await this.fetchData();
+                } else {
+                    this.showToast("Failed to mark payout paid", "error");
+                }
+            } catch (err) {
+                this.showToast("Network error during marking payout paid", "error");
+            }
         },
 
-        init() {},
+        async init() {
+            // Retrieve current logged in user details if available
+            try {
+                const { data: { session } } = await window.supabaseClient.auth.getSession();
+                if (session && session.user) {
+                    this.admin.email = session.user.email;
+                    const { data: profiles } = await window.supabaseClient
+                        .from('profiles')
+                        .select('full_name')
+                        .eq('id', session.user.id);
+                    if (profiles && profiles.length > 0) {
+                        this.admin.name = profiles[0].full_name;
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to load admin profile info:", err);
+            }
+            await this.fetchData();
+        },
 
         showToast(message, type = 'success') {
             this.toast = { show: true, message, type };

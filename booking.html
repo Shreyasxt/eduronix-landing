@@ -13,7 +13,8 @@
 
 </head>
 
-<body class="flex flex-col items-center min-h-screen bg-slate-50 text-slate-900"><!-- Header -->
+<body class="flex flex-col items-center min-h-screen bg-slate-50 text-slate-900">
+<!-- Header -->
 <header class="w-full flex items-center justify-between mb-6 px-6 py-3 backdrop-blur-md glass border-b border-white/10">
   <!-- Logo -->
   <div class="flex items-center">
@@ -308,6 +309,7 @@
   box-shadow: 0 10px 30px rgba(3,169,244,0.3);
 }
 </style>
+
 <script>
 const supabaseClient = supabase.createClient(
   "https://mnbyvbhfkrkkmmgkedch.supabase.co",
@@ -322,6 +324,41 @@ document.getElementById("college").addEventListener("change", function () {
     otherInput.classList.remove("hidden");
   } else {
     otherInput.classList.add("hidden");
+  }
+});
+
+// Check auth session on load
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (session && session.user) {
+      const user = session.user;
+      
+      // Check/create user profile role
+      const { data: profiles, error: profileErr } = await supabaseClient
+        .from('profiles')
+        .select('role, full_name')
+        .eq('id', user.id);
+        
+      let fullName = user.user_metadata?.full_name || '';
+      
+      if (!profileErr && profiles && profiles.length > 0) {
+        fullName = profiles[0].full_name || fullName;
+      } else {
+        // If profile doesn't exist, route them to auth.html to create one properly
+        window.location.href = 'auth.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+      }
+      
+      // Prefill fields
+      document.getElementById('name').value = fullName;
+      document.getElementById('email').value = user.email;
+    } else {
+      // Redirect to auth page
+      window.location.href = 'auth.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+    }
+  } catch (err) {
+    console.error("Session check failed:", err);
   }
 });
 
@@ -358,27 +395,27 @@ async function handlePayment() {
   try {
     // Save data
     const { error } = await supabaseClient
-  .from("booking_requests")
-  .insert([{
-    name: data.name,
-    phone: data.phone,
-    email: data.email,
-    city: data.city,
-    college: data.college,
-    course: data.course,
-    mentor_gender: data.gender, // important mapping
-    requirements: data.requirements,
-    payment_id: "form_redirect",
-    status: "pending"
-  }]);
+      .from("booking_requests")
+      .insert([{
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        city: data.city,
+        college: data.college,
+        course: data.course,
+        mentor_gender: data.gender,
+        requirements: data.requirements,
+        payment_id: "form_redirect",
+        status: "pending"
+      }]);
 
-if (error) {
-  console.error("Supabase Error:", error);
-  alert("Error saving data");
-  btn.innerText = "Try Again";
-  btn.disabled = false;
-  return; // STOP redirect
-}
+    if (error) {
+      console.error("Supabase Error:", error);
+      alert("Error saving data");
+      btn.innerText = "Try Again";
+      btn.disabled = false;
+      return;
+    }
 
     // Redirect to Cashfree
     window.location.href = "https://payments.cashfree.com/forms/eduronix-booking";
