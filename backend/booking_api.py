@@ -1,3 +1,4 @@
+from typing import Literal, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
@@ -9,7 +10,7 @@ from database import supabase
 router = APIRouter(tags=["Booking Requests"])
 
 
-class BookingRequest(BaseModel):
+class BookingRequest(BaseModel): 
     name: str
     phone: str
     email: EmailStr
@@ -18,6 +19,11 @@ class BookingRequest(BaseModel):
     whatsapp_number: str
     target_college: str
     special_requirements: str
+    session_type: Optional[Literal["solo", "buddy"]] = None
+    buddy_name: Optional[str] = None
+    buddy_whatsapp: Optional[str] = None
+    buddy_email: Optional[EmailStr] = None
+    buddy_city: Optional[str] = None
 
 
 class UpdateBookingStatusRequest(BaseModel):
@@ -37,6 +43,11 @@ async def request_booking(payload: BookingRequest):
             "whatsapp_number": payload.whatsapp_number,
             "target_college": payload.target_college,
             "special_requirements": payload.special_requirements,
+            "session_type": payload.session_type,
+            "buddy_name": payload.buddy_name,
+            "buddy_whatsapp": payload.buddy_whatsapp,
+            "buddy_email": str(payload.buddy_email) if payload.buddy_email else None,
+            "buddy_city": payload.buddy_city,
             "status": "pending",
         }
 
@@ -87,4 +98,3 @@ async def get_mentor_bookings(mentor_id: UUID):
         return {"status": "success", "bookings": res.data or []}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-

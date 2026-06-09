@@ -1,8 +1,10 @@
 import os
+from pathlib import Path
 from supabase import create_client, Client
 from dotenv import load_dotenv
 
-load_dotenv(os.path.join(os.path.dirname(__file__), '.env')) 
+ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(dotenv_path=ENV_PATH)
 
 # Get these from your Supabase Project Settings > API
 url: str = os.environ.get("SUPABASE_URL")
