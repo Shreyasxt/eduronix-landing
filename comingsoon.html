@@ -47,7 +47,7 @@
          class="fixed inset-0 z-[2000] flex items-center justify-center p-6"
          style="display: none;">
         
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="comingSoon = false"></div>
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="window.location.href='index.html'"></div>
         
         <div class="bg-white w-full max-w-sm rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] relative overflow-hidden p-8 text-center border border-white/20">
             
@@ -69,7 +69,7 @@
                     <input type="email" placeholder="Enter your email" 
                            class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#8BC34A] transition-all">
                     
-                    <button @click="emailSubmitted = true" 
+                    <button @click="emailSubmitted = true; setTimeout(() => { window.location.href='index.html'; }, 1500)" 
                             class="w-full py-4 brand-gradient text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
                         Notify Me
                     </button>
@@ -81,7 +81,7 @@
                     </p>
                 </div>
 
-               <button @click="comingSoon = false; window.location.href='eduronix-landing.html'" 
+               <button @click="window.location.href='index.html'" 
         class="mt-8 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] hover:text-slate-900 transition-colors">
     Close
 </button>

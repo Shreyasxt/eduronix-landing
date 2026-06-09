@@ -13,8 +13,7 @@
 
 </head>
 
-<body class="flex flex-col items-center min-h-screen bg-slate-50 text-slate-900">
-<!-- Header -->
+<body class="flex flex-col items-center min-h-screen bg-slate-50 text-slate-900"><!-- Header -->
 <header class="w-full flex items-center justify-between mb-6 px-6 py-3 backdrop-blur-md glass border-b border-white/10">
   <!-- Logo -->
   <div class="flex items-center">
@@ -45,6 +44,30 @@
   </div>
 
   <div class="p-8 space-y-4">
+
+    <!-- ✅ BUDDYPASS PLAN TOGGLE -->
+    <div class="grid grid-cols-2 gap-3 mb-2">
+      <!-- Solo -->
+      <label id="solo-card" class="plan-card plan-active cursor-pointer border-2 border-green-400 bg-green-50 rounded-2xl p-4">
+        <input type="radio" name="plan" value="solo" checked onchange="togglePlan('solo')" class="hidden">
+        <span class="text-[10px] font-bold bg-green-100 text-green-700 rounded px-2 py-0.5">Standard</span>
+        <p class="text-sm font-bold text-slate-800 mt-1">Solo Session</p>
+        <p class="text-xl font-extrabold text-slate-900">₹299</p>
+        <p class="text-[11px] text-slate-400">1 student, 1 mentor</p>
+      </label>
+      <!-- BuddyPass -->
+      <label id="buddy-card" class="plan-card cursor-pointer border-2 border-slate-200 bg-white rounded-2xl p-4">
+        <input type="radio" name="plan" value="buddy" onchange="togglePlan('buddy')" class="hidden">
+        <span class="text-[10px] font-bold bg-orange-100 text-orange-600 rounded px-2 py-0.5">🤝 BuddyPass</span>
+        <p class="text-sm font-bold text-slate-800 mt-1">Buddy Session</p>
+        <div class="flex items-baseline gap-2">
+          <p class="text-xl font-extrabold text-slate-900">₹499</p>
+          <p class="text-xs text-slate-400 line-through">₹599</p>
+        </div>
+        <p class="text-[11px] text-orange-500 font-semibold">Flat ₹100 off</p>
+        <p class="text-[11px] text-slate-400">2 friends + both families</p>
+      </label>
+    </div>
 
     <input id="name" required class="w-full p-3 border rounded-lg" placeholder="Full Name" />
     <input id="phone" required class="w-full p-3 border rounded-lg" placeholder="WhatsApp Number" />
@@ -201,6 +224,22 @@
     <textarea id="requirements" class="w-full p-3 border rounded-lg"
       placeholder="Any specific requirement? (optional)"></textarea>
 
+    <!-- ✅ BUDDY FIELDS — shown only when BuddyPass selected -->
+    <div id="buddy-section" class="hidden space-y-3">
+      <div class="border-t border-slate-200 pt-4">
+        <p class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+          🤝 <span>Buddy's Details</span>
+        </p>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Friend joining with you</p>
+          <input id="buddy_name" class="w-full p-3 border rounded-lg bg-white" placeholder="Buddy's Full Name" />
+          <input id="buddy_phone" class="w-full p-3 border rounded-lg bg-white" placeholder="Buddy's WhatsApp Number" />
+          <input id="buddy_email" class="w-full p-3 border rounded-lg bg-white" placeholder="Buddy's Email" />
+          <input id="buddy_city" class="w-full p-3 border rounded-lg bg-white" placeholder="Buddy's City" />
+        </div>
+      </div>
+    </div>
+
    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
   
   <div class="space-y-5">
@@ -208,8 +247,11 @@
   <!-- Trust Box -->
   <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3">
     
-    <p class="text-[15px] font-medium text-slate-700 flex items-center gap-2">
+    <p class="text-[15px] font-medium text-slate-700 flex items-center gap-2" id="perk-solo">
       ✅ <span>1-on-1 personalized mentor guidance</span>
+    </p>
+    <p class="text-[15px] font-medium text-slate-700 flex items-center gap-2 hidden" id="perk-buddy">
+      ✅ <span>Shared session — 2 friends + both families</span>
     </p>
 
     <p class="text-[15px] font-medium text-slate-700 flex items-center gap-2">
@@ -230,7 +272,7 @@
   transition-all active:scale-95 
   flex justify-center items-center gap-2">
   
-  Find My Mentor → Secure My Slot ₹299
+  <span id="btn-text">Find My Mentor → Secure My Slot ₹299</span>
 
 </button>
 
@@ -308,8 +350,10 @@
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(3,169,244,0.3);
 }
-</style>
 
+.plan-card { transition: all 0.2s ease; }
+.plan-active { border-color: #8BC34A !important; background-color: #f0fdf4 !important; }
+</style>
 <script>
 const supabaseClient = supabase.createClient(
   "https://mnbyvbhfkrkkmmgkedch.supabase.co",
@@ -319,7 +363,6 @@ const supabaseClient = supabase.createClient(
 // College toggle
 document.getElementById("college").addEventListener("change", function () {
   const otherInput = document.getElementById("otherCollege");
-
   if (this.value === "Other") {
     otherInput.classList.remove("hidden");
   } else {
@@ -327,44 +370,37 @@ document.getElementById("college").addEventListener("change", function () {
   }
 });
 
-// Check auth session on load
-window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
-    if (session && session.user) {
-      const user = session.user;
-      
-      // Check/create user profile role
-      const { data: profiles, error: profileErr } = await supabaseClient
-        .from('profiles')
-        .select('role, full_name')
-        .eq('id', user.id);
-        
-      let fullName = user.user_metadata?.full_name || '';
-      
-      if (!profileErr && profiles && profiles.length > 0) {
-        fullName = profiles[0].full_name || fullName;
-      } else {
-        // If profile doesn't exist, route them to auth.html to create one properly
-        window.location.href = 'auth.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
-        return;
-      }
-      
-      // Prefill fields
-      document.getElementById('name').value = fullName;
-      document.getElementById('email').value = user.email;
-    } else {
-      // Redirect to auth page
-      window.location.href = 'auth.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
-    }
-  } catch (err) {
-    console.error("Session check failed:", err);
-  }
-});
+// ✅ PLAN TOGGLE
+function togglePlan(plan) {
+  const soloCard = document.getElementById("solo-card");
+  const buddyCard = document.getElementById("buddy-card");
+  const buddySection = document.getElementById("buddy-section");
+  const perkSolo = document.getElementById("perk-solo");
+  const perkBuddy = document.getElementById("perk-buddy");
+  const btnText = document.getElementById("btn-text");
 
-// ✅ FINAL PAYMENT FUNCTION
+  if (plan === "buddy") {
+    buddyCard.classList.add("plan-active");
+    soloCard.classList.remove("plan-active");
+    buddySection.classList.remove("hidden");
+    perkSolo.classList.add("hidden");
+    perkBuddy.classList.remove("hidden");
+    btnText.textContent = "Find My Mentor → Secure My Slot ₹499";
+  } else {
+    soloCard.classList.add("plan-active");
+    buddyCard.classList.remove("plan-active");
+    buddySection.classList.add("hidden");
+    perkSolo.classList.remove("hidden");
+    perkBuddy.classList.add("hidden");
+    btnText.textContent = "Find My Mentor → Secure My Slot ₹299";
+  }
+}
+
+// ✅ PAYMENT FUNCTION
 async function handlePayment() {
   const btn = document.getElementById("payBtn");
+  const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+  const isBuddy = selectedPlan === "buddy";
 
   const data = {
     name: document.getElementById("name").value,
@@ -377,6 +413,7 @@ async function handlePayment() {
     course: document.getElementById("course").value,
     gender: document.getElementById("gender").value,
     requirements: document.getElementById("requirements").value,
+    plan: selectedPlan,
   };
 
   if (!data.name || !data.phone || !data.email) {
@@ -389,11 +426,29 @@ async function handlePayment() {
     return;
   }
 
-  btn.innerText = "Redirecting...";
+  // BuddyPass validation
+  if (isBuddy) {
+    const buddyName = document.getElementById("buddy_name").value;
+    const buddyPhone = document.getElementById("buddy_phone").value;
+    const buddyEmail = document.getElementById("buddy_email").value;
+    if (!buddyName || !buddyPhone || !buddyEmail) {
+      alert("Please fill buddy's name, phone and email");
+      return;
+    }
+    if (!/^\d{10}$/.test(buddyPhone)) {
+      alert("Enter valid 10-digit phone number for buddy");
+      return;
+    }
+    data.buddy_name = buddyName;
+    data.buddy_phone = buddyPhone;
+    data.buddy_email = buddyEmail;
+    data.buddy_city = document.getElementById("buddy_city").value;
+  }
+
+  btn.querySelector("span").textContent = "Redirecting...";
   btn.disabled = true;
 
   try {
-    // Save data
     const { error } = await supabaseClient
       .from("booking_requests")
       .insert([{
@@ -405,6 +460,11 @@ async function handlePayment() {
         course: data.course,
         mentor_gender: data.gender,
         requirements: data.requirements,
+        plan: data.plan,
+        buddy_name: data.buddy_name || null,
+        buddy_phone: data.buddy_phone || null,
+        buddy_email: data.buddy_email || null,
+        buddy_city: data.buddy_city || null,
         payment_id: "form_redirect",
         status: "pending"
       }]);
@@ -412,20 +472,26 @@ async function handlePayment() {
     if (error) {
       console.error("Supabase Error:", error);
       alert("Error saving data");
-      btn.innerText = "Try Again";
+      btn.querySelector("span").textContent = isBuddy
+        ? "Find My Mentor → Secure My Slot ₹499"
+        : "Find My Mentor → Secure My Slot ₹299";
       btn.disabled = false;
       return;
     }
 
     // Redirect to Cashfree
-    window.location.href = "https://payments.cashfree.com/forms/eduronix-booking";
+    window.location.href = "https://payments.cashfree.com/forms?code=eduronix-booking";
 
   } catch (err) {
     console.error(err);
     alert("Something went wrong");
-
-    btn.innerText = "Try Again";
+    btn.querySelector("span").textContent = isBuddy
+      ? "Find My Mentor → Secure My Slot ₹499"
+      : "Find My Mentor → Secure My Slot ₹299";
     btn.disabled = false;
   }
 }
 </script>
+</body>
+</html>
+
