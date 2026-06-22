@@ -1,5 +1,6 @@
 import os
 import json
+from pathlib import Path
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
@@ -8,7 +9,8 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 
-load_dotenv()
+ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(dotenv_path=ENV_PATH)
 
 router = APIRouter(prefix="/api", tags=["CollegeMatch"])
 
@@ -47,12 +49,20 @@ class CollegeMatchResponse(BaseModel):
     matches_found: int
     data: List[CollegeData]
 
-# Initialize Gemini Client
-client = genai.Client()
+def get_gemini_client() -> genai.Client:
+    api_key = (os.getenv("GEMINI_API_KEY") or "").strip().strip('"').strip("'")
+    if not api_key:
+        raise HTTPException(
+            status_code=500,
+            detail="Gemini API key is missing. Set GEMINI_API_KEY in eduronix-landing/.env.",
+        )
+    return genai.Client(api_key=api_key)
 
 @router.post("/college-match")
 async def process_college_match(payload: CollegeMatchRequest):
     try:
+        client = get_gemini_client()
+
         # 1. Log incoming data to Supabase
         lead_data = payload.dict()
         supabase.table("college_match_leads").insert(lead_data).execute()
@@ -79,7 +89,7 @@ async def process_college_match(payload: CollegeMatchRequest):
             ),
         )
 
-        return json.loads(response.text)
+        return json.loads(response.text) 
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI Engine Error: {str(e)}") 
