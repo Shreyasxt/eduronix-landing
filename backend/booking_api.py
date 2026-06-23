@@ -1,13 +1,13 @@
 from typing import Literal, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter, Header, HTTPException, Depends
 from pydantic import BaseModel, EmailStr
 
-from database import supabase
+from database import supabase, get_current_user
 
 
-router = APIRouter(tags=["Booking Requests"])
+router = APIRouter(tags=["Booking Requests"], dependencies=[Depends(get_current_user)])
 
 
 class BookingRequest(BaseModel): 
@@ -33,23 +33,8 @@ class UpdateBookingStatusRequest(BaseModel):
 
 @router.post("/request-booking")
 async def request_booking(
-    payload: BookingRequest, authorization: Optional[str] = Header(default=None)
+    payload: BookingRequest, user = Depends(get_current_user)
 ):
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
-    scheme, _, token = authorization.partition(" ")
-    if scheme.lower() != "bearer" or not token.strip():
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
-    try:
-        user_response = supabase.auth.get_user(jwt=token.strip())
-    except Exception:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
-    if not user_response or not getattr(user_response, "user", None):
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
     try:
         insert_data = {
             "name": payload.name,

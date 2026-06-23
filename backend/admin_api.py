@@ -1,10 +1,10 @@
-from fastapi import APIRouter, HTTPException
-from database import supabase
+from fastapi import APIRouter, HTTPException, Depends
+from database import supabase, require_admin
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
-router = APIRouter(prefix="/admin", tags=["Admin Control Panel"])
+router = APIRouter(prefix="/admin", tags=["Admin Control Panel"], dependencies=[Depends(require_admin)])
 
 class AssignMentorRequest(BaseModel):
     booking_id: str

@@ -1,1729 +1,2203 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CollegeMatch by Eduronix</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #13131a;
-    --surface2: #1c1c26;
-    --surface3: #252533;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #f0f0f5;
-    --text2: #9090a8;
-    --text3: #606075;
-    --accent: #6c63ff;
-    --accent2: #8b85ff;
-    --accent-glow: rgba(108,99,255,0.18);
-    --green: #22d3a0;
-    --green-bg: rgba(34,211,160,0.1);
-    --amber: #f59e0b;
-    --amber-bg: rgba(245,158,11,0.1);
-    --red: #ef4444;
-    --pink: #f472b6;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CollegeMatch by Eduronix</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --surface2: #1c1c26;
+      --surface3: #252533;
+      --border: rgba(255, 255, 255, 0.08);
+      --border2: rgba(255, 255, 255, 0.14);
+      --text: #f0f0f5;
+      --text2: #9090a8;
+      --text3: #606075;
+      --accent: #6c63ff;
+      --accent2: #8b85ff;
+      --accent-glow: rgba(108, 99, 255, 0.18);
+      --green: #22d3a0;
+      --green-bg: rgba(34, 211, 160, 0.1);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.1);
+      --red: #ef4444;
+      --pink: #f472b6;
+    }
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-  /* NOISE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
 
-  /* PAGES */
-  .page { display: none; min-height: 100vh; position: relative; z-index: 1; }
-  .page.active { display: flex; flex-direction: column; }
+    /* PAGES */
+    .page {
+      display: none;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
 
-  /* ─── NAV ─── */
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 2.5rem;
-    border-bottom: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(10,10,15,0.85);
-  }
-  .logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.2rem;
-    letter-spacing: -0.02em;
-  }
-  .logo span { color: var(--accent2); }
-  .nav-tag {
-    font-size: 0.7rem;
-    background: var(--accent-glow);
-    color: var(--accent2);
-    border: 1px solid rgba(108,99,255,0.3);
-    padding: 4px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
+    .page.active {
+      display: flex;
+      flex-direction: column;
+    }
 
-  /* ─── PROGRESS BAR ─── */
-  .progress-wrap {
-    padding: 1rem 2.5rem 0;
-  }
-  .progress-steps {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-  .step-pill {
-    height: 4px;
-    border-radius: 2px;
-    flex: 1;
-    background: var(--surface3);
-    transition: background 0.4s;
-  }
-  .step-pill.done { background: var(--accent); }
-  .step-pill.active { background: var(--accent2); }
-  .step-label {
-    font-size: 0.72rem;
-    color: var(--text3);
-    margin-top: 0.5rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
+    /* ─── NAV ─── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.85);
+    }
 
-  /* ─── HERO ─── */
-  .hero {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 4rem 2rem;
-  }
-  .hero-eyebrow {
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent2);
-    font-weight: 500;
-    margin-bottom: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .hero-eyebrow::before, .hero-eyebrow::after {
-    content: '';
-    width: 30px;
-    height: 1px;
-    background: rgba(139,133,255,0.4);
-  }
-  .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2.4rem, 6vw, 4.5rem);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
-    max-width: 780px;
-  }
-  .hero h1 em {
-    font-style: normal;
-    color: var(--accent2);
-  }
-  .hero p {
-    font-size: 1.1rem;
-    color: var(--text2);
-    max-width: 520px;
-    line-height: 1.7;
-    margin-bottom: 2.5rem;
-  }
-  .cta-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    padding: 1rem 2.5rem;
-    border-radius: 50px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.25s;
-    letter-spacing: -0.01em;
-  }
-  .cta-btn:hover {
-    background: var(--accent2);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(108,99,255,0.35);
-  }
-  .cta-btn svg { transition: transform 0.2s; }
-  .cta-btn:hover svg { transform: translateX(4px); }
-  .hero-stats {
-    display: flex;
-    gap: 2.5rem;
-    margin-top: 3.5rem;
-    padding-top: 3rem;
-    border-top: 1px solid var(--border);
-  }
-  .stat { text-align: center; }
-  .stat-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.04em;
-  }
-  .stat-label { font-size: 0.8rem; color: var(--text3); margin-top: 2px; }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
 
-  /* ─── QUESTION PAGES ─── */
-  .q-wrap {
-    flex: 1;
-    max-width: 720px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 3rem 2rem;
-  }
-  .q-num {
-    font-size: 0.7rem;
-    color: var(--text3);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: 500;
-    margin-bottom: 0.75rem;
-  }
-  .q-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    margin-bottom: 0.6rem;
-  }
-  .q-sub {
-    color: var(--text2);
-    font-size: 0.95rem;
-    margin-bottom: 2.5rem;
-    line-height: 1.6;
-  }
+    .logo span {
+      color: var(--accent2);
+    }
 
-  /* OPTION CARDS */
-  .options-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 2.5rem;
-  }
-  .opt-card {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 1.1rem 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-  }
-  .opt-card:hover {
-    border-color: var(--border2);
-    background: var(--surface2);
-  }
-  .opt-card.selected {
-    border-color: var(--accent);
-    background: var(--accent-glow);
-  }
-  .opt-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
-  .opt-label { font-size: 0.9rem; font-weight: 500; color: var(--text); }
-  .opt-sub { font-size: 0.75rem; color: var(--text3); margin-top: 2px; }
+    .nav-tag {
+      font-size: 0.7rem;
+      background: var(--accent-glow);
+      color: var(--accent2);
+      border: 1px solid rgba(108, 99, 255, 0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
 
-  /* TEXT INPUTS */
-  .input-field {
-    width: 100%;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
-    outline: none;
-    transition: border 0.2s;
-    margin-bottom: 12px;
-  }
-  .input-field:focus { border-color: var(--accent); }
-  .input-field::placeholder { color: var(--text3); }
+    /* ─── PROGRESS BAR ─── */
+    .progress-wrap {
+      padding: 1rem 2.5rem 0;
+    }
 
-  /* SLIDER */
-  .slider-wrap { margin-bottom: 2rem; }
-  .slider-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.8rem;
-    color: var(--text3);
-    margin-bottom: 0.5rem;
-  }
-  .slider-val {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.03em;
-  }
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--surface3);
-    outline: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    border: 3px solid var(--bg);
-    box-shadow: 0 0 0 2px var(--accent);
-  }
+    .progress-steps {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
 
-  /* TAG PILLS */
-  .tag-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2rem; }
-  .tag-pill {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 30px;
-    padding: 0.45rem 1rem;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--text2);
-  }
-  .tag-pill:hover { border-color: var(--border2); color: var(--text); }
-  .tag-pill.selected {
-    background: var(--accent-glow);
-    border-color: var(--accent);
-    color: var(--accent2);
-    font-weight: 500;
-  }
+    .step-pill {
+      height: 4px;
+      border-radius: 2px;
+      flex: 1;
+      background: var(--surface3);
+      transition: background 0.4s;
+    }
 
-  /* NAV BUTTONS */
-  .q-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 2rem;
-  }
-  .btn-back {
-    background: none;
-    border: 1.5px solid var(--border);
-    color: var(--text2);
-    padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-back:hover { border-color: var(--border2); color: var(--text); }
-  .btn-next {
-    background: var(--accent);
-    border: none;
-    color: #fff;
-    padding: 0.75rem 2rem;
-    border-radius: 50px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.25s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .btn-next:hover {
-    background: var(--accent2);
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(108,99,255,0.3);
-  }
-  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+    .step-pill.done {
+      background: var(--accent);
+    }
 
-  /* ─── LOADING PAGE ─── */
-  .loading-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem;
-    text-align: center;
-  }
-  .ai-orb {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, var(--accent2), var(--accent));
-    margin: 0 auto 2rem;
-    animation: pulse 2s ease-in-out infinite;
-    position: relative;
-  }
-  .ai-orb::after {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    border: 2px solid rgba(108,99,255,0.25);
-    animation: ring 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(108,99,255,0.4); }
-    50% { transform: scale(1.06); box-shadow: 0 0 60px rgba(108,99,255,0.6); }
-  }
-  @keyframes ring {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50% { transform: scale(1.15); opacity: 0; }
-  }
-  .loading-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.02em;
-  }
-  .loading-sub { color: var(--text2); font-size: 0.95rem; line-height: 1.6; max-width: 360px; }
-  .loading-steps {
-    margin-top: 2.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    max-width: 340px;
-  }
-  .load-step {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 0.88rem;
-    color: var(--text3);
-    transition: color 0.3s;
-  }
-  .load-step.done { color: var(--green); }
-  .load-step.active { color: var(--text); }
-  .load-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--surface3);
-    flex-shrink: 0;
-    transition: background 0.3s;
-  }
-  .load-step.done .load-dot { background: var(--green); }
-  .load-step.active .load-dot { background: var(--accent2); animation: blink 1s infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .step-pill.active {
+      background: var(--accent2);
+    }
 
-  /* ─── RESULTS PAGE ─── */
-  .results-wrap {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2.5rem 2rem 4rem;
-    width: 100%;
-  }
-  .results-header {
-    margin-bottom: 2.5rem;
-  }
-  .results-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.72rem;
-    color: var(--green);
-    background: var(--green-bg);
-    border: 1px solid rgba(34,211,160,0.2);
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 1rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  .results-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    margin-bottom: 0.5rem;
-  }
-  .results-sub { color: var(--text2); font-size: 0.95rem; }
+    .step-label {
+      font-size: 0.72rem;
+      color: var(--text3);
+      margin-top: 0.5rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
 
-  /* FILTER BAR */
-  .filter-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .filter-btn {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    color: var(--text2);
-    padding: 0.45rem 1rem;
-    border-radius: 30px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .filter-btn:hover { border-color: var(--border2); color: var(--text); }
-  .filter-btn.active {
-    background: var(--accent-glow);
-    border-color: var(--accent);
-    color: var(--accent2);
-    font-weight: 500;
-  }
+    /* ─── HERO ─── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
 
-  /* COLLEGE CARDS */
-  .college-list { display: flex; flex-direction: column; gap: 14px; }
-  .college-card {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    padding: 1.4rem 1.5rem;
-    transition: all 0.25s;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .college-card:hover {
-    border-color: var(--border2);
-    background: var(--surface2);
-    transform: translateY(-1px);
-  }
-  .college-card.top-pick {
-    border-color: rgba(108,99,255,0.35);
-  }
-  .college-card.top-pick::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--pink));
-  }
-  .card-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-  .card-rank {
-    font-family: 'Syne', sans-serif;
-    font-size: 0.7rem;
-    color: var(--text3);
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-  .card-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.15rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-  .card-location {
-    font-size: 0.82rem;
-    color: var(--text3);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .match-badge {
-    flex-shrink: 0;
-    text-align: center;
-  }
-  .match-pct {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-  }
-  .match-pct.high { color: var(--green); }
-  .match-pct.mid { color: var(--amber); }
-  .match-label { font-size: 0.65rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 1rem 0;
-  }
-  .c-tag {
-    font-size: 0.75rem;
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid;
-    font-weight: 500;
-  }
-  .c-tag.fee { background: rgba(245,158,11,0.1); color: #d97706; border-color: rgba(245,158,11,0.2); }
-  .c-tag.place { background: rgba(34,211,160,0.1); color: #10b981; border-color: rgba(34,211,160,0.2); }
-  .c-tag.campus { background: rgba(108,99,255,0.1); color: var(--accent2); border-color: rgba(108,99,255,0.2); }
-  .c-tag.mentor { background: rgba(244,114,182,0.1); color: #ec4899; border-color: rgba(244,114,182,0.2); }
-  .card-reason {
-    font-size: 0.88rem;
-    color: var(--text2);
-    line-height: 1.6;
-    margin-bottom: 1.1rem;
-    border-left: 2px solid var(--accent);
-    padding-left: 0.9rem;
-  }
-  .card-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--border);
-  }
-  .deadline-tag {
-    font-size: 0.78rem;
-    color: var(--amber);
-    background: var(--amber-bg);
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-weight: 500;
-  }
-  .btn-mentor {
-    background: var(--accent);
-    border: none;
-    color: #fff;
-    padding: 0.6rem 1.4rem;
-    border-radius: 30px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .btn-mentor:hover {
-    background: var(--accent2);
-    box-shadow: 0 6px 20px rgba(108,99,255,0.35);
-  }
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-  /* CONFUSED BANNER */
-  .confused-banner {
-    background: linear-gradient(135deg, rgba(108,99,255,0.12), rgba(244,114,182,0.08));
-    border: 1.5px solid rgba(108,99,255,0.2);
-    border-radius: 16px;
-    padding: 1.5rem 1.75rem;
-    margin-top: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .confused-text h3 {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 1.05rem;
-    margin-bottom: 4px;
-    letter-spacing: -0.02em;
-  }
-  .confused-text p { font-size: 0.88rem; color: var(--text2); line-height: 1.5; }
-  .btn-confused {
-    background: var(--accent);
-    border: none;
-    color: #fff;
-    padding: 0.7rem 1.6rem;
-    border-radius: 30px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-  .btn-confused:hover { background: var(--accent2); }
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      width: 30px;
+      height: 1px;
+      background: rgba(139, 133, 255, 0.4);
+    }
 
-  /* SHARE BAR */
-  .share-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 1rem 1.5rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  .share-text { font-size: 0.9rem; color: var(--text2); }
-  .share-text strong { color: var(--text); }
-  .share-btns { display: flex; gap: 8px; }
-  .btn-share {
-    background: var(--surface2);
-    border: 1.5px solid var(--border);
-    color: var(--text);
-    padding: 0.5rem 1rem;
-    border-radius: 30px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .btn-share:hover { border-color: var(--border2); }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      max-width: 780px;
+    }
 
-  /* BOOKING PAGE */
-  .booking-wrap {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 3rem 2rem 4rem;
-    width: 100%;
-  }
-  .booking-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-  .booking-icon {
-    width: 64px;
-    height: 64px;
-    background: var(--accent-glow);
-    border: 2px solid rgba(108,99,255,0.3);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    margin: 0 auto 1.25rem;
-  }
-  .booking-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-bottom: 0.6rem;
-  }
-  .booking-sub { color: var(--text2); font-size: 0.95rem; line-height: 1.6; }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent2);
+    }
 
-  .mentor-profile {
-    background: var(--surface);
-    border: 1.5px solid rgba(108,99,255,0.25);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    gap: 1.25rem;
-    align-items: flex-start;
-  }
-  .mentor-av {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #fff;
-  }
-  .av-blue { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
-  .av-teal { background: linear-gradient(135deg, #0891b2, #0d9488); }
-  .mentor-info h4 {
-    font-family: 'Syne', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    margin-bottom: 3px;
-  }
-  .mentor-info p { font-size: 0.83rem; color: var(--text2); margin-bottom: 6px; }
-  .mentor-stars { color: var(--amber); font-size: 0.8rem; }
-  .mentor-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .m-tag {
-    font-size: 0.73rem;
-    padding: 3px 9px;
-    border-radius: 20px;
-    background: var(--surface2);
-    color: var(--text2);
-    border: 1px solid var(--border);
-  }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text2);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
 
-  .session-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 1.5rem;
-  }
-  .session-opt {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-  }
-  .session-opt:hover { border-color: var(--border2); }
-  .session-opt.selected {
-    border-color: var(--accent);
-    background: var(--accent-glow);
-  }
-  .session-price {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--accent2);
-    margin-bottom: 4px;
-  }
-  .session-desc { font-size: 0.8rem; color: var(--text2); }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: -0.01em;
+    }
 
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .form-label {
-    font-size: 0.8rem;
-    color: var(--text3);
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin-bottom: 0.4rem;
-    display: block;
-  }
-  .trust-row {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin: 1.5rem 0;
-    flex-wrap: wrap;
-  }
-  .trust-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.8rem;
-    color: var(--text3);
-  }
-  .trust-icon { color: var(--green); font-size: 0.9rem; }
+    .cta-btn:hover {
+      background: var(--accent2);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(108, 99, 255, 0.35);
+    }
 
-  .btn-book {
-    width: 100%;
-    background: linear-gradient(135deg, var(--accent), #8b5cf6);
-    border: none;
-    color: #fff;
-    padding: 1.1rem;
-    border-radius: 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.25s;
-    letter-spacing: -0.01em;
-    margin-top: 0.5rem;
-  }
-  .btn-book:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 40px rgba(108,99,255,0.4);
-  }
+    .cta-btn svg {
+      transition: transform 0.2s;
+    }
 
-  /* SUCCESS */
-  .success-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 3rem 2rem;
-  }
-  .success-check {
-    width: 80px;
-    height: 80px;
-    background: var(--green-bg);
-    border: 2px solid rgba(34,211,160,0.3);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    margin: 0 auto 1.5rem;
-    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  @keyframes popIn {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-  .success-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-bottom: 0.75rem;
-  }
-  .success-sub { color: var(--text2); font-size: 1rem; line-height: 1.6; max-width: 400px; margin-bottom: 2rem; }
-  .success-card {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem 2rem;
-    margin-bottom: 2rem;
-    width: 100%;
-    max-width: 380px;
-    text-align: left;
-  }
-  .success-card-label { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
-  .success-card-val { font-size: 0.95rem; color: var(--text); font-weight: 500; margin-bottom: 1rem; }
-  .success-card-val:last-child { margin-bottom: 0; }
+    .cta-btn:hover svg {
+      transform: translateX(4px);
+    }
 
-  /* FLOATING BOTTOM */
-  .sticky-bottom {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(10,10,15,0.95);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border);
-    padding: 1rem 1.5rem;
-    z-index: 50;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .sticky-bottom.show { display: flex; }
-  .sticky-msg { font-size: 0.88rem; color: var(--text2); }
-  .sticky-msg strong { color: var(--text); }
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 3.5rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
 
-  @media (max-width: 600px) {
-    nav { padding: 1rem 1.25rem; }
-    .hero h1 { font-size: 2.1rem; }
-    .session-options { grid-template-columns: 1fr; }
-    .form-row { grid-template-columns: 1fr; }
-    .confused-banner { flex-direction: column; }
-  }
-</style>
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.04em;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    /* ─── QUESTION PAGES ─── */
+    .q-wrap {
+      flex: 1;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .q-num {
+      font-size: 0.7rem;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+
+    .q-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.6rem;
+    }
+
+    .q-sub {
+      color: var(--text2);
+      font-size: 0.95rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    /* OPTION CARDS */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+
+    .opt-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 1.1rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .opt-card:hover {
+      border-color: var(--border2);
+      background: var(--surface2);
+    }
+
+    .opt-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .opt-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .opt-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .opt-sub {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    /* TEXT INPUTS */
+    .input-field {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+    }
+
+    .input-field::placeholder {
+      color: var(--text3);
+    }
+
+    /* SLIDER */
+    .slider-wrap {
+      margin-bottom: 2rem;
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text3);
+      margin-bottom: 0.5rem;
+    }
+
+    .slider-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.03em;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--surface3);
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    /* TAG PILLS */
+    .tag-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .tag-pill {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 30px;
+      padding: 0.45rem 1rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text2);
+    }
+
+    .tag-pill:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .tag-pill.selected {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent2);
+      font-weight: 500;
+    }
+
+    /* NAV BUTTONS */
+    .q-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+
+    .btn-back {
+      background: none;
+      border: 1.5px solid var(--border);
+      color: var(--text2);
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .btn-next {
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-next:hover {
+      background: var(--accent2);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(108, 99, 255, 0.3);
+    }
+
+    .btn-next:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ─── LOADING PAGE ─── */
+    .loading-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      text-align: center;
+    }
+
+    .ai-orb {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, var(--accent2), var(--accent));
+      margin: 0 auto 2rem;
+      animation: pulse 2s ease-in-out infinite;
+      position: relative;
+    }
+
+    .ai-orb::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 2px solid rgba(108, 99, 255, 0.25);
+      animation: ring 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 30px rgba(108, 99, 255, 0.4);
+      }
+
+      50% {
+        transform: scale(1.06);
+        box-shadow: 0 0 60px rgba(108, 99, 255, 0.6);
+      }
+    }
+
+    @keyframes ring {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: scale(1.15);
+        opacity: 0;
+      }
+    }
+
+    .loading-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .loading-sub {
+      color: var(--text2);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 360px;
+    }
+
+    .loading-steps {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .load-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.88rem;
+      color: var(--text3);
+      transition: color 0.3s;
+    }
+
+    .load-step.done {
+      color: var(--green);
+    }
+
+    .load-step.active {
+      color: var(--text);
+    }
+
+    .load-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--surface3);
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .load-step.done .load-dot {
+      background: var(--green);
+    }
+
+    .load-step.active .load-dot {
+      background: var(--accent2);
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.3
+      }
+    }
+
+    /* ─── RESULTS PAGE ─── */
+    .results-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 4rem;
+      width: 100%;
+    }
+
+    .results-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .results-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--green);
+      background: var(--green-bg);
+      border: 1px solid rgba(34, 211, 160, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .results-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    .results-sub {
+      color: var(--text2);
+      font-size: 0.95rem;
+    }
+
+    /* FILTER BAR */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--text2);
+      padding: 0.45rem 1rem;
+      border-radius: 30px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .filter-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent2);
+      font-weight: 500;
+    }
+
+    /* COLLEGE CARDS */
+    .college-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .college-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 1.4rem 1.5rem;
+      transition: all 0.25s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .college-card:hover {
+      border-color: var(--border2);
+      background: var(--surface2);
+      transform: translateY(-1px);
+    }
+
+    .college-card.top-pick {
+      border-color: rgba(108, 99, 255, 0.35);
+    }
+
+    .college-card.top-pick::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--pink));
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .card-rank {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      color: var(--text3);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .card-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .card-location {
+      font-size: 0.82rem;
+      color: var(--text3);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .match-badge {
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .match-pct {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .match-pct.high {
+      color: var(--green);
+    }
+
+    .match-pct.mid {
+      color: var(--amber);
+    }
+
+    .match-label {
+      font-size: 0.65rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 1rem 0;
+    }
+
+    .c-tag {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid;
+      font-weight: 500;
+    }
+
+    .c-tag.fee {
+      background: rgba(245, 158, 11, 0.1);
+      color: #d97706;
+      border-color: rgba(245, 158, 11, 0.2);
+    }
+
+    .c-tag.place {
+      background: rgba(34, 211, 160, 0.1);
+      color: #10b981;
+      border-color: rgba(34, 211, 160, 0.2);
+    }
+
+    .c-tag.campus {
+      background: rgba(108, 99, 255, 0.1);
+      color: var(--accent2);
+      border-color: rgba(108, 99, 255, 0.2);
+    }
+
+    .c-tag.mentor {
+      background: rgba(244, 114, 182, 0.1);
+      color: #ec4899;
+      border-color: rgba(244, 114, 182, 0.2);
+    }
+
+    .card-reason {
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 1.1rem;
+      border-left: 2px solid var(--accent);
+      padding-left: 0.9rem;
+    }
+
+    .card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .deadline-tag {
+      font-size: 0.78rem;
+      color: var(--amber);
+      background: var(--amber-bg);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .btn-mentor {
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      padding: 0.6rem 1.4rem;
+      border-radius: 30px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-mentor:hover {
+      background: var(--accent2);
+      box-shadow: 0 6px 20px rgba(108, 99, 255, 0.35);
+    }
+
+    /* CONFUSED BANNER */
+    .confused-banner {
+      background: linear-gradient(135deg, rgba(108, 99, 255, 0.12), rgba(244, 114, 182, 0.08));
+      border: 1.5px solid rgba(108, 99, 255, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem 1.75rem;
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .confused-text h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+
+    .confused-text p {
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    .btn-confused {
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      padding: 0.7rem 1.6rem;
+      border-radius: 30px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-confused:hover {
+      background: var(--accent2);
+    }
+
+    /* SHARE BAR */
+    .share-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.5rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .share-text {
+      font-size: 0.9rem;
+      color: var(--text2);
+    }
+
+    .share-text strong {
+      color: var(--text);
+    }
+
+    .share-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-share {
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-share:hover {
+      border-color: var(--border2);
+    }
+
+    /* BOOKING PAGE */
+    .booking-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+      width: 100%;
+    }
+
+    .booking-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .booking-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--accent-glow);
+      border: 2px solid rgba(108, 99, 255, 0.3);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 1.25rem;
+    }
+
+    .booking-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.6rem;
+    }
+
+    .booking-sub {
+      color: var(--text2);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .mentor-profile {
+      background: var(--surface);
+      border: 1.5px solid rgba(108, 99, 255, 0.25);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .mentor-av {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .av-blue {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    }
+
+    .av-teal {
+      background: linear-gradient(135deg, #0891b2, #0d9488);
+    }
+
+    .mentor-info h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 3px;
+    }
+
+    .mentor-info p {
+      font-size: 0.83rem;
+      color: var(--text2);
+      margin-bottom: 6px;
+    }
+
+    .mentor-stars {
+      color: var(--amber);
+      font-size: 0.8rem;
+    }
+
+    .mentor-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .m-tag {
+      font-size: 0.73rem;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: var(--surface2);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    .session-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .session-opt {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .session-opt:hover {
+      border-color: var(--border2);
+    }
+
+    .session-opt.selected {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .session-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent2);
+      margin-bottom: 4px;
+    }
+
+    .session-desc {
+      font-size: 0.8rem;
+      color: var(--text2);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      color: var(--text3);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .trust-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text3);
+    }
+
+    .trust-icon {
+      color: var(--green);
+      font-size: 0.9rem;
+    }
+
+    .btn-book {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      border: none;
+      color: #fff;
+      padding: 1.1rem;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: -0.01em;
+      margin-top: 0.5rem;
+    }
+
+    .btn-book:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px rgba(108, 99, 255, 0.4);
+    }
+
+    /* SUCCESS */
+    .success-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+
+    .success-check {
+      width: 80px;
+      height: 80px;
+      background: var(--green-bg);
+      border: 2px solid rgba(34, 211, 160, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.5rem;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .success-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+
+    .success-sub {
+      color: var(--text2);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 400px;
+      margin-bottom: 2rem;
+    }
+
+    .success-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 380px;
+      text-align: left;
+    }
+
+    .success-card-label {
+      font-size: 0.75rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+
+    .success-card-val {
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .success-card-val:last-child {
+      margin-bottom: 0;
+    }
+
+    /* FLOATING BOTTOM */
+    .sticky-bottom {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 15, 0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      z-index: 50;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .sticky-bottom.show {
+      display: flex;
+    }
+
+    .sticky-msg {
+      font-size: 0.88rem;
+      color: var(--text2);
+    }
+
+    .sticky-msg strong {
+      color: var(--text);
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        padding: 1rem 1.25rem;
+      }
+
+      .hero h1 {
+        font-size: 2.1rem;
+      }
+
+      .session-options {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .confused-banner {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- ═══════════════════════════════════════ PAGE 0: LANDING ═══ -->
-<div class="page active" id="page-0">
-  <nav>
-    <div class="logo">College<span>Match</span> <span style="color:var(--text3);font-weight:400">by Eduronix</span></div>
-    <div class="nav-tag">Free Tool</div>
-  </nav>
-  <div class="hero">
-    <div class="hero-eyebrow">AI-Powered College Finder</div>
-    <h1>Find your <em>perfect</em> college.<br>Before you choose wrong.</h1>
-    <p>Answer a few questions. Our AI matches you with the top 10 colleges that actually fit your scores, goals, budget, and vibe.</p>
-    <button class="cta-btn" onclick="goTo(1)">
-      Find My Colleges
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </button>
-    <div class="hero-stats">
-      <div class="stat"><div class="stat-num">10K+</div><div class="stat-label">Students guided</div></div>
-      <div class="stat"><div class="stat-num">200+</div><div class="stat-label">Colleges mapped</div></div>
-      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Free to use</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ PAGE 1: STREAM ═══ -->
-<div class="page" id="page-1">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div class="nav-tag">Step 1 of 6</div>
-  </nav>
-  <div class="progress-wrap">
-    <div class="progress-steps">
-      <div class="step-pill active" id="pill-1"></div>
-      <div class="step-pill" id="pill-2"></div>
-      <div class="step-pill" id="pill-3"></div>
-      <div class="step-pill" id="pill-4"></div>
-      <div class="step-pill" id="pill-5"></div>
-      <div class="step-pill" id="pill-6"></div>
-    </div>
-    <div class="step-label">Stream & Exams</div>
-  </div>
-  <div class="q-wrap">
-    <div class="q-num">Question 01 / 06</div>
-    <h2 class="q-title">What's your stream?</h2>
-    <p class="q-sub">This helps us filter the right colleges and entrance exams for you.</p>
-    <div class="options-grid">
-      <div class="opt-card" onclick="selectOpt(this, 'stream')">
-        <div class="opt-icon">🔬</div>
-        <div class="opt-label">Science</div>
-        <div class="opt-sub">PCM / PCB</div>
+  <!-- ═══════════════════════════════════════ PAGE 0: LANDING ═══ -->
+  <div class="page active" id="page-0">
+    <nav>
+      <div class="logo">College<span>Match</span> <span style="color:var(--text3);font-weight:400">by Eduronix</span>
       </div>
-      <div class="opt-card" onclick="selectOpt(this, 'stream')">
-        <div class="opt-icon">📊</div>
-        <div class="opt-label">Commerce</div>
-        <div class="opt-sub">With / without Maths</div>
-      </div>
-      <div class="opt-card" onclick="selectOpt(this, 'stream')">
-        <div class="opt-icon">🎭</div>
-        <div class="opt-label">Arts / Humanities</div>
-        <div class="opt-sub">Literature, History, etc.</div>
-      </div>
-      <div class="opt-card" onclick="selectOpt(this, 'stream')">
-        <div class="opt-icon">💻</div>
-        <div class="opt-label">Diploma</div>
-        <div class="opt-sub">Technical / Vocational</div>
-      </div>
-    </div>
-    <h2 class="q-title" style="font-size:1.2rem;margin-bottom:0.75rem;">Which exams are you giving?</h2>
-    <div class="tag-wrap" id="exam-tags">
-      <div class="tag-pill" onclick="toggleTag(this)">JEE Main</div>
-      <div class="tag-pill" onclick="toggleTag(this)">JEE Advanced</div>
-      <div class="tag-pill" onclick="toggleTag(this)">MHT-CET</div>
-      <div class="tag-pill" onclick="toggleTag(this)">NEET</div>
-      <div class="tag-pill" onclick="toggleTag(this)">CUET</div>
-      <div class="tag-pill" onclick="toggleTag(this)">CAT / MBA</div>
-      <div class="tag-pill" onclick="toggleTag(this)">CLAT</div>
-      <div class="tag-pill" onclick="toggleTag(this)">None / Direct Admission</div>
-    </div>
-    <div class="q-nav">
-      <button class="btn-back" onclick="goTo(0)">← Back</button>
-      <button class="btn-next" onclick="goTo(2)">Continue <span>→</span></button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ PAGE 2: SCORES & BUDGET ═══ -->
-<div class="page" id="page-2">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div class="nav-tag">Step 2 of 6</div>
-  </nav>
-  <div class="progress-wrap">
-    <div class="progress-steps">
-      <div class="step-pill done"></div>
-      <div class="step-pill active"></div>
-      <div class="step-pill"></div>
-      <div class="step-pill"></div>
-      <div class="step-pill"></div>
-      <div class="step-pill"></div>
-    </div>
-    <div class="step-label">Scores & Budget</div>
-  </div>
-  <div class="q-wrap">
-    <div class="q-num">Question 02 / 06</div>
-    <h2 class="q-title">Your scores & budget</h2>
-    <p class="q-sub">Be honest — this is how we find realistic matches, not just dream ones.</p>
-
-    <div class="slider-wrap">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.5rem;font-weight:500;">12th Board Percentage (expected or final)</div>
-      <div class="slider-val" id="score-val">78%</div>
-      <input type="range" min="40" max="100" value="78" step="1" oninput="document.getElementById('score-val').textContent=this.value+'%'">
-      <div class="slider-labels"><span>40%</span><span>100%</span></div>
-    </div>
-
-    <div class="slider-wrap" style="margin-top:1.5rem;">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.5rem;font-weight:500;">Annual Fee Budget (Total, including hostel)</div>
-      <div class="slider-val" id="budget-val">₹3L / year</div>
-      <input type="range" min="1" max="20" value="3" step="1" oninput="document.getElementById('budget-val').textContent='₹'+this.value+'L / year'">
-      <div class="slider-labels"><span>₹1L</span><span>₹20L+</span></div>
-    </div>
-
-    <div style="margin-top:1.5rem;">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Scholarship / Financial Aid?</div>
-      <div class="tag-wrap">
-        <div class="tag-pill" onclick="toggleTag(this)">Hoping for scholarship</div>
-        <div class="tag-pill" onclick="toggleTag(this)">SC/ST/OBC reservation</div>
-        <div class="tag-pill" onclick="toggleTag(this)">EWS reservation</div>
-        <div class="tag-pill" onclick="toggleTag(this)">No special category</div>
-      </div>
-    </div>
-
-    <div class="q-nav">
-      <button class="btn-back" onclick="goTo(1)">← Back</button>
-      <button class="btn-next" onclick="goTo(3)">Continue →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ PAGE 3: CAREER & LOCATION ═══ -->
-<div class="page" id="page-3">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div class="nav-tag">Step 3 of 6</div>
-  </nav>
-  <div class="progress-wrap">
-    <div class="progress-steps">
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill active"></div>
-      <div class="step-pill"></div>
-      <div class="step-pill"></div>
-      <div class="step-pill"></div>
-    </div>
-    <div class="step-label">Career & Location</div>
-  </div>
-  <div class="q-wrap">
-    <div class="q-num">Question 03 / 06</div>
-    <h2 class="q-title">What do you want to become?</h2>
-    <p class="q-sub">Pick your main goal. If you're undecided, that's totally okay — just pick what excites you most.</p>
-    <div class="options-grid">
-      <div class="opt-card" onclick="selectOpt(this,'career')"><div class="opt-icon">⚙️</div><div class="opt-label">Engineer</div></div>
-      <div class="opt-card" onclick="selectOpt(this,'career')"><div class="opt-icon">🩺</div><div class="opt-label">Doctor</div></div>
-      <div class="opt-card" onclick="selectOpt(this,'career')"><div class="opt-icon">📈</div><div class="opt-label">Business / MBA</div></div>
-      <div class="opt-card" onclick="selectOpt(this,'career')"><div class="opt-icon">⚖️</div><div class="opt-label">Law</div></div>
-      <div class="opt-card" onclick="selectOpt(this,'career')"><div class="opt-icon">🎨</div><div class="opt-label">Design / Arts</div></div>
-      <div class="opt-card" onclick="selectOpt(this,'career')"><div class="opt-icon">🏛️</div><div class="opt-label">Government / IAS</div></div>
-      <div class="opt-card" onclick="selectOpt(this,'career')"><div class="opt-icon">🔭</div><div class="opt-label">Research / Science</div></div>
-      <div class="opt-card" onclick="selectOpt(this,'career')"><div class="opt-icon">🤔</div><div class="opt-label">Not sure yet</div></div>
-    </div>
-
-    <h2 class="q-title" style="font-size:1.2rem;margin-bottom:0.75rem;margin-top:0.5rem;">Where should your college be?</h2>
-    <div class="tag-wrap">
-      <div class="tag-pill" onclick="toggleTag(this)">Maharashtra</div>
-      <div class="tag-pill" onclick="toggleTag(this)">Pune</div>
-      <div class="tag-pill" onclick="toggleTag(this)">Mumbai</div>
-      <div class="tag-pill" onclick="toggleTag(this)">Anywhere in India</div>
-      <div class="tag-pill" onclick="toggleTag(this)">Prefer near home</div>
-      <div class="tag-pill" onclick="toggleTag(this)">Tier 1 city only</div>
-      <div class="tag-pill" onclick="toggleTag(this)">Open to small city</div>
-    </div>
-
-    <div class="q-nav">
-      <button class="btn-back" onclick="goTo(2)">← Back</button>
-      <button class="btn-next" onclick="goTo(4)">Continue →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ PAGE 4: VIBE & LIFESTYLE ═══ -->
-<div class="page" id="page-4">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div class="nav-tag">Step 4 of 6</div>
-  </nav>
-  <div class="progress-wrap">
-    <div class="progress-steps">
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill active"></div>
-      <div class="step-pill"></div>
-      <div class="step-pill"></div>
-    </div>
-    <div class="step-label">College Vibe</div>
-  </div>
-  <div class="q-wrap">
-    <div class="q-num">Question 04 / 06</div>
-    <h2 class="q-title">What kind of college feels right?</h2>
-    <p class="q-sub">Beyond rank and score — what actually matters to you in your 4 years.</p>
-
-    <div style="margin-bottom:1.75rem;">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">College type priority (pick all that apply)</div>
-      <div class="tag-wrap">
-        <div class="tag-pill" onclick="toggleTag(this)">🏅 Top brand / IIT / NIT</div>
-        <div class="tag-pill" onclick="toggleTag(this)">💼 Best placements</div>
-        <div class="tag-pill" onclick="toggleTag(this)">😊 Chill, low pressure</div>
-        <div class="tag-pill" onclick="toggleTag(this)">🎉 Active campus life</div>
-        <div class="tag-pill" onclick="toggleTag(this)">🔬 Research focused</div>
-        <div class="tag-pill" onclick="toggleTag(this)">🏠 Close to home</div>
-        <div class="tag-pill" onclick="toggleTag(this)">🌍 International exposure</div>
-        <div class="tag-pill" onclick="toggleTag(this)">🤝 Strong alumni network</div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:1.75rem;">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Living preference</div>
-      <div class="options-grid" style="grid-template-columns:1fr 1fr 1fr;">
-        <div class="opt-card" onclick="selectOpt(this,'living')"><div class="opt-icon">🏢</div><div class="opt-label">Hostel</div></div>
-        <div class="opt-card" onclick="selectOpt(this,'living')"><div class="opt-icon">🏡</div><div class="opt-label">Day scholar</div></div>
-        <div class="opt-card" onclick="selectOpt(this,'living')"><div class="opt-icon">🤷</div><div class="opt-label">Either is fine</div></div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:1.75rem;">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Sports or extracurriculars that matter to you?</div>
-      <div class="tag-wrap">
-        <div class="tag-pill" onclick="toggleTag(this)">Cricket / Sports</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Music / Arts</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Coding clubs</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Entrepreneurship cell</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Cultural fests</div>
-        <div class="tag-pill" onclick="toggleTag(this)">NSS / Social work</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Nothing specific</div>
-      </div>
-    </div>
-
-    <div class="q-nav">
-      <button class="btn-back" onclick="goTo(3)">← Back</button>
-      <button class="btn-next" onclick="goTo(5)">Continue →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ PAGE 5: EMOTIONAL / MENTAL ═══ -->
-<div class="page" id="page-5">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div class="nav-tag">Step 5 of 6</div>
-  </nav>
-  <div class="progress-wrap">
-    <div class="progress-steps">
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill active"></div>
-      <div class="step-pill"></div>
-    </div>
-    <div class="step-label">Personality & Fears</div>
-  </div>
-  <div class="q-wrap">
-    <div class="q-num">Question 05 / 06</div>
-    <h2 class="q-title">The honest questions.</h2>
-    <p class="q-sub">Most tools skip this. We don't. Real decisions need real answers.</p>
-
-    <div style="margin-bottom:1.75rem;">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">How do you handle academic pressure?</div>
-      <div class="options-grid" style="grid-template-columns:1fr 1fr;">
-        <div class="opt-card" onclick="selectOpt(this,'pressure')"><div class="opt-icon">💪</div><div class="opt-label">I thrive under pressure</div></div>
-        <div class="opt-card" onclick="selectOpt(this,'pressure')"><div class="opt-icon">😅</div><div class="opt-label">I manage, but it's hard</div></div>
-        <div class="opt-card" onclick="selectOpt(this,'pressure')"><div class="opt-icon">🧘</div><div class="opt-label">I prefer balanced pace</div></div>
-        <div class="opt-card" onclick="selectOpt(this,'pressure')"><div class="opt-icon">😔</div><div class="opt-label">I struggle with pressure</div></div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:1.75rem;">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">What's your biggest fear about college?</div>
-      <div class="tag-wrap">
-        <div class="tag-pill" onclick="toggleTag(this)">Not getting good placements</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Choosing wrong college</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Being away from family</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Peer pressure & ragging</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Not fitting in socially</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Wasting money & time</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Not enjoying the degree</div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:1.75rem;">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Any colleges already on your mind? (optional)</div>
-      <input type="text" class="input-field" placeholder="e.g. COEP, VIT, Symbiosis, VJTI...">
-    </div>
-
-    <div class="q-nav">
-      <button class="btn-back" onclick="goTo(4)">← Back</button>
-      <button class="btn-next" onclick="goTo(6)">Continue →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ PAGE 6: CONTACT ═══ -->
-<div class="page" id="page-6">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div class="nav-tag">Step 6 of 6</div>
-  </nav>
-  <div class="progress-wrap">
-    <div class="progress-steps">
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill done"></div>
-      <div class="step-pill active"></div>
-    </div>
-    <div class="step-label">Almost done!</div>
-  </div>
-  <div class="q-wrap">
-    <div class="q-num">Question 06 / 06</div>
-    <h2 class="q-title">Where do we send your results?</h2>
-    <p class="q-sub">Your personalized college list will be saved. Your parents can also see it.</p>
-
-    <input type="text" class="input-field" placeholder="Your full name">
-    <input type="tel" class="input-field" placeholder="WhatsApp number (for results)">
-    <input type="email" class="input-field" placeholder="Email address">
-
-    <div style="margin:1.25rem 0;">
-      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Who else is making this decision with you?</div>
-      <div class="tag-wrap">
-        <div class="tag-pill" onclick="toggleTag(this)">Mostly me</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Parents are involved</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Parents are deciding</div>
-        <div class="tag-pill" onclick="toggleTag(this)">Mentor / teacher</div>
-      </div>
-    </div>
-
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;">
-      <div style="font-size:0.78rem;color:var(--text3);line-height:1.6;">
-        🔒 Your data is private and only used to generate your college match. We won't spam you. By continuing, you agree to receive your results via WhatsApp.
-      </div>
-    </div>
-
-    <div class="q-nav">
-      <button class="btn-back" onclick="goTo(5)">← Back</button>
-      <button class="btn-next" onclick="submitCollegeMatchForm()" style="background:var(--green);font-size:1.1rem;font-weight:600;">
-    🔍 Find My Colleges
-</button> 
+      <div class="nav-tag">Free Tool</div>
+    </nav>
+    <div class="hero">
+      <div class="hero-eyebrow">AI-Powered College Finder</div>
+      <h1>Find your <em>perfect</em> college.<br>Before you choose wrong.</h1>
+      <p>Answer a few questions. Our AI matches you with the top 10 colleges that actually fit your scores, goals,
+        budget, and vibe.</p>
+      <button class="cta-btn" onclick="goTo(1)">
+        Find My Colleges
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
       </button>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">10K+</div>
+          <div class="stat-label">Students guided</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">200+</div>
+          <div class="stat-label">Colleges mapped</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Free to use</div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ═══════════════════════════════════════ PAGE: LOADING ═══ -->
-<div class="page" id="page-loading">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div class="nav-tag">Analysing...</div>
-  </nav>
-  <div class="loading-wrap">
-    <div class="ai-orb"></div>
-    <h2 class="loading-title">AI is finding your matches</h2>
-    <p class="loading-sub">Analysing 200+ colleges across placements, culture, fees, and your unique profile.</p>
-    <div class="loading-steps">
-      <div class="load-step done" id="ls1"><div class="load-dot"></div>Reading your profile & preferences</div>
-      <div class="load-step active" id="ls2"><div class="load-dot"></div>Matching against 200+ colleges</div>
-      <div class="load-step" id="ls3"><div class="load-dot"></div>Scoring placement & campus fit</div>
-      <div class="load-step" id="ls4"><div class="load-dot"></div>Finding mentors near your shortlist</div>
-      <div class="load-step" id="ls5"><div class="load-dot"></div>Preparing your personalised report</div>
+  <!-- ═══════════════════════════════════════ PAGE 1: STREAM ═══ -->
+  <div class="page" id="page-1">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div class="nav-tag">Step 1 of 6</div>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="step-pill active" id="pill-1"></div>
+        <div class="step-pill" id="pill-2"></div>
+        <div class="step-pill" id="pill-3"></div>
+        <div class="step-pill" id="pill-4"></div>
+        <div class="step-pill" id="pill-5"></div>
+        <div class="step-pill" id="pill-6"></div>
+      </div>
+      <div class="step-label">Stream & Exams</div>
+    </div>
+    <div class="q-wrap">
+      <div class="q-num">Question 01 / 06</div>
+      <h2 class="q-title">What's your stream?</h2>
+      <p class="q-sub">This helps us filter the right colleges and entrance exams for you.</p>
+      <div class="options-grid">
+        <div class="opt-card" onclick="selectOpt(this, 'stream')">
+          <div class="opt-icon">🔬</div>
+          <div class="opt-label">Science</div>
+          <div class="opt-sub">PCM / PCB</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this, 'stream')">
+          <div class="opt-icon">📊</div>
+          <div class="opt-label">Commerce</div>
+          <div class="opt-sub">With / without Maths</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this, 'stream')">
+          <div class="opt-icon">🎭</div>
+          <div class="opt-label">Arts / Humanities</div>
+          <div class="opt-sub">Literature, History, etc.</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this, 'stream')">
+          <div class="opt-icon">💻</div>
+          <div class="opt-label">Diploma</div>
+          <div class="opt-sub">Technical / Vocational</div>
+        </div>
+      </div>
+      <h2 class="q-title" style="font-size:1.2rem;margin-bottom:0.75rem;">Which exams are you giving?</h2>
+      <div class="tag-wrap" id="exam-tags">
+        <div class="tag-pill" onclick="toggleTag(this)">JEE Main</div>
+        <div class="tag-pill" onclick="toggleTag(this)">JEE Advanced</div>
+        <div class="tag-pill" onclick="toggleTag(this)">MHT-CET</div>
+        <div class="tag-pill" onclick="toggleTag(this)">NEET</div>
+        <div class="tag-pill" onclick="toggleTag(this)">CUET</div>
+        <div class="tag-pill" onclick="toggleTag(this)">CAT / MBA</div>
+        <div class="tag-pill" onclick="toggleTag(this)">CLAT</div>
+        <div class="tag-pill" onclick="toggleTag(this)">None / Direct Admission</div>
+      </div>
+      <div class="q-nav">
+        <button class="btn-back" onclick="goTo(0)">← Back</button>
+        <button class="btn-next" onclick="goTo(2)">Continue <span>→</span></button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ═══════════════════════════════════════ PAGE: RESULTS ═══ -->
-<div class="page" id="page-results">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <button onclick="window.print()" style="background:var(--surface2);border:1.5px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:30px;font-family:'DM Sans',sans-serif;font-size:0.8rem;cursor:pointer;">📄 Save PDF</button>
-      <div class="nav-tag">10 Matches Found</div>
+  <!-- ═══════════════════════════════════════ PAGE 2: SCORES & BUDGET ═══ -->
+  <div class="page" id="page-2">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div class="nav-tag">Step 2 of 6</div>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="step-pill done"></div>
+        <div class="step-pill active"></div>
+        <div class="step-pill"></div>
+        <div class="step-pill"></div>
+        <div class="step-pill"></div>
+        <div class="step-pill"></div>
+      </div>
+      <div class="step-label">Scores & Budget</div>
     </div>
-  </nav>
-  <div class="results-wrap">
-    <div class="results-header">
-      <div class="results-tag">✓ AI Analysis Complete</div>
-      <h2 class="results-title">Your top 10 colleges,<br>ranked for you.</h2>
-      <p class="results-sub">Based on your scores, budget, career goals, and college vibe preferences.</p>
-    </div>
+    <div class="q-wrap">
+      <div class="q-num">Question 02 / 06</div>
+      <h2 class="q-title">Your scores & budget</h2>
+      <p class="q-sub">Be honest — this is how we find realistic matches, not just dream ones.</p>
 
-    <div class="filter-bar">
-      <button class="filter-btn active">All Colleges</button>
-      <button class="filter-btn">🟢 Mentor Available</button>
-      <button class="filter-btn">💰 Under ₹3L/yr</button>
-      <button class="filter-btn">📍 Maharashtra</button>
-      <button class="filter-btn">💼 Top Placements</button>
-    </div>
+      <div class="slider-wrap">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.5rem;font-weight:500;">12th Board Percentage
+          (expected or final)</div>
+        <div class="slider-val" id="score-val">78%</div>
+        <input type="range" min="40" max="100" value="78" step="1"
+          oninput="document.getElementById('score-val').textContent=this.value+'%'">
+        <div class="slider-labels"><span>40%</span><span>100%</span></div>
+      </div>
 
-    <div class="college-list">
+      <div class="slider-wrap" style="margin-top:1.5rem;">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.5rem;font-weight:500;">Annual Fee Budget
+          (Total, including hostel)</div>
+        <div class="slider-val" id="budget-val">₹3L / year</div>
+        <input type="range" min="1" max="20" value="3" step="1"
+          oninput="document.getElementById('budget-val').textContent='₹'+this.value+'L / year'">
+        <div class="slider-labels"><span>₹1L</span><span>₹20L+</span></div>
+      </div>
 
-      <!-- CARD 1 — Top Pick -->
-      <div class="college-card top-pick">
-        <div class="card-top">
-          <div>
-            <div class="card-rank">🏆 #1 Best Match</div>
-            <div class="card-name">COEP Technological University</div>
-            <div class="card-location">📍 Pune, Maharashtra · Government</div>
-          </div>
-          <div class="match-badge">
-            <div class="match-pct high">96%</div>
-            <div class="match-label">Match</div>
-          </div>
-        </div>
-        <div class="card-tags">
-          <span class="c-tag fee">₹1.2L/year</span>
-          <span class="c-tag place">94% Placement</span>
-          <span class="c-tag campus">Active Campus</span>
-          <span class="c-tag mentor">3 Mentors Available</span>
-        </div>
-        <div class="card-reason">
-          Your MHT-CET score range, budget, and Pune preference align perfectly with COEP. Strong alumni network in product companies. Known for its competitive but rewarding culture — matches your pressure-handling profile.
-        </div>
-        <div class="card-bottom">
-          <div class="deadline-tag">⚠️ CET counselling: June 15</div>
-          <button class="btn-mentor" onclick="goTo('booking')">Talk to a COEP student →</button>
+      <div style="margin-top:1.5rem;">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Scholarship / Financial
+          Aid?</div>
+        <div class="tag-wrap">
+          <div class="tag-pill" onclick="toggleTag(this)">Hoping for scholarship</div>
+          <div class="tag-pill" onclick="toggleTag(this)">SC/ST/OBC reservation</div>
+          <div class="tag-pill" onclick="toggleTag(this)">EWS reservation</div>
+          <div class="tag-pill" onclick="toggleTag(this)">No special category</div>
         </div>
       </div>
 
-      <!-- CARD 2 -->
-      <div class="college-card">
-        <div class="card-top">
-          <div>
-            <div class="card-rank">#2 Great Match</div>
-            <div class="card-name">VJTI Mumbai</div>
-            <div class="card-location">📍 Mumbai, Maharashtra · Autonomous</div>
-          </div>
-          <div class="match-badge">
-            <div class="match-pct high">91%</div>
-            <div class="match-label">Match</div>
-          </div>
-        </div>
-        <div class="card-tags">
-          <span class="c-tag fee">₹1.5L/year</span>
-          <span class="c-tag place">91% Placement</span>
-          <span class="c-tag campus">Industry Connections</span>
-          <span class="c-tag mentor">2 Mentors Available</span>
-        </div>
-        <div class="card-reason">
-          Strong placement record in Mumbai's tech ecosystem. Slightly higher fees but excellent ROI. Mumbai exposure good for your business-oriented extracurricular interests.
-        </div>
-        <div class="card-bottom">
-          <div class="deadline-tag">⚠️ CET counselling: June 15</div>
-          <button class="btn-mentor" onclick="goTo('booking')">Talk to a VJTI student →</button>
-        </div>
-      </div>
-
-      <!-- CARD 3 -->
-      <div class="college-card">
-        <div class="card-top">
-          <div>
-            <div class="card-rank">#3 Strong Match</div>
-            <div class="card-name">VIT Vellore</div>
-            <div class="card-location">📍 Vellore, Tamil Nadu · Private</div>
-          </div>
-          <div class="match-badge">
-            <div class="match-pct mid">84%</div>
-            <div class="match-label">Match</div>
-          </div>
-        </div>
-        <div class="card-tags">
-          <span class="c-tag fee">₹4.5L/year</span>
-          <span class="c-tag place">89% Placement</span>
-          <span class="c-tag campus">Vibrant Fest Culture</span>
-        </div>
-        <div class="card-reason">
-          Great option if you're open to private colleges. VIT's campus life and placement cell matches your cultural & career priorities. Note: higher fees than your stated budget — explore scholarships.
-        </div>
-        <div class="card-bottom">
-          <div class="deadline-tag">⚠️ VITEEE: Applications closing</div>
-          <button class="btn-mentor" onclick="goTo('booking')">Talk to a VIT student →</button>
-        </div>
-      </div>
-
-      <!-- CARD 4 -->
-      <div class="college-card">
-        <div class="card-top">
-          <div>
-            <div class="card-rank">#4 Good Match</div>
-            <div class="card-name">Symbiosis Institute of Technology</div>
-            <div class="card-location">📍 Pune, Maharashtra · Deemed</div>
-          </div>
-          <div class="match-badge">
-            <div class="match-pct mid">79%</div>
-            <div class="match-label">Match</div>
-          </div>
-        </div>
-        <div class="card-tags">
-          <span class="c-tag fee">₹3.8L/year</span>
-          <span class="c-tag place">85% Placement</span>
-          <span class="c-tag campus">Pune Campus</span>
-        </div>
-        <div class="card-reason">
-          Pune-based, balanced pressure environment — fits your stated preference for manageable pace. Industry ties are strong for IT roles. Slight budget stretch.
-        </div>
-        <div class="card-bottom">
-          <div style="font-size:0.78rem;color:var(--text3);">Admissions open</div>
-          <button class="btn-mentor" onclick="goTo('booking')">Talk to a SIT student →</button>
-        </div>
-      </div>
-
-      <!-- CARD 5 - collapsed hint -->
-      <div class="college-card" style="opacity:0.7;border-style:dashed;">
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div class="card-rank">#5 – #10 · More Matches</div>
-            <div style="font-size:0.88rem;color:var(--text2);margin-top:4px;">Pune Institute of Computer Technology, PICT, MIT-WPU, MKSSS's Cummins College and 2 more...</div>
-          </div>
-          <button onclick="goTo('booking')" style="background:var(--accent);border:none;color:#fff;padding:0.6rem 1.25rem;border-radius:30px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;white-space:nowrap;flex-shrink:0;">Unlock all 10 →</button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- CONFUSED BANNER -->
-    <div class="confused-banner">
-      <div class="confused-text">
-        <h3>Still confused between 2–3 colleges?</h3>
-        <p>A 30-min call with a current student from that college will give you more clarity than 5 hours of googling. Real answers, zero sugar-coating.</p>
-      </div>
-      <button class="btn-confused" onclick="goTo('booking')">Book a Free Intro Call</button>
-    </div>
-
-    <!-- SHARE BAR -->
-    <div class="share-bar">
-      <div class="share-text"><strong>Share this list with your parents.</strong> Let them see why these colleges fit you.</div>
-      <div class="share-btns">
-        <button class="btn-share">📲 WhatsApp</button>
-        <button class="btn-share">📄 Save PDF</button>
+      <div class="q-nav">
+        <button class="btn-back" onclick="goTo(1)">← Back</button>
+        <button class="btn-next" onclick="goTo(3)">Continue →</button>
       </div>
     </div>
-
   </div>
 
-  <!-- STICKY BOTTOM -->
-  <div class="sticky-bottom show" id="sticky">
-    <div class="sticky-msg"><strong>Confused between COEP vs VIT?</strong> Talk to a student already there — takes 30 mins.</div>
-    <button onclick="goTo('booking')" class="btn-mentor">Book Session →</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ PAGE: BOOKING ═══ -->
-<div class="page" id="page-booking">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div class="nav-tag">Book Session</div>
-  </nav>
-  <div class="booking-wrap">
-    <div class="booking-header">
-      <div class="booking-icon">🎓</div>
-      <h2 class="booking-title">Talk to a real student.<br>Decide with confidence.</h2>
-      <p class="booking-sub">Based on your shortlist, we've matched you with mentors from COEP and VIT who can answer everything you need to know.</p>
+  <!-- ═══════════════════════════════════════ PAGE 3: CAREER & LOCATION ═══ -->
+  <div class="page" id="page-3">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div class="nav-tag">Step 3 of 6</div>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill active"></div>
+        <div class="step-pill"></div>
+        <div class="step-pill"></div>
+        <div class="step-pill"></div>
+      </div>
+      <div class="step-label">Career & Location</div>
     </div>
+    <div class="q-wrap">
+      <div class="q-num">Question 03 / 06</div>
+      <h2 class="q-title">What do you want to become?</h2>
+      <p class="q-sub">Pick your main goal. If you're undecided, that's totally okay — just pick what excites you most.
+      </p>
+      <div class="options-grid">
+        <div class="opt-card" onclick="selectOpt(this,'career')">
+          <div class="opt-icon">⚙️</div>
+          <div class="opt-label">Engineer</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this,'career')">
+          <div class="opt-icon">🩺</div>
+          <div class="opt-label">Doctor</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this,'career')">
+          <div class="opt-icon">📈</div>
+          <div class="opt-label">Business / MBA</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this,'career')">
+          <div class="opt-icon">⚖️</div>
+          <div class="opt-label">Law</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this,'career')">
+          <div class="opt-icon">🎨</div>
+          <div class="opt-label">Design / Arts</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this,'career')">
+          <div class="opt-icon">🏛️</div>
+          <div class="opt-label">Government / IAS</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this,'career')">
+          <div class="opt-icon">🔭</div>
+          <div class="opt-label">Research / Science</div>
+        </div>
+        <div class="opt-card" onclick="selectOpt(this,'career')">
+          <div class="opt-icon">🤔</div>
+          <div class="opt-label">Not sure yet</div>
+        </div>
+      </div>
 
-    <!-- MENTOR PROFILES -->
-    <div class="mentor-profile">
-      <div class="mentor-av av-blue">RS</div>
-      <div class="mentor-info">
-        <h4>Rahul Sharma</h4>
-        <p>3rd Year · Computer Engineering · COEP Pune</p>
-        <div class="mentor-stars">★★★★★ <span style="color:var(--text3);font-size:0.8rem;">4.9 (23 sessions)</span></div>
-        <div class="mentor-tags">
-          <span class="m-tag">Placements</span>
-          <span class="m-tag">Hostel life</span>
-          <span class="m-tag">Campus culture</span>
-          <span class="m-tag">CET cutoffs</span>
+      <h2 class="q-title" style="font-size:1.2rem;margin-bottom:0.75rem;margin-top:0.5rem;">Where should your college
+        be?</h2>
+      <div class="tag-wrap">
+        <div class="tag-pill" onclick="toggleTag(this)">Maharashtra</div>
+        <div class="tag-pill" onclick="toggleTag(this)">Pune</div>
+        <div class="tag-pill" onclick="toggleTag(this)">Mumbai</div>
+        <div class="tag-pill" onclick="toggleTag(this)">Anywhere in India</div>
+        <div class="tag-pill" onclick="toggleTag(this)">Prefer near home</div>
+        <div class="tag-pill" onclick="toggleTag(this)">Tier 1 city only</div>
+        <div class="tag-pill" onclick="toggleTag(this)">Open to small city</div>
+      </div>
+
+      <div class="q-nav">
+        <button class="btn-back" onclick="goTo(2)">← Back</button>
+        <button class="btn-next" onclick="goTo(4)">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ PAGE 4: VIBE & LIFESTYLE ═══ -->
+  <div class="page" id="page-4">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div class="nav-tag">Step 4 of 6</div>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill active"></div>
+        <div class="step-pill"></div>
+        <div class="step-pill"></div>
+      </div>
+      <div class="step-label">College Vibe</div>
+    </div>
+    <div class="q-wrap">
+      <div class="q-num">Question 04 / 06</div>
+      <h2 class="q-title">What kind of college feels right?</h2>
+      <p class="q-sub">Beyond rank and score — what actually matters to you in your 4 years.</p>
+
+      <div style="margin-bottom:1.75rem;">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">College type priority
+          (pick all that apply)</div>
+        <div class="tag-wrap">
+          <div class="tag-pill" onclick="toggleTag(this)">🏅 Top brand / IIT / NIT</div>
+          <div class="tag-pill" onclick="toggleTag(this)">💼 Best placements</div>
+          <div class="tag-pill" onclick="toggleTag(this)">😊 Chill, low pressure</div>
+          <div class="tag-pill" onclick="toggleTag(this)">🎉 Active campus life</div>
+          <div class="tag-pill" onclick="toggleTag(this)">🔬 Research focused</div>
+          <div class="tag-pill" onclick="toggleTag(this)">🏠 Close to home</div>
+          <div class="tag-pill" onclick="toggleTag(this)">🌍 International exposure</div>
+          <div class="tag-pill" onclick="toggleTag(this)">🤝 Strong alumni network</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Living preference</div>
+        <div class="options-grid" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="opt-card" onclick="selectOpt(this,'living')">
+            <div class="opt-icon">🏢</div>
+            <div class="opt-label">Hostel</div>
+          </div>
+          <div class="opt-card" onclick="selectOpt(this,'living')">
+            <div class="opt-icon">🏡</div>
+            <div class="opt-label">Day scholar</div>
+          </div>
+          <div class="opt-card" onclick="selectOpt(this,'living')">
+            <div class="opt-icon">🤷</div>
+            <div class="opt-label">Either is fine</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Sports or
+          extracurriculars that matter to you?</div>
+        <div class="tag-wrap">
+          <div class="tag-pill" onclick="toggleTag(this)">Cricket / Sports</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Music / Arts</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Coding clubs</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Entrepreneurship cell</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Cultural fests</div>
+          <div class="tag-pill" onclick="toggleTag(this)">NSS / Social work</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Nothing specific</div>
+        </div>
+      </div>
+
+      <div class="q-nav">
+        <button class="btn-back" onclick="goTo(3)">← Back</button>
+        <button class="btn-next" onclick="goTo(5)">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ PAGE 5: EMOTIONAL / MENTAL ═══ -->
+  <div class="page" id="page-5">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div class="nav-tag">Step 5 of 6</div>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill active"></div>
+        <div class="step-pill"></div>
+      </div>
+      <div class="step-label">Personality & Fears</div>
+    </div>
+    <div class="q-wrap">
+      <div class="q-num">Question 05 / 06</div>
+      <h2 class="q-title">The honest questions.</h2>
+      <p class="q-sub">Most tools skip this. We don't. Real decisions need real answers.</p>
+
+      <div style="margin-bottom:1.75rem;">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">How do you handle
+          academic pressure?</div>
+        <div class="options-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="opt-card" onclick="selectOpt(this,'pressure')">
+            <div class="opt-icon">💪</div>
+            <div class="opt-label">I thrive under pressure</div>
+          </div>
+          <div class="opt-card" onclick="selectOpt(this,'pressure')">
+            <div class="opt-icon">😅</div>
+            <div class="opt-label">I manage, but it's hard</div>
+          </div>
+          <div class="opt-card" onclick="selectOpt(this,'pressure')">
+            <div class="opt-icon">🧘</div>
+            <div class="opt-label">I prefer balanced pace</div>
+          </div>
+          <div class="opt-card" onclick="selectOpt(this,'pressure')">
+            <div class="opt-icon">😔</div>
+            <div class="opt-label">I struggle with pressure</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">What's your biggest
+          fear about college?</div>
+        <div class="tag-wrap">
+          <div class="tag-pill" onclick="toggleTag(this)">Not getting good placements</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Choosing wrong college</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Being away from family</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Peer pressure & ragging</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Not fitting in socially</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Wasting money & time</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Not enjoying the degree</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Any colleges already on
+          your mind? (optional)</div>
+        <input type="text" class="input-field" placeholder="e.g. COEP, VIT, Symbiosis, VJTI...">
+      </div>
+
+      <div class="q-nav">
+        <button class="btn-back" onclick="goTo(4)">← Back</button>
+        <button class="btn-next" onclick="goTo(6)">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ PAGE 6: CONTACT ═══ -->
+  <div class="page" id="page-6">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div class="nav-tag">Step 6 of 6</div>
+    </nav>
+    <div class="progress-wrap">
+      <div class="progress-steps">
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill done"></div>
+        <div class="step-pill active"></div>
+      </div>
+      <div class="step-label">Almost done!</div>
+    </div>
+    <div class="q-wrap">
+      <div class="q-num">Question 06 / 06</div>
+      <h2 class="q-title">Where do we send your results?</h2>
+      <p class="q-sub">Your personalized college list will be saved. Your parents can also see it.</p>
+
+      <input type="text" class="input-field" placeholder="Your full name">
+      <input type="tel" class="input-field" placeholder="WhatsApp number (for results)">
+      <input type="email" class="input-field" placeholder="Email address">
+
+      <div style="margin:1.25rem 0;">
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Who else is making this
+          decision with you?</div>
+        <div class="tag-wrap">
+          <div class="tag-pill" onclick="toggleTag(this)">Mostly me</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Parents are involved</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Parents are deciding</div>
+          <div class="tag-pill" onclick="toggleTag(this)">Mentor / teacher</div>
+        </div>
+      </div>
+
+      <div
+        style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.78rem;color:var(--text3);line-height:1.6;">
+          🔒 Your data is private and only used to generate your college match. We won't spam you. By continuing, you
+          agree to receive your results via WhatsApp.
+        </div>
+      </div>
+
+      <div class="q-nav">
+        <button class="btn-back" onclick="goTo(5)">← Back</button>
+        <button class="btn-next" onclick="submitCollegeMatchForm()"
+          style="background:var(--green);font-size:1.1rem;font-weight:600;">
+          🔍 Find My Colleges
+        </button>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ PAGE: LOADING ═══ -->
+  <div class="page" id="page-loading">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div class="nav-tag">Analysing...</div>
+    </nav>
+    <div class="loading-wrap">
+      <div class="ai-orb"></div>
+      <h2 class="loading-title">AI is finding your matches</h2>
+      <p class="loading-sub">Analysing 200+ colleges across placements, culture, fees, and your unique profile.</p>
+      <div class="loading-steps">
+        <div class="load-step done" id="ls1">
+          <div class="load-dot"></div>Reading your profile & preferences
+        </div>
+        <div class="load-step active" id="ls2">
+          <div class="load-dot"></div>Matching against 200+ colleges
+        </div>
+        <div class="load-step" id="ls3">
+          <div class="load-dot"></div>Scoring placement & campus fit
+        </div>
+        <div class="load-step" id="ls4">
+          <div class="load-dot"></div>Finding mentors near your shortlist
+        </div>
+        <div class="load-step" id="ls5">
+          <div class="load-dot"></div>Preparing your personalised report
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="mentor-profile">
-      <div class="mentor-av av-teal">PD</div>
-      <div class="mentor-info">
-        <h4>Priya Desai</h4>
-        <p>2nd Year · Electronics · VIT Vellore</p>
-        <div class="mentor-stars">★★★★★ <span style="color:var(--text3);font-size:0.8rem;">4.8 (18 sessions)</span></div>
-        <div class="mentor-tags">
-          <span class="m-tag">Scholarships</span>
-          <span class="m-tag">Fests & clubs</span>
-          <span class="m-tag">Maharashtra vs VIT</span>
-          <span class="m-tag">Fees breakdown</span>
+  <!-- ═══════════════════════════════════════ PAGE: RESULTS ═══ -->
+  <div class="page" id="page-results">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button onclick="window.print()"
+          style="background:var(--surface2);border:1.5px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:30px;font-family:'DM Sans',sans-serif;font-size:0.8rem;cursor:pointer;">📄
+          Save PDF</button>
+        <div class="nav-tag">10 Matches Found</div>
+      </div>
+    </nav>
+    <div class="results-wrap">
+      <div class="results-header">
+        <div class="results-tag">✓ AI Analysis Complete</div>
+        <h2 class="results-title">Your top 10 colleges,<br>ranked for you.</h2>
+        <p class="results-sub">Based on your scores, budget, career goals, and college vibe preferences.</p>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-btn active">All Colleges</button>
+        <button class="filter-btn">🟢 Mentor Available</button>
+        <button class="filter-btn">💰 Under ₹3L/yr</button>
+        <button class="filter-btn">📍 Maharashtra</button>
+        <button class="filter-btn">💼 Top Placements</button>
+      </div>
+
+      <div class="college-list">
+
+        <!-- CARD 1 — Top Pick -->
+        <div class="college-card top-pick">
+          <div class="card-top">
+            <div>
+              <div class="card-rank">🏆 #1 Best Match</div>
+              <div class="card-name">COEP Technological University</div>
+              <div class="card-location">📍 Pune, Maharashtra · Government</div>
+            </div>
+            <div class="match-badge">
+              <div class="match-pct high">96%</div>
+              <div class="match-label">Match</div>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="c-tag fee">₹1.2L/year</span>
+            <span class="c-tag place">94% Placement</span>
+            <span class="c-tag campus">Active Campus</span>
+            <span class="c-tag mentor">3 Mentors Available</span>
+          </div>
+          <div class="card-reason">
+            Your MHT-CET score range, budget, and Pune preference align perfectly with COEP. Strong alumni network in
+            product companies. Known for its competitive but rewarding culture — matches your pressure-handling profile.
+          </div>
+          <div class="card-bottom">
+            <div class="deadline-tag">⚠️ CET counselling: June 15</div>
+            <button class="btn-mentor" onclick="goTo('booking')">Talk to a COEP student →</button>
+          </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="college-card">
+          <div class="card-top">
+            <div>
+              <div class="card-rank">#2 Great Match</div>
+              <div class="card-name">VJTI Mumbai</div>
+              <div class="card-location">📍 Mumbai, Maharashtra · Autonomous</div>
+            </div>
+            <div class="match-badge">
+              <div class="match-pct high">91%</div>
+              <div class="match-label">Match</div>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="c-tag fee">₹1.5L/year</span>
+            <span class="c-tag place">91% Placement</span>
+            <span class="c-tag campus">Industry Connections</span>
+            <span class="c-tag mentor">2 Mentors Available</span>
+          </div>
+          <div class="card-reason">
+            Strong placement record in Mumbai's tech ecosystem. Slightly higher fees but excellent ROI. Mumbai exposure
+            good for your business-oriented extracurricular interests.
+          </div>
+          <div class="card-bottom">
+            <div class="deadline-tag">⚠️ CET counselling: June 15</div>
+            <button class="btn-mentor" onclick="goTo('booking')">Talk to a VJTI student →</button>
+          </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="college-card">
+          <div class="card-top">
+            <div>
+              <div class="card-rank">#3 Strong Match</div>
+              <div class="card-name">VIT Vellore</div>
+              <div class="card-location">📍 Vellore, Tamil Nadu · Private</div>
+            </div>
+            <div class="match-badge">
+              <div class="match-pct mid">84%</div>
+              <div class="match-label">Match</div>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="c-tag fee">₹4.5L/year</span>
+            <span class="c-tag place">89% Placement</span>
+            <span class="c-tag campus">Vibrant Fest Culture</span>
+          </div>
+          <div class="card-reason">
+            Great option if you're open to private colleges. VIT's campus life and placement cell matches your cultural
+            & career priorities. Note: higher fees than your stated budget — explore scholarships.
+          </div>
+          <div class="card-bottom">
+            <div class="deadline-tag">⚠️ VITEEE: Applications closing</div>
+            <button class="btn-mentor" onclick="goTo('booking')">Talk to a VIT student →</button>
+          </div>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="college-card">
+          <div class="card-top">
+            <div>
+              <div class="card-rank">#4 Good Match</div>
+              <div class="card-name">Symbiosis Institute of Technology</div>
+              <div class="card-location">📍 Pune, Maharashtra · Deemed</div>
+            </div>
+            <div class="match-badge">
+              <div class="match-pct mid">79%</div>
+              <div class="match-label">Match</div>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="c-tag fee">₹3.8L/year</span>
+            <span class="c-tag place">85% Placement</span>
+            <span class="c-tag campus">Pune Campus</span>
+          </div>
+          <div class="card-reason">
+            Pune-based, balanced pressure environment — fits your stated preference for manageable pace. Industry ties
+            are strong for IT roles. Slight budget stretch.
+          </div>
+          <div class="card-bottom">
+            <div style="font-size:0.78rem;color:var(--text3);">Admissions open</div>
+            <button class="btn-mentor" onclick="goTo('booking')">Talk to a SIT student →</button>
+          </div>
+        </div>
+
+        <!-- CARD 5 - collapsed hint -->
+        <div class="college-card" style="opacity:0.7;border-style:dashed;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div class="card-rank">#5 – #10 · More Matches</div>
+              <div style="font-size:0.88rem;color:var(--text2);margin-top:4px;">Pune Institute of Computer Technology,
+                PICT, MIT-WPU, MKSSS's Cummins College and 2 more...</div>
+            </div>
+            <button onclick="goTo('booking')"
+              style="background:var(--accent);border:none;color:#fff;padding:0.6rem 1.25rem;border-radius:30px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;white-space:nowrap;flex-shrink:0;">Unlock
+              all 10 →</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CONFUSED BANNER -->
+      <div class="confused-banner">
+        <div class="confused-text">
+          <h3>Still confused between 2–3 colleges?</h3>
+          <p>A 30-min call with a current student from that college will give you more clarity than 5 hours of googling.
+            Real answers, zero sugar-coating.</p>
+        </div>
+        <button class="btn-confused" onclick="goTo('booking')">Book a Free Intro Call</button>
+      </div>
+
+      <!-- SHARE BAR -->
+      <div class="share-bar">
+        <div class="share-text"><strong>Share this list with your parents.</strong> Let them see why these colleges fit
+          you.</div>
+        <div class="share-btns">
+          <button class="btn-share">📲 WhatsApp</button>
+          <button class="btn-share">📄 Save PDF</button>
         </div>
       </div>
+
     </div>
 
-    <!-- SESSION TYPE -->
-    <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Choose your session</div>
-    <div class="session-options">
-      <div class="session-opt selected" onclick="selectSession(this)">
-        <div class="session-price">Free</div>
-        <div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Intro Call</div>
-        <div class="session-desc">15 min · One mentor · Top 3 questions</div>
-      </div>
-      <div class="session-opt" onclick="selectSession(this)">
-        <div class="session-price">₹199</div>
-        <div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Deep Dive</div>
-        <div class="session-desc">45 min · Your 2 colleges · Ask everything</div>
-      </div>
-    </div>
-
-    <!-- CONTACT FORM -->
-    <div class="form-row">
-      <div>
-        <label class="form-label">Your name</label>
-        <input type="text" class="input-field" style="margin-bottom:0;" placeholder="Full name">
-      </div>
-      <div>
-        <label class="form-label">WhatsApp number</label>
-        <input type="tel" class="input-field" style="margin-bottom:0;" placeholder="+91 XXXXXXXXXX">
-      </div>
-    </div>
-    <div style="margin-top:10px;">
-      <label class="form-label">What do you most want to ask them?</label>
-      <textarea class="input-field" rows="2" placeholder="e.g. Is placements actually good at COEP? How's hostel life at VIT for a Pune student?"></textarea>
-    </div>
-
-    <!-- TRUST SIGNALS -->
-    <div class="trust-row">
-      <div class="trust-item"><span class="trust-icon">✓</span> No spam calls</div>
-      <div class="trust-item"><span class="trust-icon">✓</span> Real students only</div>
-      <div class="trust-item"><span class="trust-icon">✓</span> Session in 24 hrs</div>
-      <div class="trust-item"><span class="trust-icon">✓</span> Cancel anytime</div>
-    </div>
-
-    <button class="btn-book" onclick="goTo('success')">
-      🎓 Confirm My Session — Free Intro Call
-    </button>
-
-    <div style="text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--text3);">
-      Already 47 students from Pune booked this month
+    <!-- STICKY BOTTOM -->
+    <div class="sticky-bottom show" id="sticky">
+      <div class="sticky-msg"><strong>Confused between COEP vs VIT?</strong> Talk to a student already there — takes 30
+        mins.</div>
+      <button onclick="goTo('booking')" class="btn-mentor">Book Session →</button>
     </div>
   </div>
-</div>
 
-<!-- ═══════════════════════════════════════ PAGE: SUCCESS ═══ -->
-<div class="page" id="page-success">
-  <nav>
-    <div class="logo">College<span>Match</span></div>
-    <div class="nav-tag">Confirmed ✓</div>
-  </nav>
-  <div class="success-wrap">
-    <div class="success-check">🎉</div>
-    <h2 class="success-title">You're all set!</h2>
-    <p class="success-sub">Your session is confirmed. Rahul from COEP will reach out on WhatsApp within 24 hours to schedule your call.</p>
-    <div class="success-card">
-      <div class="success-card-label">Session Type</div>
-      <div class="success-card-val">Free 15-min Intro Call</div>
-      <div class="success-card-label">Mentor</div>
-      <div class="success-card-val">Rahul Sharma · COEP, 3rd Year CS</div>
-      <div class="success-card-label">Contact via</div>
-      <div class="success-card-val" style="color:var(--green);">WhatsApp — within 24 hours</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;">
-      <button onclick="goTo('results')" style="background:var(--accent);border:none;color:#fff;padding:0.85rem;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;">← Back to my college list</button>
-      <button style="background:var(--surface);border:1.5px solid var(--border);color:var(--text2);padding:0.85rem;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;">📲 Share my results with parents</button>
-    </div>
-    <div style="margin-top:2.5rem;font-size:0.82rem;color:var(--text3);text-align:center;max-width:320px;line-height:1.6;">
-      Meanwhile — save your college list PDF and share it with your family. The more informed everyone is, the better your final decision.
+  <!-- ═══════════════════════════════════════ PAGE: BOOKING ═══ -->
+  <div class="page" id="page-booking">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div class="nav-tag">Book Session</div>
+    </nav>
+    <div class="booking-wrap">
+      <div class="booking-header">
+        <div class="booking-icon">🎓</div>
+        <h2 class="booking-title">Talk to a real student.<br>Decide with confidence.</h2>
+        <p class="booking-sub">Based on your shortlist, we've matched you with mentors from COEP and VIT who can answer
+          everything you need to know.</p>
+      </div>
+
+      <!-- MENTOR PROFILES -->
+      <div class="mentor-profile">
+        <div class="mentor-av av-blue">RS</div>
+        <div class="mentor-info">
+          <h4>Rahul Sharma</h4>
+          <p>3rd Year · Computer Engineering · COEP Pune</p>
+          <div class="mentor-stars">★★★★★ <span style="color:var(--text3);font-size:0.8rem;">4.9 (23 sessions)</span>
+          </div>
+          <div class="mentor-tags">
+            <span class="m-tag">Placements</span>
+            <span class="m-tag">Hostel life</span>
+            <span class="m-tag">Campus culture</span>
+            <span class="m-tag">CET cutoffs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mentor-profile">
+        <div class="mentor-av av-teal">PD</div>
+        <div class="mentor-info">
+          <h4>Priya Desai</h4>
+          <p>2nd Year · Electronics · VIT Vellore</p>
+          <div class="mentor-stars">★★★★★ <span style="color:var(--text3);font-size:0.8rem;">4.8 (18 sessions)</span>
+          </div>
+          <div class="mentor-tags">
+            <span class="m-tag">Scholarships</span>
+            <span class="m-tag">Fests & clubs</span>
+            <span class="m-tag">Maharashtra vs VIT</span>
+            <span class="m-tag">Fees breakdown</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SESSION TYPE -->
+      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;font-weight:500;">Choose your session</div>
+      <div class="session-options">
+        <div class="session-opt selected" onclick="selectSession(this)">
+          <div class="session-price">Free</div>
+          <div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Intro Call</div>
+          <div class="session-desc">15 min · One mentor · Top 3 questions</div>
+        </div>
+        <div class="session-opt" onclick="selectSession(this)">
+          <div class="session-price">₹199</div>
+          <div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Deep Dive</div>
+          <div class="session-desc">45 min · Your 2 colleges · Ask everything</div>
+        </div>
+      </div>
+
+      <!-- CONTACT FORM -->
+      <div class="form-row">
+        <div>
+          <label class="form-label">Your name</label>
+          <input type="text" class="input-field" style="margin-bottom:0;" placeholder="Full name">
+        </div>
+        <div>
+          <label class="form-label">WhatsApp number</label>
+          <input type="tel" class="input-field" style="margin-bottom:0;" placeholder="+91 XXXXXXXXXX">
+        </div>
+      </div>
+      <div style="margin-top:10px;">
+        <label class="form-label">What do you most want to ask them?</label>
+        <textarea class="input-field" rows="2"
+          placeholder="e.g. Is placements actually good at COEP? How's hostel life at VIT for a Pune student?"></textarea>
+      </div>
+
+      <!-- TRUST SIGNALS -->
+      <div class="trust-row">
+        <div class="trust-item"><span class="trust-icon">✓</span> No spam calls</div>
+        <div class="trust-item"><span class="trust-icon">✓</span> Real students only</div>
+        <div class="trust-item"><span class="trust-icon">✓</span> Session in 24 hrs</div>
+        <div class="trust-item"><span class="trust-icon">✓</span> Cancel anytime</div>
+      </div>
+
+      <button class="btn-book" onclick="goTo('success')">
+        🎓 Confirm My Session — Free Intro Call
+      </button>
+
+      <div style="text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--text3);">
+        Already 47 students from Pune booked this month
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-        async function submitCollegeMatchForm() {
-            // 1. Gather values from the multi-step questionnaire form
-            const formData = {
-                full_name: document.querySelector('input[placeholder*="full name"]')?.value || "Test Student",
-                whatsapp_number: document.querySelector('input[placeholder*="WhatsApp"]')?.value || "9876543210",
-                email: document.querySelector('input[placeholder*="Email"]')?.value || "test@eduronix.com",
-                stream: "Science", 
-                exams: ["JEE Main"], 
-                board_percentage: 78,
-                budget_per_year: 300000,
-                scholarship_reservation: "No special category",
-                career_goal: "Engineer",
-                preferred_locations: ["Maharashtra"],
-                college_priority: ["Best placements"],
-                living_preference: "Hostel",
-                pressure_handling: "I prefer balanced pace",
-                biggest_fear: "Choosing wrong college",
-                target_colleges: document.querySelector('input[placeholder*="e.g. COEP"]')?.value || "",
-                decision_maker: "Parents are involved"
-            };
+  <!-- ═══════════════════════════════════════ PAGE: SUCCESS ═══ -->
+  <div class="page" id="page-success">
+    <nav>
+      <div class="logo">College<span>Match</span></div>
+      <div class="nav-tag">Confirmed ✓</div>
+    </nav>
+    <div class="success-wrap">
+      <div class="success-check">🎉</div>
+      <h2 class="success-title">You're all set!</h2>
+      <p class="success-sub">Your session is confirmed. Rahul from COEP will reach out on WhatsApp within 24 hours to
+        schedule your call.</p>
+      <div class="success-card">
+        <div class="success-card-label">Session Type</div>
+        <div class="success-card-val">Free 15-min Intro Call</div>
+        <div class="success-card-label">Mentor</div>
+        <div class="success-card-val">Rahul Sharma · COEP, 3rd Year CS</div>
+        <div class="success-card-label">Contact via</div>
+        <div class="success-card-val" style="color:var(--green);">WhatsApp — within 24 hours</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;">
+        <button onclick="goTo('results')"
+          style="background:var(--accent);border:none;color:#fff;padding:0.85rem;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;">←
+          Back to my college list</button>
+        <button
+          style="background:var(--surface);border:1.5px solid var(--border);color:var(--text2);padding:0.85rem;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;">📲
+          Share my results with parents</button>
+      </div>
+      <div
+        style="margin-top:2.5rem;font-size:0.82rem;color:var(--text3);text-align:center;max-width:320px;line-height:1.6;">
+        Meanwhile — save your college list PDF and share it with your family. The more informed everyone is, the better
+        your final decision.
+      </div>
+    </div>
+  </div>
 
-            try {
-                // 2. Dispatch payload data array to your FastAPI Python server
-                const response = await fetch('http://127.0.0.1:8000/api/college-match', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
+  <script>
+    async function submitCollegeMatchForm() {
+      // 1. Gather values from the multi-step questionnaire form
+      const formData = {
+        full_name: document.querySelector('input[placeholder*="full name"]')?.value || "Test Student",
+        whatsapp_number: document.querySelector('input[placeholder*="WhatsApp"]')?.value || "9876543210",
+        email: document.querySelector('input[placeholder*="Email"]')?.value || "test@eduronix.com",
+        stream: "Science",
+        exams: ["JEE Main"],
+        board_percentage: 78,
+        budget_per_year: 300000,
+        scholarship_reservation: "No special category",
+        career_goal: "Engineer",
+        preferred_locations: ["Maharashtra"],
+        college_priority: ["Best placements"],
+        living_preference: "Hostel",
+        pressure_handling: "I prefer balanced pace",
+        biggest_fear: "Choosing wrong college",
+        target_colleges: document.querySelector('input[placeholder*="e.g. COEP"]')?.value || "",
+        decision_maker: "Parents are involved"
+      };
 
-                if (!response.ok) {
-                    throw new Error(`Server API returned error status: ${response.status}`);
-                }
+      try {
+        // 2. Dispatch payload data array to your FastAPI Python server
+        const response = await fetch('https://eduronix-backend.onrender.com/api/college-match', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
 
-                const result = await response.json();
-                console.log("Successfully retrieved college matches from Python backend:", result);
-                
-                if (result.status === "success") {
-                    alert("Backend Pipeline Success! Check your browser console to view the returned array mapping.");
-                    // The frontend can now loop through result.data to print cards
-                }
-
-            } catch (error) {
-                console.error("Failed to connect with Eduronix API backend:", error);
-            }
+        if (!response.ok) {
+          throw new Error(`Server API returned error status: ${response.status}`);
         }
-    
-  function goTo(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const target = typeof id === 'number' ? document.getElementById('page-'+id) : document.getElementById('page-'+id);
-    if (target) {
-      target.classList.add('active');
-      window.scrollTo(0,0);
-    }
-    if (id === 'loading') startLoading();
-  }
 
-  function selectOpt(el, group) {
-    el.closest('.options-grid').querySelectorAll('.opt-card').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-  }
+        const result = await response.json();
+        console.log("Successfully retrieved college matches from Python backend:", result);
 
-  function toggleTag(el) {
-    el.classList.toggle('selected');
-  }
+        if (result.status === "success") {
+          alert("Backend Pipeline Success! Check your browser console to view the returned array mapping.");
+          // The frontend can now loop through result.data to print cards
+        }
 
-  function selectSession(el) {
-    el.closest('.session-options').querySelectorAll('.session-opt').forEach(s => s.classList.remove('selected'));
-    el.classList.add('selected');
-  }
-
-  function startLoading() {
-    const steps = ['ls1','ls2','ls3','ls4','ls5'];
-    let i = 0;
-    steps.forEach(s => {
-      document.getElementById(s).className = 'load-step';
-    });
-    document.getElementById('ls1').classList.add('active');
-
-    const interval = setInterval(() => {
-      if (i < steps.length - 1) {
-        document.getElementById(steps[i]).className = 'load-step done';
-        i++;
-        document.getElementById(steps[i]).classList.add('active');
-      } else {
-        document.getElementById(steps[i]).className = 'load-step done';
-        clearInterval(interval);
-        setTimeout(() => goTo('results'), 600);
+      } catch (error) {
+        console.error("Failed to connect with Eduronix API backend:", error);
       }
-    }, 900);
-  }
-
-  // Sticky bottom hide on scroll up
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const sticky = document.getElementById('sticky');
-    if (!sticky) return;
-    const curr = window.scrollY;
-    if (curr < lastScroll && curr > 300) {
-      sticky.classList.add('show');
     }
-    lastScroll = curr;
-  });
-</script>
+
+    function goTo(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = typeof id === 'number' ? document.getElementById('page-' + id) : document.getElementById('page-' + id);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo(0, 0);
+      }
+      if (id === 'loading') startLoading();
+    }
+
+    function selectOpt(el, group) {
+      el.closest('.options-grid').querySelectorAll('.opt-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function toggleTag(el) {
+      el.classList.toggle('selected');
+    }
+
+    function selectSession(el) {
+      el.closest('.session-options').querySelectorAll('.session-opt').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function startLoading() {
+      const steps = ['ls1', 'ls2', 'ls3', 'ls4', 'ls5'];
+      let i = 0;
+      steps.forEach(s => {
+        document.getElementById(s).className = 'load-step';
+      });
+      document.getElementById('ls1').classList.add('active');
+
+      const interval = setInterval(() => {
+        if (i < steps.length - 1) {
+          document.getElementById(steps[i]).className = 'load-step done';
+          i++;
+          document.getElementById(steps[i]).classList.add('active');
+        } else {
+          document.getElementById(steps[i]).className = 'load-step done';
+          clearInterval(interval);
+          setTimeout(() => goTo('results'), 600);
+        }
+      }, 900);
+    }
+
+    // Sticky bottom hide on scroll up
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const sticky = document.getElementById('sticky');
+      if (!sticky) return;
+      const curr = window.scrollY;
+      if (curr < lastScroll && curr > 300) {
+        sticky.classList.add('show');
+      }
+      lastScroll = curr;
+    });
+  </script>
 </body>
-</html> 
 
-
+</html>

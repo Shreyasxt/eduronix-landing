@@ -192,7 +192,7 @@
 
             try {
                 // Change URL endpoint string dynamically to your remote server or match standard routers
-                const response = await fetch('http://127.0.0.1:8000/docs#/CollegeMatch/process_college_match_api_college_match_post', {
+                const response = await fetch('https://eduronix-backend.onrender.com/docs#/CollegeMatch/process_college_match_api_college_match_post', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)

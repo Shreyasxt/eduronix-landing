@@ -1,25 +1,21 @@
-from fastapi import APIRouter, HTTPException
-from database import supabase
+from fastapi import APIRouter, HTTPException, Depends
+from database import supabase, get_current_user
 
-router = APIRouter(prefix="/student", tags=["Student Dashboard"])
+router = APIRouter(prefix="/student", tags=["Student Dashboard"], dependencies=[Depends(get_current_user)])
 
 @router.get("/mentors")
 async def get_all_mentors():
-
-    #Fetches all mentors and their available time slots for the dashboard.
+    """
+    Fetches all approved mentors and their available time slots for the dashboard in a single query.
+    """
     try:
-        # Fetch Mentor Details
-        mentors_res = supabase.table("mentors").select("*").execute()
+        # Fetch Mentor Details with availability embedded in one single query, filtering by approved status
+        res = supabase.table("mentors").select("*, mentor_availability(*)").eq("is_approved", True).execute()
         
-        # Fetch Availability Slots
-        availability_res = supabase.table("mentor_availability").select("*").execute()
-        
-        mentors = mentors_res.data
-        availability = availability_res.data
-        
-        # Merge availability into respective mentor dict
+        mentors = res.data or []
         for mentor in mentors:
-            mentor["availability"] = [slot for slot in availability if slot["mentor_id"] == mentor["id"]]
+            # Map the database relation name to the key expected by the frontend
+            mentor["availability"] = mentor.pop("mentor_availability", [])
             
         return {"status": "success", "mentors": mentors}
     except Exception as e:

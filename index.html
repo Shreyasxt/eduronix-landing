@@ -35,92 +35,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; 
 animation: shake 0.4s ease-in-out;
 }
 
-/* ===== LOGIN MODAL STYLES ===== */
-.edu-login-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.72); z-index: 9999;
-  align-items: center; justify-content: center;
-  backdrop-filter: blur(5px);
-}
-.edu-login-overlay.active { display: flex; }
-.edu-modal {
-  background: #111; border: 1px solid #2a2a2a;
-  border-radius: 16px; padding: 36px 32px 32px;
-  width: 420px; max-width: 94vw; position: relative;
-  animation: eduSlideUp 0.25s ease;
-}
-@keyframes eduSlideUp {
-  from { opacity:0; transform:translateY(20px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-.edu-modal-close {
-  position:absolute; top:14px; right:16px;
-  background:#1e1e1e; border:none; color:#888;
-  width:30px; height:30px; border-radius:50%;
-  font-size:18px; cursor:pointer; display:flex;
-  align-items:center; justify-content:center; transition:0.15s;
-}
-.edu-modal-close:hover { background:#2e2e2e; color:#fff; }
-.edu-logo { color:#fff; font-size:20px; font-weight:700; margin-bottom:4px; font-family:'MuseoModerno',sans-serif; }
-.edu-logo span { color:#8BC34A; }
-.edu-sub { color:#888; font-size:13px; margin-bottom:26px; }
-.edu-role-lbl { color:#aaa; font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:11px; }
-.edu-role-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:24px; }
-.edu-role-card {
-  background:#1a1a1a; border:1.5px solid #2a2a2a;
-  border-radius:12px; padding:16px 8px 12px;
-  text-align:center; cursor:pointer; transition:0.2s; position:relative;
-}
-.edu-role-card:hover, .edu-role-card.sel { border-color:#8BC34A; background:#141a0e; }
-.edu-role-card.sel::after { content:'✓'; position:absolute; top:8px; right:10px; color:#8BC34A; font-size:11px; font-weight:700; }
-.edu-role-icon { font-size:24px; margin-bottom:7px; }
-.edu-role-name { color:#fff; font-size:13px; font-weight:600; margin-bottom:2px; }
-.edu-role-desc { color:#666; font-size:11px; }
-.edu-divider { border:none; border-top:1px solid #222; margin:0 0 20px; }
-.edu-lbl { display:block; color:#aaa; font-size:12px; font-weight:500; margin-bottom:6px; }
-.edu-input {
-  width:100%; background:#1a1a1a; border:1px solid #2a2a2a;
-  border-radius:8px; padding:11px 14px; color:#fff; font-size:14px;
-  outline:none; margin-bottom:14px; transition:border-color 0.15s;
-  font-family:inherit;
-}
-.edu-input:focus { border-color:#8BC34A; }
-.edu-input::placeholder { color:#555; }
-.edu-go-btn {
-  width:100%; background:#8BC34A; color:#fff; border:none;
-  padding:13px; border-radius:9px; font-size:15px; font-weight:700;
-  cursor:pointer; transition:0.2s; font-family:inherit; letter-spacing:0.3px;
-}
-.edu-go-btn:hover { background:#7aad3a; box-shadow:0 4px 18px rgba(139,195,74,0.4); }
-.edu-go-btn:disabled { background:#333; color:#666; cursor:not-allowed; box-shadow:none; }
-.edu-google-btn {
-  width: 100%;
-  background: #1a1a1a;
-  color: #fff;
-  border: 1px solid #2a2a2a;
-  padding: 12px;
-  border-radius: 9px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 12px;
-  transition: 0.2s;
-  font-family: inherit;
-}
-.edu-google-btn:hover:not(:disabled) {
-  background: #242424;
-  border-color: #444;
-}
-.edu-google-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.edu-hint { text-align:center; color:#555; font-size:12px; margin-top:13px; }
-.edu-hint a { color:#8BC34A; text-decoration:none; }
-/* ===== END LOGIN MODAL STYLES ===== */
+
 
 /* Mentor Section */
 .mentor-section{
@@ -242,60 +157,7 @@ letter-spacing: 0.5px;
 </head>
 <body x-data="{ bookingOpen: false, step: 1, navOpen: false }">
 
-<!-- ===== LOGIN MODAL ===== -->
-<div class="edu-login-overlay" id="eduLoginModal" onclick="if(event.target===this)this.classList.remove('active')">
-  <div class="edu-modal">
-    <button class="edu-modal-close" onclick="document.getElementById('eduLoginModal').classList.remove('active')">✕</button>
-    <div class="edu-logo">Edu<span>ronix</span></div>
-    <p class="edu-sub">Sign in to your dashboard</p>
-    <div id="eduErrorMsg" class="hidden text-red-500 text-xs font-semibold bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-4 text-center"></div>
-    
-    <div id="eduNameContainer" class="hidden">
-      <label class="edu-lbl">Full Name</label>
-      <input class="edu-input" type="text" id="eduName" placeholder="John Doe">
-    </div>
 
-    <label class="edu-lbl">Email</label>
-    <input class="edu-input" type="email" id="eduEmail" placeholder="you@example.com" onkeyup="if(event.key==='Enter')eduHandleAuthSubmit()">
-    
-    <label class="edu-lbl">Password</label>
-    <input class="edu-input" type="password" id="eduPass" placeholder="••••••••" onkeyup="if(event.key==='Enter')eduHandleAuthSubmit()">
-
-    <div id="eduConfirmPassContainer" class="hidden">
-      <label class="edu-lbl">Confirm Password</label>
-      <input class="edu-input" type="password" id="eduConfirmPass" placeholder="••••••••" onkeyup="if(event.key==='Enter')eduHandleAuthSubmit()">
-    </div>
-
-    <div id="eduRoleContainer" class="hidden mt-2">
-      <label class="edu-role-lbl">Select Your Role</label>
-      <div class="edu-role-grid">
-        <div class="edu-role-card sel" id="roleCardStudent" onclick="eduSelectRole('student')">
-          <div class="edu-role-icon">🎓</div>
-          <div class="edu-role-name">Student</div>
-        </div>
-        <div class="edu-role-card" id="roleCardMentor" onclick="eduSelectRole('mentor')">
-          <div class="edu-role-icon">🚀</div>
-          <div class="edu-role-name">Mentor</div>
-        </div>
-      </div>
-    </div>
-
-    <button class="edu-go-btn" id="eduGoBtn" onclick="eduHandleAuthSubmit()">Login</button>
-    
-    <div class="flex items-center my-3">
-      <div class="flex-grow border-t border-zinc-800"></div>
-      <span class="mx-3 text-[10px] text-zinc-500 font-bold uppercase tracking-wider">or</span>
-      <div class="flex-grow border-t border-zinc-800"></div>
-    </div>
-    
-    <button class="edu-google-btn" id="eduGoogleBtn" onclick="eduHandleGoogleLogin()">
-      <i class="fab fa-google mr-2 text-red-500"></i> Continue with Google
-    </button>
-    
-    <p class="edu-hint" id="eduToggleLink">New here? <a href="#" onclick="event.preventDefault(); eduToggleAuthMode()">Create an Account</a></p>
-  </div>
-</div>
-<!-- ===== END LOGIN MODAL ===== -->
 
 <nav class="fixed w-full z-[100] py-4 md:py-6 transition-all duration-300 glass" id="mainNav">
 <div class="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center">
@@ -358,15 +220,13 @@ Book a Session
 </div>
 </div>
 <div class="lg:col-span-5 relative" data-aos="fade-left">
-<div class="relative z-10 bg-white p-4 md:p-6 rounded-[2.5rem] md:rounded-[3rem] shadow-2xl rotate-3 hover:rotate-0 transition-all duration-700 group">
-<div class="aspect-[4/5] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden relative">
-<img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000">
-<div class="absolute bottom-6 left-6 right-6 p-4 md:p-6 glass rounded-2xl floating">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 brand-gradient rounded-lg flex items-center justify-center text-white font-bold">SK</div>
-<div><h4 class="text-slate-900 font-bold text-sm">Sahil Kumar</h4><p class="text-slate-500 text-[10px] font-bold uppercase">IIT Kharagpur '25</p></div>
-</div>
-</div>
+<div class="relative z-10 bg-white p-4 md:p-6 rounded-[2.5rem] md:rounded-[3rem] group-hover:rounded-[1.2rem] shadow-2xl rotate-3 hover:rotate-0 transition-all duration-700 group">
+<div class="aspect-[4/5] rounded-[2rem] md:rounded-[2.5rem] group-hover:rounded-[0.8rem] overflow-hidden relative bg-slate-950 transition-all duration-700">
+<video id="heroVideo" src="reel 2 final.mp4" autoplay loop playsinline onclick="togglePlay(event)" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 cursor-pointer"></video>
+<!-- Mute/Unmute Toggle Button -->
+<button id="muteBtn" onclick="toggleMute(event)" class="absolute top-4 right-4 z-20 w-9 h-9 bg-slate-900/60 hover:bg-slate-900/80 hover:scale-105 active:scale-95 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all border border-white/10 shadow-lg">
+<i id="muteIcon" class="fas fa-volume-up"></i>
+</button>
 </div>
 </div>
 </div>
@@ -720,241 +580,7 @@ const supabaseUrl = "https://mnbyvbhfkrkkmmgkedch.supabase.co";
 const supabaseKey = "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-let isSignUpMode = false;
-let selectedSignupRole = 'student';
 
-function eduToggleAuthMode() {
-  isSignUpMode = !isSignUpMode;
-  const nameCont = document.getElementById('eduNameContainer');
-  const confirmCont = document.getElementById('eduConfirmPassContainer');
-  const roleCont = document.getElementById('eduRoleContainer');
-  const titleText = document.querySelector('#eduLoginModal .edu-sub');
-  const goBtn = document.getElementById('eduGoBtn');
-  const toggleLink = document.getElementById('eduToggleLink');
-  const errorDiv = document.getElementById('eduErrorMsg');
-  
-  errorDiv.classList.add('hidden');
-  errorDiv.textContent = '';
-  
-  if (isSignUpMode) {
-    nameCont.classList.remove('hidden');
-    confirmCont.classList.remove('hidden');
-    roleCont.classList.remove('hidden');
-    titleText.textContent = "Create your account";
-    goBtn.textContent = "Sign Up";
-    toggleLink.innerHTML = 'Already have an account? <a href="#" onclick="event.preventDefault(); eduToggleAuthMode()">Login</a>';
-  } else {
-    nameCont.classList.add('hidden');
-    confirmCont.classList.add('hidden');
-    roleCont.classList.add('hidden');
-    titleText.textContent = "Sign in to your dashboard";
-    goBtn.textContent = "Login";
-    toggleLink.innerHTML = 'New here? <a href="#" onclick="event.preventDefault(); eduToggleAuthMode()">Create an Account</a>';
-  }
-}
-
-function eduSelectRole(role) {
-  selectedSignupRole = role;
-  const studentCard = document.getElementById('roleCardStudent');
-  const mentorCard = document.getElementById('roleCardMentor');
-  if (role === 'student') {
-    studentCard.classList.add('sel');
-    mentorCard.classList.remove('sel');
-  } else {
-    mentorCard.classList.add('sel');
-    studentCard.classList.remove('sel');
-  }
-}
-
-async function eduHandleAuthSubmit() {
-  if (isSignUpMode) {
-    await eduHandleSignUp();
-  } else {
-    await eduHandleLogin();
-  }
-}
-
-async function eduHandleLogin() {
-  const email = document.getElementById('eduEmail').value.trim();
-  const pass  = document.getElementById('eduPass').value.trim();
-  const btn   = document.getElementById('eduGoBtn');
-  const errorDiv = document.getElementById('eduErrorMsg');
-  
-  errorDiv.classList.add('hidden');
-  errorDiv.textContent = '';
-  
-  if (!email || !pass) {
-    errorDiv.textContent = 'Please enter your email and password.';
-    errorDiv.classList.remove('hidden');
-    return;
-  }
-  
-  btn.textContent = 'Signing in...';
-  btn.disabled = true;
-  
-  try {
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
-    if (error) {
-      errorDiv.textContent = error.message;
-      errorDiv.classList.remove('hidden');
-      btn.textContent = 'Login';
-      btn.disabled = false;
-      return;
-    }
-    
-    // Fetch profile role from database
-    const { data: profiles, error: profileErr } = await supabaseClient
-      .from('profiles')
-      .select('role')
-      .eq('id', data.user.id);
-      
-    if (profileErr || !profiles || profiles.length === 0) {
-      errorDiv.textContent = 'Profile role not found. Please contact support.';
-      errorDiv.classList.remove('hidden');
-      btn.textContent = 'Login';
-      btn.disabled = false;
-      return;
-    }
-    
-    const role = profiles[0].role;
-    let redirectUrl = '';
-    if (role === 'admin') redirectUrl = 'admin-dashboard.html';
-    else if (role === 'mentor') redirectUrl = 'mentor-dashboard.html';
-    else if (role === 'student') redirectUrl = 'student-dashboard.html';
-    
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
-    } else {
-      errorDiv.textContent = 'Unknown user role: ' + role;
-      errorDiv.classList.remove('hidden');
-      btn.textContent = 'Login';
-      btn.disabled = false;
-    }
-  } catch (err) {
-    errorDiv.textContent = 'An unexpected error occurred. Please try again.';
-    errorDiv.classList.remove('hidden');
-    btn.textContent = 'Login';
-    btn.disabled = false;
-  }
-}
-
-async function eduHandleSignUp() {
-  const name = document.getElementById('eduName').value.trim();
-  const email = document.getElementById('eduEmail').value.trim();
-  const pass = document.getElementById('eduPass').value.trim();
-  const confirmPass = document.getElementById('eduConfirmPass').value.trim();
-  const btn = document.getElementById('eduGoBtn');
-  const errorDiv = document.getElementById('eduErrorMsg');
-  
-  errorDiv.classList.add('hidden');
-  errorDiv.textContent = '';
-  
-  if (!name || !email || !pass || !confirmPass) {
-    errorDiv.textContent = 'Please fill in all fields.';
-    errorDiv.classList.remove('hidden');
-    return;
-  }
-  
-  if (pass !== confirmPass) {
-    errorDiv.textContent = 'Passwords do not match.';
-    errorDiv.classList.remove('hidden');
-    return;
-  }
-  
-  if (pass.length < 6) {
-    errorDiv.textContent = 'Password must be at least 6 characters.';
-    errorDiv.classList.remove('hidden');
-    return;
-  }
-  
-  btn.textContent = 'Creating account...';
-  btn.disabled = true;
-  
-  // Cache desired role in local storage in case email confirmation redirects back to landing page
-  localStorage.setItem('eduronix_oauth_role', selectedSignupRole);
-  
-  try {
-    const { data, error } = await supabaseClient.auth.signUp({
-      email: email,
-      password: pass,
-      options: {
-        data: {
-          full_name: name
-        }
-      }
-    });
-    
-    if (error) {
-      errorDiv.textContent = error.message;
-      errorDiv.classList.remove('hidden');
-      btn.textContent = 'Sign Up';
-      btn.disabled = false;
-      return;
-    }
-    
-    const user = data.user;
-    if (!user) {
-      errorDiv.textContent = 'Registration successful! Please check your email for a confirmation link.';
-      errorDiv.classList.remove('hidden');
-      btn.textContent = 'Sign Up';
-      btn.disabled = false;
-      return;
-    }
-    
-    // Create profile in database
-    const { error: profileErr } = await supabaseClient
-      .from('profiles')
-      .upsert({
-        id: user.id,
-        full_name: name,
-        role: selectedSignupRole
-      });
-      
-    if (profileErr) {
-      console.error("Error creating profile:", profileErr);
-    }
-    
-    let redirectUrl = '';
-    if (selectedSignupRole === 'admin') redirectUrl = 'admin-dashboard.html';
-    else if (selectedSignupRole === 'mentor') redirectUrl = 'mentor-dashboard.html';
-    else if (selectedSignupRole === 'student') redirectUrl = 'student-dashboard.html';
-    
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
-    } else {
-      window.location.reload();
-    }
-    
-  } catch (err) {
-    console.error("Sign up exception:", err);
-    errorDiv.textContent = 'An unexpected error occurred. Please try again.';
-    errorDiv.classList.remove('hidden');
-    btn.textContent = 'Sign Up';
-    btn.disabled = false;
-  }
-}
-
-async function eduHandleGoogleLogin() {
-  const btn = document.getElementById('eduGoogleBtn');
-  btn.disabled = true;
-  
-  // Store selected role in localStorage so we can retrieve it upon callback redirection
-  localStorage.setItem('eduronix_oauth_role', isSignUpMode ? selectedSignupRole : 'student');
-  
-  try {
-    const { error } = await supabaseClient.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin + window.location.pathname
-      }
-    });
-    if (error) throw error;
-  } catch (err) {
-    console.error("Google login error:", err);
-    alert("Google sign in failed: " + err.message);
-    btn.disabled = false;
-  }
-}
 
 // On page load, check if URL has ?login=true or if user is already logged in
 window.addEventListener('DOMContentLoaded', async () => {
@@ -1055,6 +681,28 @@ const nav = document.getElementById('mainNav');
 if (window.scrollY > 20) { nav.classList.add('py-2', 'shadow-xl'); }
 else { nav.classList.remove('py-2', 'shadow-xl'); }
 });
+
+function toggleMute(event) {
+  event.stopPropagation();
+  const video = document.getElementById('heroVideo');
+  const icon = document.getElementById('muteIcon');
+  if (video.muted) {
+    video.muted = false;
+    icon.className = 'fas fa-volume-up';
+  } else {
+    video.muted = true;
+    icon.className = 'fas fa-volume-mute';
+  }
+}
+
+function togglePlay(event) {
+  const video = document.getElementById('heroVideo');
+  if (video.paused) {
+    video.play();
+  } else {
+    video.pause();
+  }
+}
 </script>
 </body>
 </html>

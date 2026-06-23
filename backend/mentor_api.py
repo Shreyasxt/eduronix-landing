@@ -1,10 +1,10 @@
-from fastapi import APIRouter, HTTPException
-from database import supabase
+from fastapi import APIRouter, HTTPException, Depends
+from database import supabase, get_current_user
 from pydantic import BaseModel, Field
 from typing import List
 
 # Use APIRouter instead of FastAPI() so it can be "plugged into" main.py
-router = APIRouter(prefix="/mentor", tags=["Mentor Dashboard"])
+router = APIRouter(prefix="/mentor", tags=["Mentor Dashboard"], dependencies=[Depends(get_current_user)])
 
 class AvailabilitySlot(BaseModel):
     day_of_week: str = Field(..., description="Day of week for this slot (e.g. monday)")
@@ -27,6 +27,8 @@ class MentorProfile(BaseModel):
     year: str
     city: str
     state: str
+    college: str = ""
+    course: str = ""
 
 @router.post("/setup-profile")
 async def setup_profile(profile: MentorProfile):
@@ -48,6 +50,8 @@ async def setup_profile(profile: MentorProfile):
             "year": profile.year,
             "city": profile.city,
             "state": profile.state,
+            "college": profile.college,
+            "course": profile.course,
         }
         supabase.table("mentors").upsert(mentor_data).execute()
 

@@ -9,7 +9,9 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 
-ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
+ENV_PATH = Path(__file__).resolve().parent / ".env"
+if not ENV_PATH.exists():
+    ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=ENV_PATH)
 
 router = APIRouter(prefix="/api", tags=["CollegeMatch"])

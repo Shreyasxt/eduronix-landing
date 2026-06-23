@@ -82,70 +82,101 @@
     <!-- Error/Alert Display -->
     <div id="authErrorMsg" class="hidden text-red-400 text-xs font-semibold bg-red-950/30 border border-red-800/30 rounded-xl p-4 mb-4 text-center"></div>
 
-    <!-- Name Container (Sign Up Only) -->
-    <div id="authNameContainer" class="hidden mb-4">
-      <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Full Name</label>
-      <input type="text" id="authName" placeholder="John Doe" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-[#8BC34A] transition">
-    </div>
+    <!-- Normal Form Fields -->
+    <div id="authFormFields">
+      <!-- Name Container (Sign Up Only) -->
+      <div id="authNameContainer" class="hidden mb-4">
+        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Full Name</label>
+        <input type="text" id="authName" placeholder="John Doe" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-[#8BC34A] transition">
+      </div>
 
-    <!-- Email Input -->
-    <div class="mb-4">
-      <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Email Address</label>
-      <input type="email" id="authEmail" placeholder="you@example.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-[#8BC34A] transition">
-    </div>
+      <!-- Email Input -->
+      <div class="mb-4">
+        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Email Address</label>
+        <input type="email" id="authEmail" placeholder="you@example.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-[#8BC34A] transition">
+      </div>
 
-    <!-- Password Input -->
-    <div class="mb-4">
-      <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Password</label>
-      <input type="password" id="authPass" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-[#8BC34A] transition">
-    </div>
+      <!-- Password Input -->
+      <div class="mb-4">
+        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Password</label>
+        <input type="password" id="authPass" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-[#8BC34A] transition">
+      </div>
 
-    <!-- Confirm Password Input (Sign Up Only) -->
-    <div id="authConfirmPassContainer" class="hidden mb-4">
-      <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Confirm Password</label>
-      <input type="password" id="authConfirmPass" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-[#8BC34A] transition">
-    </div>
+      <!-- Confirm Password Input (Sign Up Only) -->
+      <div id="authConfirmPassContainer" class="hidden mb-4">
+        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Confirm Password</label>
+        <input type="password" id="authConfirmPass" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-[#8BC34A] transition">
+      </div>
 
-    <!-- Role Selection (Sign Up Only) -->
-    <div id="authRoleContainer" class="hidden mb-6">
-      <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Select Your Role</label>
-      <div class="grid grid-cols-2 gap-4">
-        <div id="roleCardStudent" onclick="selectRole('student')" class="edu-role-card sel">
-          <div class="text-2xl mb-1">🎓</div>
-          <div class="text-sm font-bold text-white">Student</div>
-        </div>
-        <div id="roleCardMentor" onclick="selectRole('mentor')" class="edu-role-card">
-          <div class="text-2xl mb-1">🚀</div>
-          <div class="text-sm font-bold text-white">Mentor</div>
+      <!-- Role Selection (Sign Up Only) -->
+      <div id="authRoleContainer" class="hidden mb-6">
+        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Select Your Role</label>
+        <div class="grid grid-cols-2 gap-4">
+          <div id="roleCardStudent" onclick="selectRole('student')" class="edu-role-card sel">
+            <div class="text-2xl mb-1">🎓</div>
+            <div class="text-sm font-bold text-white">Student</div>
+          </div>
+          <div id="roleCardMentor" onclick="selectRole('mentor')" class="edu-role-card">
+            <div class="text-2xl mb-1">🚀</div>
+            <div class="text-sm font-bold text-white">Mentor</div>
+          </div>
         </div>
       </div>
+
+      <!-- Submit Button -->
+      <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full brand-gradient text-slate-950 font-bold py-4 rounded-xl text-md transition duration-150 shadow-lg hover:opacity-90 active:scale-[0.98]">
+        Login
+      </button>
+
+      <div class="flex items-center my-4">
+        <div class="flex-grow border-t border-slate-700"></div>
+        <span class="mx-3 text-[10px] text-slate-500 font-bold uppercase tracking-wider">or</span>
+        <div class="flex-grow border-t border-slate-700"></div>
+      </div>
+
+      <!-- Google Login -->
+      <button id="authGoogleBtn" onclick="handleGoogleLogin()" class="w-full bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 font-bold py-4 rounded-xl transition duration-150 flex justify-center items-center gap-2">
+        <svg class="h-4 w-4" viewBox="0 0 24 24">
+          <path fill="#EA4335" d="M12 5.04c1.66 0 3.2.57 4.38 1.69l3.27-3.27C17.67 1.54 14.98 1 12 1 7.35 1 3.37 3.67 1.39 7.56l3.85 2.99c.92-2.75 3.48-4.51 6.76-4.51z"/>
+          <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.34H12v4.47h6.46c-.28 1.48-1.12 2.74-2.38 3.58l3.69 2.87c2.16-1.99 3.42-4.92 3.42-8.58z"/>
+          <path fill="#FBBC05" d="M5.24 14.55c-.24-.72-.38-1.49-.38-2.3s.14-1.58.38-2.3L1.39 6.96C.5 8.78 0 10.83 0 13s.5 4.22 1.39 6.04l3.85-3.49z"/>
+          <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.92l-3.69-2.87c-1.02.68-2.33 1.09-4.27 1.09-3.28 0-5.84-1.76-6.76-4.51L1.39 17.2C3.37 20.33 7.35 23 12 23z"/>
+        </svg>
+        <span id="authGoogleBtnText">Continue with Google</span>
+      </button>
+
+      <p class="text-center text-xs text-slate-400 mt-6" id="authToggleLinkContainer">
+        New here? <a href="#" onclick="event.preventDefault(); toggleAuthMode()" class="text-[#03A9F4] font-bold hover:underline">Create an Account</a>
+      </p>
     </div>
 
-    <!-- Submit Button -->
-    <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full brand-gradient text-slate-950 font-bold py-4 rounded-xl text-md transition duration-150 shadow-lg hover:opacity-90 active:scale-[0.98]">
-      Login
-    </button>
+    <!-- Email Verification Check Point Container -->
+    <div id="authVerificationContainer" class="hidden text-center py-4">
+      <div class="flex justify-center mb-6">
+        <div class="w-16 h-16 bg-[#8BC34A]/10 border border-[#8BC34A]/30 rounded-full flex items-center justify-center text-3xl animate-pulse">
+          ✉️
+        </div>
+      </div>
+      <p class="text-slate-300 text-sm leading-relaxed mb-6">
+        We've sent a verification link to <br>
+        <span id="verificationEmailText" class="font-bold text-[#03A9F4] break-all"></span>.<br>
+        Please check your inbox (and spam folder) and confirm your email.
+      </p>
+      
+      <button id="resendVerificationBtn" onclick="handleResendVerification()" class="w-full bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 font-bold py-3.5 rounded-xl transition duration-150 mb-3 text-sm flex justify-center items-center gap-2 shadow">
+        Resend Verification Link
+      </button>
+      
+      <button onclick="checkVerificationStatus()" class="w-full brand-gradient text-slate-950 font-bold py-3.5 rounded-xl transition duration-150 mb-4 text-sm hover:opacity-90 shadow-lg">
+        I've Verified (Check Status)
+      </button>
 
-    <div class="flex items-center my-4">
-      <div class="flex-grow border-t border-slate-700"></div>
-      <span class="mx-3 text-[10px] text-slate-500 font-bold uppercase tracking-wider">or</span>
-      <div class="flex-grow border-t border-slate-700"></div>
+      <div class="mt-4">
+        <a href="#" onclick="event.preventDefault(); showLoginFromVerification()" class="text-xs text-[#03A9F4] font-bold hover:underline">
+          Back to Login
+        </a>
+      </div>
     </div>
-
-    <!-- Google Login -->
-    <button id="authGoogleBtn" onclick="handleGoogleLogin()" class="w-full bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 font-bold py-4 rounded-xl transition duration-150 flex justify-center items-center gap-2">
-      <svg class="h-4 w-4" viewBox="0 0 24 24">
-        <path fill="#EA4335" d="M12 5.04c1.66 0 3.2.57 4.38 1.69l3.27-3.27C17.67 1.54 14.98 1 12 1 7.35 1 3.37 3.67 1.39 7.56l3.85 2.99c.92-2.75 3.48-4.51 6.76-4.51z"/>
-        <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.34H12v4.47h6.46c-.28 1.48-1.12 2.74-2.38 3.58l3.69 2.87c2.16-1.99 3.42-4.92 3.42-8.58z"/>
-        <path fill="#FBBC05" d="M5.24 14.55c-.24-.72-.38-1.49-.38-2.3s.14-1.58.38-2.3L1.39 6.96C.5 8.78 0 10.83 0 13s.5 4.22 1.39 6.04l3.85-3.49z"/>
-        <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.92l-3.69-2.87c-1.02.68-2.33 1.09-4.27 1.09-3.28 0-5.84-1.76-6.76-4.51L1.39 17.2C3.37 20.33 7.35 23 12 23z"/>
-      </svg>
-      Continue with Google
-    </button>
-
-    <p class="text-center text-xs text-slate-400 mt-6" id="authToggleLinkContainer">
-      New here? <a href="#" onclick="event.preventDefault(); toggleAuthMode()" class="text-[#03A9F4] font-bold hover:underline">Create an Account</a>
-    </p>
   </div>
 
   <script>
@@ -190,6 +221,7 @@
       const submitBtn = document.getElementById('authSubmitBtn');
       const toggleLink = document.getElementById('authToggleLinkContainer');
       const errorDiv = document.getElementById('authErrorMsg');
+      const googleBtnText = document.getElementById('authGoogleBtnText');
 
       errorDiv.classList.add('hidden');
       errorDiv.textContent = '';
@@ -202,6 +234,7 @@
         subtitleText.textContent = "Sign up to start your journey.";
         submitBtn.textContent = "Sign Up";
         toggleLink.innerHTML = 'Already have an account? <a href="#" onclick="event.preventDefault(); toggleAuthMode()" class="text-[#03A9F4] font-bold hover:underline">Log In</a>';
+        if (googleBtnText) googleBtnText.textContent = "Sign Up with Google";
         selectRole(selectedRole);
       } else {
         nameCont.classList.add('hidden');
@@ -211,6 +244,143 @@
         subtitleText.textContent = "Please log in or create an account to proceed.";
         submitBtn.textContent = "Login";
         toggleLink.innerHTML = 'New here? <a href="#" onclick="event.preventDefault(); toggleAuthMode()" class="text-[#03A9F4] font-bold hover:underline">Create an Account</a>';
+        if (googleBtnText) googleBtnText.textContent = "Login with Google";
+      }
+    }
+
+    let lastUsedEmail = '';
+
+    function showVerificationScreen(email) {
+      lastUsedEmail = email;
+      const titleText = document.getElementById('authTitle');
+      const subtitleText = document.getElementById('authSubtitle');
+      const formFields = document.getElementById('authFormFields');
+      const verificationContainer = document.getElementById('authVerificationContainer');
+      const emailText = document.getElementById('verificationEmailText');
+      const errorDiv = document.getElementById('authErrorMsg');
+
+      errorDiv.classList.add('hidden');
+      errorDiv.textContent = '';
+
+      if (titleText) titleText.textContent = "Verify Your Email";
+      if (subtitleText) subtitleText.textContent = "Please confirm your account.";
+      if (emailText) emailText.textContent = email;
+
+      if (formFields) formFields.classList.add('hidden');
+      if (verificationContainer) verificationContainer.classList.remove('hidden');
+    }
+
+    function showLoginFromVerification() {
+      const titleText = document.getElementById('authTitle');
+      const subtitleText = document.getElementById('authSubtitle');
+      const formFields = document.getElementById('authFormFields');
+      const verificationContainer = document.getElementById('authVerificationContainer');
+      const errorDiv = document.getElementById('authErrorMsg');
+
+      errorDiv.classList.add('hidden');
+      errorDiv.textContent = '';
+
+      isSignUpMode = false;
+      toggleAuthMode(isSignUpMode);
+
+      if (formFields) formFields.classList.remove('hidden');
+      if (verificationContainer) verificationContainer.classList.add('hidden');
+    }
+
+    async function handleResendVerification() {
+      const btn = document.getElementById('resendVerificationBtn');
+      const errorDiv = document.getElementById('authErrorMsg');
+
+      errorDiv.classList.add('hidden');
+      errorDiv.textContent = '';
+
+      if (!lastUsedEmail) {
+        errorDiv.textContent = "Email address is missing. Please try again.";
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Resending link...";
+
+      try {
+        const { error } = await supabaseClient.auth.resend({
+          type: 'signup',
+          email: lastUsedEmail,
+          options: {
+            emailRedirectTo: window.location.origin + window.location.pathname
+          }
+        });
+
+        if (error) {
+          errorDiv.textContent = error.message;
+          errorDiv.classList.remove('hidden');
+        } else {
+          alert("Verification email resent successfully! Please check your inbox.");
+        }
+      } catch (err) {
+        console.error("Resend error:", err);
+        errorDiv.textContent = "Failed to resend. Please try again.";
+        errorDiv.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Resend Verification Link";
+      }
+    }
+
+    async function checkVerificationStatus() {
+      const errorDiv = document.getElementById('authErrorMsg');
+      errorDiv.classList.add('hidden');
+      errorDiv.textContent = '';
+
+      try {
+        // Try logging in using the session (refresh session) to see if user has verified
+        const { data: { session }, error } = await supabaseClient.auth.refreshSession();
+        
+        if (error) {
+          errorDiv.textContent = "Status check failed. Please log in to try again.";
+          errorDiv.classList.remove('hidden');
+          return;
+        }
+
+        if (session && session.user) {
+          if (session.user.email_confirmed_at) {
+            alert("Email verified successfully! Redirecting you now...");
+            
+            // Check if profile exists
+            const { data: profiles, error: profileErr } = await supabaseClient
+              .from('profiles')
+              .select('role')
+              .eq('id', session.user.id);
+
+            let role;
+            if (profileErr || !profiles || profiles.length === 0) {
+              let oauthRole = localStorage.getItem('eduronix_oauth_role') || 'student';
+              localStorage.removeItem('eduronix_oauth_role');
+
+              await supabaseClient.from('profiles').insert({
+                id: session.user.id,
+                full_name: session.user.user_metadata?.full_name || session.user.email.split('@')[0],
+                role: oauthRole
+              });
+              role = oauthRole;
+            } else {
+              role = profiles[0].role;
+            }
+
+            await completeRedirection(session.user.id, role);
+          } else {
+            errorDiv.textContent = "Email is still unverified. Please check your inbox and click the link.";
+            errorDiv.classList.remove('hidden');
+          }
+        } else {
+          errorDiv.textContent = "Could not verify automatically. Please check your inbox, click the verification link, or log in.";
+          errorDiv.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error("Verification status check error:", err);
+        errorDiv.textContent = "An error occurred checking status. Please try logging in.";
+        errorDiv.classList.remove('hidden');
       }
     }
 
@@ -256,10 +426,20 @@
       try {
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
         if (error) {
+          if (error.message.toLowerCase().includes('email not confirmed')) {
+            showVerificationScreen(email);
+            return;
+          }
           errorDiv.textContent = error.message;
           errorDiv.classList.remove('hidden');
           btn.textContent = 'Login';
           btn.disabled = false;
+          return;
+        }
+
+        if (data.user && !data.user.email_confirmed_at) {
+          await supabaseClient.auth.signOut();
+          showVerificationScreen(email);
           return;
         }
 
@@ -314,7 +494,8 @@
           options: {
             data: {
               full_name: name
-            }
+            },
+            emailRedirectTo: window.location.origin + window.location.pathname
           }
         });
 
@@ -328,10 +509,7 @@
 
         const user = data.user;
         if (!user) {
-          errorDiv.textContent = 'Registration successful! Check your email for a confirmation link.';
-          errorDiv.classList.remove('hidden');
-          btn.textContent = 'Sign Up';
-          btn.disabled = false;
+          showVerificationScreen(email);
           return;
         }
 
@@ -346,7 +524,11 @@
 
         if (profileErr) console.error("Error creating profile:", profileErr);
 
-        await completeRedirection(user.id);
+        if (!user.email_confirmed_at) {
+          showVerificationScreen(email);
+        } else {
+          await completeRedirection(user.id, selectedRole);
+        }
       } catch (err) {
         console.error("Sign up exception:", err);
         errorDiv.textContent = 'An unexpected error occurred. Please try again.';
@@ -384,10 +566,18 @@
       }
     }
 
-    async function completeRedirection(userId) {
+    async function completeRedirection(userId, role) {
       // If there is an explicit target redirect, use it
       if (redirectUrl) {
         window.location.href = redirectUrl;
+        return;
+      }
+
+      // If role is already known, redirect immediately
+      if (role) {
+        if (role === 'admin') window.location.href = 'admin-dashboard.html';
+        else if (role === 'mentor') window.location.href = 'mentor-dashboard.html';
+        else window.location.href = 'student-dashboard.html';
         return;
       }
 
@@ -421,12 +611,20 @@
         if (session && session.user) {
           const user = session.user;
 
+          // Check if email is confirmed (for email signups redirect/returns)
+          if (user.email && !user.email_confirmed_at) {
+            await supabaseClient.auth.signOut();
+            showVerificationScreen(user.email);
+            return;
+          }
+
           // Check if profile exists
           const { data: profiles, error: profileErr } = await supabaseClient
             .from('profiles')
             .select('role')
             .eq('id', user.id);
 
+          let role;
           if (profileErr || !profiles || profiles.length === 0) {
             // New user signed in via Google, fetch cached local storage role
             const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
@@ -438,10 +636,13 @@
               full_name: fullName,
               role: oauthRole
             });
+            role = oauthRole;
+          } else {
+            role = profiles[0].role;
           }
 
-          // Complete login redirection
-          await completeRedirection(user.id);
+          // Complete login redirection with known role
+          await completeRedirection(user.id, role);
         }
       } catch (err) {
         console.error("Callback handler session query failed:", err);
