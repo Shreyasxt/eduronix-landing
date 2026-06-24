@@ -59,13 +59,21 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
   
-  <!-- Back button -->
-  <a href="index.html" class="absolute top-6 left-6 flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/80 border border-slate-700 hover:bg-slate-700 transition">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-    </svg>
-    <span>Home</span>
-  </a>
+  <!-- Navigation buttons -->
+  <div class="absolute top-6 left-6 flex items-center gap-2">
+    <a id="backBtn" href="index.html" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/80 border border-slate-700 hover:bg-slate-700 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span>Back</span>
+    </a>
+    <a href="index.html" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/80 border border-slate-700 hover:bg-slate-700 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      </svg>
+      <span>Home</span>
+    </a>
+  </div>
 
   <!-- Ambient BG Blobs -->
   <div class="absolute -top-40 -right-40 w-96 h-96 bg-[#8BC34A]/10 rounded-full blur-[120px] pointer-events-none"></div>
@@ -207,6 +215,18 @@
       isSignUpMode = true;
     }
 
+    // Configure back button dynamically to point to the last accessed page
+    const backBtn = document.getElementById('backBtn');
+    if (backBtn) {
+      if (redirectUrl) {
+        backBtn.href = redirectUrl;
+      } else if (document.referrer && document.referrer.trim() !== '') {
+        backBtn.href = document.referrer;
+      } else {
+        backBtn.href = 'index.html';
+      }
+    }
+
     function toggleAuthMode(forceMode) {
       if (typeof forceMode === 'boolean') {
         isSignUpMode = forceMode;
@@ -287,6 +307,18 @@
       if (verificationContainer) verificationContainer.classList.add('hidden');
     }
 
+    function showAuthMessage(msg, type = "error") {
+      const errorDiv = document.getElementById('authErrorMsg');
+      if (!errorDiv) return;
+      errorDiv.textContent = msg;
+      if (type === "error") {
+        errorDiv.className = "text-red-400 text-xs font-semibold bg-red-950/30 border border-red-800/30 rounded-xl p-4 mb-4 text-center block";
+      } else {
+        errorDiv.className = "text-emerald-400 text-xs font-semibold bg-emerald-950/30 border border-emerald-800/30 rounded-xl p-4 mb-4 text-center block";
+      }
+      errorDiv.classList.remove('hidden');
+    }
+
     async function handleResendVerification() {
       const btn = document.getElementById('resendVerificationBtn');
       const errorDiv = document.getElementById('authErrorMsg');
@@ -295,8 +327,7 @@
       errorDiv.textContent = '';
 
       if (!lastUsedEmail) {
-        errorDiv.textContent = "Email address is missing. Please try again.";
-        errorDiv.classList.remove('hidden');
+        showAuthMessage("Email address is missing. Please try again.", "error");
         return;
       }
 
@@ -313,15 +344,13 @@
         });
 
         if (error) {
-          errorDiv.textContent = error.message;
-          errorDiv.classList.remove('hidden');
+          showAuthMessage(error.message, "error");
         } else {
-          alert("Verification email resent successfully! Please check your inbox.");
+          showAuthMessage("Verification email resent successfully! Please check your inbox.", "success");
         }
       } catch (err) {
         console.error("Resend error:", err);
-        errorDiv.textContent = "Failed to resend. Please try again.";
-        errorDiv.classList.remove('hidden');
+        showAuthMessage("Failed to resend. Please try again.", "error");
       } finally {
         btn.disabled = false;
         btn.textContent = "Resend Verification Link";
@@ -338,14 +367,13 @@
         const { data: { session }, error } = await supabaseClient.auth.refreshSession();
         
         if (error) {
-          errorDiv.textContent = "Status check failed. Please log in to try again.";
-          errorDiv.classList.remove('hidden');
+          showAuthMessage("Status check failed. Please log in to try again.", "error");
           return;
         }
 
         if (session && session.user) {
           if (session.user.email_confirmed_at) {
-            alert("Email verified successfully! Redirecting you now...");
+            showAuthMessage("Email verified successfully! Redirecting you now...", "success");
             
             // Check if profile exists
             const { data: profiles, error: profileErr } = await supabaseClient
@@ -370,17 +398,14 @@
 
             await completeRedirection(session.user.id, role);
           } else {
-            errorDiv.textContent = "Email is still unverified. Please check your inbox and click the link.";
-            errorDiv.classList.remove('hidden');
+            showAuthMessage("Email is still unverified. Please check your inbox and click the link.", "error");
           }
         } else {
-          errorDiv.textContent = "Could not verify automatically. Please check your inbox, click the verification link, or log in.";
-          errorDiv.classList.remove('hidden');
+          showAuthMessage("Could not verify automatically. Please check your inbox, click the verification link, or log in.", "error");
         }
       } catch (err) {
         console.error("Verification status check error:", err);
-        errorDiv.textContent = "An error occurred checking status. Please try logging in.";
-        errorDiv.classList.remove('hidden');
+        showAuthMessage("An error occurred checking status. Please try logging in.", "error");
       }
     }
 
@@ -561,7 +586,7 @@
         if (error) throw error;
       } catch (err) {
         console.error("Google sign in failed:", err);
-        alert("Google sign in failed: " + err.message);
+        showAuthMessage("Google sign in failed: " + err.message, "error");
         btn.disabled = false;
       }
     }
