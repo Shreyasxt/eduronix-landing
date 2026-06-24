@@ -25,8 +25,8 @@ class MentorProfile(BaseModel):
     linkedin: str
     upi: str
     year: str
-    city: str
-    state: str
+    city: str = ""
+    state: str = ""
     college: str = ""
     course: str = ""
 
