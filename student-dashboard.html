@@ -405,6 +405,10 @@
     </div>
 
     <script>
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8000'
+            : 'https://eduronix-backend.onrender.com';
+
         document.addEventListener('alpine:init', () => {
             Alpine.data('dashboardData', () => ({
                 tab: 'mentors',
@@ -446,7 +450,7 @@
                     this.loading = true;
                     try {
                         const headers = await this.getAuthHeaders();
-                        const response = await fetch('https://eduronix-backend.onrender.com/student/mentors', { headers });
+                        const response = await fetch(`${API_BASE}/student/mentors`, { headers });
                         if (response.ok) {
                             const data = await response.json();
                             this.mentors = data.mentors || [];
@@ -467,13 +471,13 @@
                 async fetchStudentData() {
                     try {
                         const headers = await this.getAuthHeaders();
-                        const bookingsRes = await fetch(`https://eduronix-backend.onrender.com/student/bookings/${this.studentEmail}`, { headers });
+                        const bookingsRes = await fetch(`${API_BASE}/student/bookings/${this.studentEmail}`, { headers });
                         if (bookingsRes.ok) {
                             const data = await bookingsRes.json();
                             this.bookings = data.bookings || [];
                         }
 
-                        const paymentsRes = await fetch(`https://eduronix-backend.onrender.com/student/payments/${this.studentEmail}`, { headers });
+                        const paymentsRes = await fetch(`${API_BASE}/student/payments/${this.studentEmail}`, { headers });
                         if (paymentsRes.ok) {
                             const data = await paymentsRes.json();
                             this.payments = data.payments || [];
