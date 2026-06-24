@@ -8,6 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
     rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg: #0a0a0f;
@@ -1322,10 +1323,19 @@
         flex-direction: column;
       }
     }
+    @keyframes cm-spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 
 <body>
+
+  <!-- SUPABASE SESSION LOADING OVERLAY -->
+  <div id="supabase-session-overlay" style="display: none; position: fixed; inset: 0; background: var(--bg); z-index: 10000; align-items: center; justify-content: center; flex-direction: column; gap: 1.5rem;">
+    <div style="width: 50px; height: 50px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: cm-spin 1s linear infinite;"></div>
+    <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--text); letter-spacing: -0.01em;">Checking your college matches...</div>
+  </div>
 
   <!-- ═══════════════════════════════════════ PAGE 0: LANDING ═══ -->
   <div class="page active" id="page-0">
@@ -2107,6 +2117,10 @@
   </div>
 
   <script>
+    const supabaseUrl = "https://mnbyvbhfkrkkmmgkedch.supabase.co";
+    const supabaseKey = "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB";
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
     let allColleges = [];
     let apiData = null;
     let loadingAnimationDone = false;
@@ -2565,8 +2579,9 @@
       }
     });
 
-    // Restore cached college matches from sessionStorage if they exist
-    window.addEventListener('DOMContentLoaded', () => {
+    // Restore cached college matches from sessionStorage or Supabase backend
+    window.addEventListener('DOMContentLoaded', async () => {
+      // 1. First, check sessionStorage
       try {
         const saved = sessionStorage.getItem('collegematch_results');
         if (saved) {
@@ -2576,10 +2591,41 @@
             loadingAnimationDone = true;
             renderCollegeCards(parsed.data);
             goTo('results');
+            return;
           }
         }
       } catch (err) {
-        console.error("Error loading cached matches:", err);
+        console.error("Error loading cached matches from sessionStorage:", err);
+      }
+
+      // 2. If no sessionStorage cache, check if logged in and fetch results from DB
+      try {
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        if (session && session.user && session.user.email) {
+          const overlay = document.getElementById('supabase-session-overlay');
+          if (overlay) {
+            overlay.style.display = 'flex';
+          }
+          const email = session.user.email;
+          const res = await fetch(`${API_BASE}/api/college-match/get-results?email=${encodeURIComponent(email)}`);
+          if (res.ok) {
+            const result = await res.json();
+            if (result && result.status === 'success' && result.data && result.data.length > 0) {
+              apiData = result;
+              loadingAnimationDone = true;
+              sessionStorage.setItem('collegematch_results', JSON.stringify(result));
+              renderCollegeCards(result.data);
+              goTo('results');
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching matches for logged user from DB:", err);
+      } finally {
+        const overlay = document.getElementById('supabase-session-overlay');
+        if (overlay) {
+          overlay.style.display = 'none';
+        }
       }
     });
 

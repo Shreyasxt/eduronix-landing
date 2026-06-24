@@ -155,3 +155,62 @@ async def process_college_match(payload: CollegeMatchRequest):
         raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI Engine Error: {str(e)}")
+
+@router.get("/college-match/get-results")
+async def get_results(email: str):
+    try:
+        # Check if user has already taken the test
+        existing = supabase.table("college_match_leads").select("*").ilike("email", email.strip()).execute()
+        if not existing.data:
+            return {"status": "no_leads", "matches_found": 0, "data": []}
+
+        # Take the latest lead
+        lead = existing.data[-1]
+
+        client = get_groq_client()
+
+        # Reconstruct lead_data for prompt mapping
+        system_instruction = (
+            "You are the Eduronix AI College Predictor. Analyze the student's profile "
+            "and suggest the top 5 engineering or mainstream colleges in India that match their "
+            "stream, budget, location preferences, and entrance exam scores/percentiles (e.g. JEE, MHT-CET, NEET, CAT, CLAT etc.). "
+            "Provide a realistic match_score (0-100) taking into account their exam percentiles or marks relative to typical cutoffs. "
+            "Write an empathetic explanation for each college mapping to their goals. "
+            "You must return a valid JSON object matching this schema:\n"
+            "{\n"
+            "  \"status\": \"success\",\n"
+            "  \"matches_found\": 5,\n"
+            "  \"data\": [\n"
+            "    {\n"
+            "      \"name\": \"College Name\",\n"
+            "      \"location\": \"Location\",\n"
+            "      \"type\": \"Type (e.g. Government, Private)\",\n"
+            "      \"fee\": \"Fee (e.g. INR 1,00,000 per year)\",\n"
+            "      \"placement_rate\": \"Placement rate (e.g. 85%+)\",\n"
+            "      \"match_score\": 90,\n"
+            "      \"tags\": [\"Tag1\", \"Tag2\"],\n"
+            "      \"description\": \"Empathetic mapping explanation...\"\n"
+            "    }\n"
+            "  ]\n"
+            "}"
+        )
+
+        user_profile = f"Analyze this student profile: {json.dumps(lead)}"
+
+        chat_completion = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": system_instruction},
+                {"role": "user", "content": user_profile}
+            ],
+            response_format={"type": "json_object"}
+        )
+
+        response_text = chat_completion.choices[0].message.content
+        response_json = json.loads(response_text)
+
+        validated_response = CollegeMatchResponse(**response_json)
+        return validated_response.dict()
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve results: {str(e)}")
