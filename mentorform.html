@@ -202,6 +202,9 @@
             </label>
         </div>
 
+        <!-- Message box -->
+        <div id="mentorform-message-box" class="hidden p-4 rounded-2xl text-sm font-semibold text-center my-3 transition-all duration-300"></div>
+
         <button id="submitBtn" type="submit"
     class="w-full brand-gradient text-white font-bold py-5 rounded-2xl text-lg 
            shadow-[0_10px_30px_rgba(139,195,74,0.3)] 
@@ -294,12 +297,26 @@ async function initMentorForm() {
         });
     });
 
+    function showMessage(msg, type = "error") {
+        const msgBox = document.getElementById("mentorform-message-box");
+        if (!msgBox) return;
+        msgBox.textContent = msg;
+        if (type === "error") {
+            msgBox.className = "p-4 rounded-2xl text-sm font-semibold text-center my-3 transition-all duration-300 bg-rose-950/30 border border-rose-800/30 text-rose-400 block";
+        } else {
+            msgBox.className = "p-4 rounded-2xl text-sm font-semibold text-center my-3 transition-all duration-300 bg-emerald-950/30 border border-emerald-800/30 text-emerald-400 block";
+        }
+    }
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         
+        const msgBox = document.getElementById("mentorform-message-box");
+        if (msgBox) msgBox.style.display = "none";
+
         if (!currentUser) {
-            alert("You must be logged in to apply.");
-            window.location.reload();
+            showMessage("You must be logged in to apply.", "error");
+            setTimeout(() => { window.location.reload(); }, 2000);
             return;
         }
 
@@ -360,7 +377,7 @@ async function initMentorForm() {
 
         } catch (err) {
             console.error(err);
-            alert("Oops! Something went wrong. Check the console for details.");
+            showMessage("Oops! Something went wrong. " + (err.message || "Check the console for details."), "error");
             btn.innerHTML = "Apply Now";
             btn.disabled = false;
         }

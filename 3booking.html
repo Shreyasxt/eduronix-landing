@@ -470,6 +470,9 @@
       </p>
     </div>
 
+    <!-- Inline Message Box -->
+    <div id="booking-message-box" class="hidden p-4 rounded-2xl text-sm font-semibold text-center my-3 transition-all duration-300"></div>
+
     <!-- CTA Button -->
     <button onclick="handlePayment()" id="payBtn"
       class="w-full brand-gradient text-white font-bold py-5 rounded-2xl text-lg 
@@ -537,6 +540,17 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+function showMessage(msg, type = "error") {
+  const msgBox = document.getElementById("booking-message-box");
+  if (!msgBox) return;
+  msgBox.textContent = msg;
+  if (type === "error") {
+    msgBox.className = "p-4 rounded-2xl text-sm font-semibold text-center my-3 transition-all duration-300 bg-rose-50 text-rose-600 border border-rose-100 block";
+  } else {
+    msgBox.className = "p-4 rounded-2xl text-sm font-semibold text-center my-3 transition-all duration-300 bg-emerald-50 text-emerald-600 border border-emerald-100 block";
+  }
+}
+
 async function handlePayment() {
   const btn = document.getElementById("payBtn");
 
@@ -557,13 +571,18 @@ async function handlePayment() {
     requirements: document.getElementById("requirements").value,
   };
 
+  const msgBox = document.getElementById("booking-message-box");
+  if (msgBox) {
+    msgBox.style.display = "none";
+  }
+
   if (!data.name || !data.phone || !data.email || !data.college1) {
-    alert("Please fill in your name, contact, and at least one college choice.");
+    showMessage("Please fill in your name, contact, and at least one college choice.", "error");
     return;
   }
 
   if (!/^\d{10}$/.test(data.phone)) {
-    alert("Enter valid 10-digit phone number");
+    showMessage("Enter valid 10-digit phone number", "error");
     return;
   }
 
@@ -593,7 +612,7 @@ async function handlePayment() {
 
   } catch (err) {
     console.error("Supabase Error:", err);
-    alert("Error saving data. Please try again.");
+    showMessage("Error saving data. Please try again.", "error");
     btn.innerText = "Try Again";
     btn.disabled = false;
   }

@@ -264,19 +264,20 @@
 
   </div>
 
-  <!-- CTA Button -->
-   <button onclick="handlePayment()" id="payBtn"
-  class="w-full brand-gradient text-white font-bold py-5 rounded-2xl text-lg 
-  shadow-[0_10px_30px_rgba(139,195,74,0.3)] 
-  hover:shadow-[0_15px_40px_rgba(3,169,244,0.4)]
-  transition-all active:scale-95 
-  flex justify-center items-center gap-2">
-  
-  <span id="btn-text">Find My Mentor → Secure My Slot ₹299</span>
+    <!-- Inline Message Box -->
+    <div id="booking-message-box" class="hidden p-4 rounded-2xl text-sm font-semibold text-center my-3 transition-all duration-300"></div>
 
-</button>
+    <!-- CTA Button -->
+     <button onclick="handlePayment()" id="payBtn"
+    class="w-full brand-gradient text-white font-bold py-5 rounded-2xl text-lg 
+    shadow-[0_10px_30px_rgba(139,195,74,0.3)] 
+    hover:shadow-[0_15px_40px_rgba(3,169,244,0.4)]
+    transition-all active:scale-95 
+    flex justify-center items-center gap-2">
+    
+    <span id="btn-text">Find My Mentor → Secure My Slot ₹299</span>
 
-</div>
+  </button>
 
   </div>
 </div>
@@ -396,6 +397,17 @@ function togglePlan(plan) {
   }
 }
 
+function showMessage(msg, type = "error") {
+  const msgBox = document.getElementById("booking-message-box");
+  if (!msgBox) return;
+  msgBox.textContent = msg;
+  if (type === "error") {
+    msgBox.className = "p-4 rounded-2xl text-sm font-semibold text-center my-3 transition-all duration-300 bg-rose-50 text-rose-600 border border-rose-100 block";
+  } else {
+    msgBox.className = "p-4 rounded-2xl text-sm font-semibold text-center my-3 transition-all duration-300 bg-emerald-50 text-emerald-600 border border-emerald-100 block";
+  }
+}
+
 // ✅ PAYMENT FUNCTION
 async function handlePayment() {
   const btn = document.getElementById("payBtn");
@@ -416,13 +428,18 @@ async function handlePayment() {
     plan: selectedPlan,
   };
 
+  const msgBox = document.getElementById("booking-message-box");
+  if (msgBox) {
+    msgBox.style.display = "none";
+  }
+
   if (!data.name || !data.phone || !data.email) {
-    alert("Please fill required fields");
+    showMessage("Please fill required fields", "error");
     return;
   }
 
   if (!/^\d{10}$/.test(data.phone)) {
-    alert("Enter valid 10-digit phone number");
+    showMessage("Enter valid 10-digit phone number", "error");
     return;
   }
 
@@ -432,11 +449,11 @@ async function handlePayment() {
     const buddyPhone = document.getElementById("buddy_phone").value;
     const buddyEmail = document.getElementById("buddy_email").value;
     if (!buddyName || !buddyPhone || !buddyEmail) {
-      alert("Please fill buddy's name, phone and email");
+      showMessage("Please fill buddy's name, phone and email", "error");
       return;
     }
     if (!/^\d{10}$/.test(buddyPhone)) {
-      alert("Enter valid 10-digit phone number for buddy");
+      showMessage("Enter valid 10-digit phone number for buddy", "error");
       return;
     }
     data.buddy_name = buddyName;
@@ -471,7 +488,7 @@ async function handlePayment() {
 
     if (error) {
       console.error("Supabase Error:", error);
-      alert("Error saving data");
+      showMessage("Error saving data: " + error.message, "error");
       btn.querySelector("span").textContent = isBuddy
         ? "Find My Mentor → Secure My Slot ₹499"
         : "Find My Mentor → Secure My Slot ₹299";
@@ -484,7 +501,7 @@ async function handlePayment() {
 
   } catch (err) {
     console.error(err);
-    alert("Something went wrong");
+    showMessage("Something went wrong. Please try again.", "error");
     btn.querySelector("span").textContent = isBuddy
       ? "Find My Mentor → Secure My Slot ₹499"
       : "Find My Mentor → Secure My Slot ₹299";
