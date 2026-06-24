@@ -30,6 +30,17 @@ async def get_overview():
         # 2. Fetch all mentors
         mentors_res = supabase.table("mentors").select("*").execute()
         mentors = mentors_res.data or []
+
+        # 3. Fetch college match leads count
+        total_college_matches = 0
+        unique_college_match_users = 0
+        try:
+            leads_res = supabase.table("college_match_leads").select("email").execute()
+            leads = leads_res.data or []
+            total_college_matches = len(leads)
+            unique_college_match_users = len(set(l.get("email").strip().lower() for l in leads if l.get("email")))
+        except Exception as e:
+            print("Failed to fetch college match leads for admin overview:", e)
         
         total_sessions = len(bookings)
         total_revenue = sum(299 for b in bookings if b.get("status") != "cancelled")
@@ -131,7 +142,9 @@ async def get_overview():
             "unassignedRequests": unassigned_requests,
             "assignedSessions": assigned_sessions,
             "recentActivity": recent_activity,
-            "revenueChart": revenue_chart
+            "revenueChart": revenue_chart,
+            "totalCollegeMatches": total_college_matches,
+            "uniqueCollegeMatchUsers": unique_college_match_users
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -269,5 +282,15 @@ async def mark_payout_paid(payload: MarkPayoutRequest):
         }).eq("mentor_id", payload.mentor_id).eq("status", "completed").execute()
         
         return {"status": "success", "message": "Payouts marked as paid"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/collegematch-leads")
+async def get_collegematch_leads():
+    try:
+        res = supabase.table("college_match_leads").select("*").execute()
+        leads = res.data or []
+        sorted_leads = sorted(leads, key=lambda x: x.get("created_at", ""), reverse=True)
+        return {"status": "success", "leads": sorted_leads}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

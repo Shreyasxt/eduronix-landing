@@ -341,6 +341,11 @@
                     class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm">
                     <i class="fas fa-rupee-sign w-5"></i> Revenue
                 </button>
+                <button @click="tab='collegematch'"
+                    :class="tab==='collegematch'?'bg-[#8BC34A]/20 text-[#8BC34A] font-bold':'text-white/50 hover:bg-white/5 hover:text-white'"
+                    class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm relative">
+                    <i class="fas fa-magic w-5"></i> CollegeMatch API
+                </button>
                 <button @click="tab='profile'"
                     :class="tab==='profile'?'bg-yellow-400/20 text-yellow-300 font-bold':'text-white/50 hover:bg-white/5 hover:text-white'"
                     class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left text-sm">
@@ -417,7 +422,7 @@
                     x-transition:enter-end="opacity-100 translate-y-0">
 
                     <!-- KPI Cards -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
                         <div class="bento-card p-5 relative overflow-hidden">
                             <div
                                 class="absolute top-0 right-0 w-16 h-16 bg-[#8BC34A]/10 rounded-full -translate-y-4 translate-x-4">
@@ -466,6 +471,17 @@
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Pending
                                 Assign</p>
                             <p class="text-xs font-bold text-red-500 mt-2">⚠ Needs attention</p>
+                        </div>
+                        <div class="bento-card p-5 relative overflow-hidden" @click="tab='collegematch'" style="cursor: pointer;">
+                            <div
+                                class="absolute top-0 right-0 w-16 h-16 bg-indigo-100 rounded-full -translate-y-4 translate-x-4">
+                            </div>
+                            <div
+                                class="w-10 h-10 bg-indigo-100/50 rounded-xl flex items-center justify-center text-indigo-600 mb-3">
+                                <i class="fas fa-magic text-sm"></i></div>
+                            <p class="text-3xl font-black text-slate-900" x-text="analytics.uniqueCollegeMatchUsers || 0"></p>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">CollegeMatch Users</p>
+                            <p class="text-xs font-bold text-indigo-500 mt-2">View leads database →</p>
                         </div>
                     </div>
 
@@ -1157,6 +1173,100 @@
                     </div>
                 </div>
 
+                <!-- ===== TAB: COLLEGEMATCH ===== -->
+                <div x-show="tab==='collegematch'" style="display:none"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-4"
+                    x-transition:enter-end="opacity-100 translate-y-0">
+                    
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-black tracking-tight">
+                            <i class="fas fa-magic text-[#8BC34A] mr-2"></i>CollegeMatch Usage
+                        </h2>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest bg-white px-3 py-1 rounded-full shadow-sm border"
+                            x-text="allLeads.length + ' Submissions'"></span>
+                    </div>
+
+                    <!-- Usage KPI cards for CollegeMatch -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="bento-card p-5 relative overflow-hidden flex items-center justify-between">
+                            <div>
+                                <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-3">
+                                    <i class="fas fa-file-alt text-sm"></i>
+                                </div>
+                                <p class="text-3xl font-black text-slate-900" x-text="analytics.totalCollegeMatches || 0"></p>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Total Submissions</p>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mt-2">Total API matches fetched</p>
+                        </div>
+                        <div class="bento-card p-5 relative overflow-hidden flex items-center justify-between">
+                            <div>
+                                <div class="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center text-sky-600 mb-3">
+                                    <i class="fas fa-user-friends text-sm"></i>
+                                </div>
+                                <p class="text-3xl font-black text-slate-900" x-text="analytics.uniqueCollegeMatchUsers || 0"></p>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Unique Student Users</p>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mt-2">Unique student email addresses</p>
+                        </div>
+                    </div>
+
+                    <!-- Search Box -->
+                    <div class="bento-card p-4 mb-6">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-slate-400 text-sm"></i>
+                            </span>
+                            <input type="text" x-model="collegematchSearch" placeholder="Search by name, email, or stream..."
+                                class="w-full pl-9 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none transition focus:border-[#8BC34A]">
+                        </div>
+                    </div>
+
+                    <!-- Leads Table -->
+                    <div class="bento-card overflow-hidden mb-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-100 bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        <th class="text-left p-4">Student</th>
+                                        <th class="text-left p-4">Stream</th>
+                                        <th class="text-left p-4">Exams</th>
+                                        <th class="text-left p-4">Target Colleges</th>
+                                        <th class="text-left p-4">Date Taken</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="lead in filteredLeads" :key="lead.id">
+                                        <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition">
+                                            <td class="p-4">
+                                                <div class="font-bold text-slate-900" x-text="lead.full_name || 'Anonymous'"></div>
+                                                <div class="text-xs text-slate-500" x-text="lead.email"></div>
+                                                <div class="text-xs text-slate-400" x-text="lead.whatsapp_number"></div>
+                                            </td>
+                                            <td class="p-4 text-slate-600 font-bold text-xs" x-text="lead.stream"></td>
+                                            <td class="p-4">
+                                                <div class="flex flex-wrap gap-1">
+                                                    <template x-for="exam in (lead.exams || [])" :key="exam">
+                                                        <span class="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider" x-text="exam"></span>
+                                                    </template>
+                                                </div>
+                                            </td>
+                                            <td class="p-4 text-slate-500 text-xs max-w-xs truncate" :title="lead.target_colleges" x-text="lead.target_colleges || 'None Specified'"></td>
+                                            <td class="p-4 text-slate-400 text-xs" x-text="new Date(lead.created_at).toLocaleDateString() + ' ' + new Date(lead.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})"></td>
+                                        </tr>
+                                    </template>
+                                    <tr x-show="filteredLeads.length === 0">
+                                        <td colspan="5" class="text-center p-12 text-slate-400">
+                                            <i class="fas fa-search text-3xl mb-3 block text-slate-300"></i>
+                                            No CollegeMatch usage records found.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ===== TAB: SETTINGS ===== -->
                 <div x-show="tab==='settings'" style="display:none"
                     x-transition:enter="transition ease-out duration-300"
@@ -1310,7 +1420,8 @@
 
                 analytics: {
                     totalSessions: 0, totalRevenue: 0, totalMentors: 0,
-                    pendingPayouts: 0, todayCompleted: 0, todayUpcoming: 0, todayCancelled: 0
+                    pendingPayouts: 0, todayCompleted: 0, todayUpcoming: 0, todayCancelled: 0,
+                    totalCollegeMatches: 0, uniqueCollegeMatchUsers: 0
                 },
 
                 unassignedRequests: [],
@@ -1319,6 +1430,18 @@
                 allStudents: [],
                 recentActivity: [],
                 revenueChart: [],
+                allLeads: [],
+                collegematchSearch: '',
+
+                get filteredLeads() {
+                    return this.allLeads.filter(l => {
+                        const s = this.collegematchSearch.toLowerCase();
+                        return !s || 
+                               (l.full_name && l.full_name.toLowerCase().includes(s)) || 
+                               (l.email && l.email.toLowerCase().includes(s)) ||
+                               (l.stream && l.stream.toLowerCase().includes(s));
+                    });
+                },
 
                 get filteredMentors() {
                     return this.allMentors.filter(m => {
@@ -1361,7 +1484,9 @@
                                 pendingPayouts: data.pendingPayouts,
                                 todayCompleted: data.todayCompleted,
                                 todayUpcoming: data.todayUpcoming,
-                                todayCancelled: data.todayCancelled
+                                todayCancelled: data.todayCancelled,
+                                totalCollegeMatches: data.totalCollegeMatches || 0,
+                                uniqueCollegeMatchUsers: data.uniqueCollegeMatchUsers || 0
                             };
                             this.unassignedRequests = data.unassignedRequests || [];
                             this.assignedSessions = data.assignedSessions || [];
@@ -1374,6 +1499,13 @@
                         if (mentorsRes.ok) {
                             const data = await mentorsRes.json();
                             this.allMentors = data.mentors || [];
+                        }
+
+                        // Fetch CollegeMatch Leads
+                        const leadsRes = await fetch(`${API_BASE}/admin/collegematch-leads`, { headers });
+                        if (leadsRes.ok) {
+                            const data = await leadsRes.json();
+                            this.allLeads = data.leads || [];
                         }
 
                         // Fetch Students
