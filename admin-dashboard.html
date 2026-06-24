@@ -18,6 +18,7 @@
             const supabaseUrl = "https://mnbyvbhfkrkkmmgkedch.supabase.co";
             const supabaseKey = "sb_publishable_6Y-dqTHFSvMWoO-vcnqfiw_tvp9X3qB";
             const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+            window.supabaseClient = supabaseClient;
 
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
