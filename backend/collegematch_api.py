@@ -64,7 +64,7 @@ def get_groq_client() -> Groq:
 async def check_email(email: str):
     try:
         existing = supabase.table("college_match_leads").select("id").ilike("email", email.strip()).execute()
-        if existing.data:
+        if existing.data and len(existing.data) >= 2:
             return {"exists": True}
         return {"exists": False}
     except Exception as db_err:
@@ -74,13 +74,13 @@ async def check_email(email: str):
 @router.post("/college-match")
 async def process_college_match(payload: CollegeMatchRequest):
     try:
-        # Check if user has already taken the test (limit one per user email)
+        # Check if user has already taken the test (limit 2 per user email)
         try:
             existing = supabase.table("college_match_leads").select("id").ilike("email", payload.email.strip()).execute()
-            if existing.data:
+            if existing.data and len(existing.data) >= 2:
                 raise HTTPException(
                     status_code=400,
-                    detail="You have already taken the college match test. Limit is one test per user."
+                    detail="You have already taken the college match test 2 times. Limit is two tests per user."
                 )
         except HTTPException:
             raise

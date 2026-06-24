@@ -1757,7 +1757,10 @@
       <div id="collegematch-error-box" style="background: rgba(239, 68, 68, 0.15); border: 1.5px solid rgba(239, 68, 68, 0.4); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; color: #f87171; font-size: 0.85rem; font-weight: 500; line-height: 1.5; display: none;"></div>
 
       <div class="q-nav">
-        <button class="btn-back" onclick="goTo(5)">← Back</button>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-back" onclick="window.location.href='index.html'">🏠 Home</button>
+          <button class="btn-back" onclick="goTo(5)">← Back</button>
+        </div>
         <button class="btn-next" onclick="submitCollegeMatchForm()"
           style="background:var(--green);font-size:1.1rem;font-weight:600;">
           🔍 Find My Colleges
@@ -2225,7 +2228,7 @@
           const checkResult = await checkResponse.json();
           if (checkResult.exists) {
             if (errBox) {
-              errBox.textContent = "You have already taken the college match test. Limit is one test per user.";
+              errBox.textContent = "You have already taken the college match test 2 times. Limit is two tests per user.";
               errBox.style.display = 'block';
             }
             return;
